@@ -189,20 +189,38 @@
                 "type": "entries",
                 "entries": [
                     {
+                        "org": "Market Deck: Financial Dashboard",
+                        "dt": "2026",
+                        "bullets": [
+                            "Rank financial assets by price momentum across configurable watchlists",
+                            "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance"
+                        ],
+                        "tags": [
+                            "FastAPI",
+                            "SQLite",
+                            "yfinance",
+                            "Python",
+                            "Vanilla JS"
+                        ],
+                        "url": "https://github.com/kaufmann-dev/market-deck",
+                        "urlLabel": "Open GitHub"
+                    },
+                    {
                         "org": "CT2Mesh2Print: Medical Imaging & 3D Printing",
                         "dt": "2025",
                         "bullets": [
                             "Segmented CT scan data to isolate bone structures",
                             "Converted segmented data into a printable 3D mesh and produced lifesize prints"
                         ],
-                        "url": "https://github.com/davidkaufmann/ct2mesh2print",
-                        "urlLabel": "Read More"
+                        "url": "https://kaufmann.dev/article/ct2mesh2print",
+                        "urlLabel": "Read Article"
                     },
                     {
-                        "org": "RepoManip: Git Repository Manipulation",
+                        "org": "Git Wrangler: Git Repository Manipulation",
                         "dt": "2024",
                         "bullets": [
-                            "Bash scripts for bulk management and manipulation of Git repositories"
+                            "Bash scripts for the bulk management and manipulation of Git repositories",
+                            "Automates tasks like licensing, cloning and rewriting commit history"
                         ],
                         "tags": [
                             "Bash",
@@ -210,43 +228,55 @@
                             "GitHub CLI",
                             "git-filter-repo"
                         ],
-                        "url": "https://github.com/davidkaufmann/repomanip"
+                        "url": "https://github.com/kaufmann-dev/git-wrangler",
+                        "urlLabel": "Open GitHub"
                     },
                     {
                         "org": "Jung in Krems: Full-stack Web Application",
                         "dt": "2023",
                         "bullets": [
-                            "Event calendar and educational offerings overview for young people in Krems",
-                            "Diploma thesis, commissioned by and developed in cooperation with the city of Krems"
+                            "Event calendar and an overview of educational offerings for young people in Krems",
+                            "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems"
                         ],
                         "tags": [
-                            "MySQL",
-                            "Laravel",
-                            "Svelte",
+                            "MySQL 8",
+                            "Laravel 9",
+                            "Svelte 3",
                             "Eloquent",
                             "Inertia",
                             "REST",
                             "Laravel Sanctum",
                             "Tailwind"
                         ],
-                        "url": "https://github.com/davidkaufmann/jung-in-krems"
+                        "url": "https://github.com/kaufmann-dev/jung-in-krems",
+                        "urlLabel": "Open GitHub"
                     },
                     {
-                        "org": "MoviesAsync: Asynchronous Programming",
+                        "org": "Async Cinema: Asynchronous Programming",
                         "dt": "2022",
                         "bullets": [
                             "Full-stack .NET MVC app with REST API for managing a MySQL film database",
                             "Asynchronous CRUD operations with Swagger documentation and Blazor UI"
                         ],
                         "tags": [
-                            ".NET",
-                            "C#",
-                            "MySQL",
+                            ".NET 7",
+                            "C# 11",
+                            "MySQL 8",
                             "Blazor",
                             "Entity Framework",
                             "Swagger"
                         ],
-                        "url": "https://github.com/davidkaufmann/moviesasync",
+                        "url": "https://github.com/kaufmann-dev/async-cinema",
+                        "urlLabel": "Open GitHub"
+                    },
+                    {
+                        "org": "Purus CSS: Minimalist CSS Framework",
+                        "dt": "2021",
+                        "bullets": [
+                            "Responsive drop-in framework with no JavaScript dependencies",
+                            "Mobile first-approach with full customizability and useful utility classes"
+                        ],
+                        "url": "https://puruscss.kaufmann.dev",
                         "urlLabel": "Visit Website"
                     }
                 ]
@@ -461,20 +491,38 @@
                 "type": "entries",
                 "entries": [
                     {
+                        "org": "Market Deck: Finanz-Dashboard",
+                        "dt": "2026",
+                        "bullets": [
+                            "Ranking von Finanzwerten nach Preis-Momentum über konfigurierbare Watchlists",
+                            "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
+                        ],
+                        "tags": [
+                            "FastAPI",
+                            "SQLite",
+                            "yfinance",
+                            "Python",
+                            "Vanilla JS"
+                        ],
+                        "url": "https://github.com/kaufmann-dev/market-deck",
+                        "urlLabel": "GitHub öffnen"
+                    },
+                    {
                         "org": "CT2Mesh2Print: Medizinische Bildgebung & 3D-Druck",
                         "dt": "2025",
                         "bullets": [
                             "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen",
                             "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
                         ],
-                        "url": "https://github.com/davidkaufmann/ct2mesh2print",
-                        "urlLabel": "Mehr lesen"
+                        "url": "https://kaufmann.dev/article/ct2mesh2print",
+                        "urlLabel": "Artikel lesen"
                     },
                     {
-                        "org": "RepoManip: Git-Repository-Verwaltung",
+                        "org": "Git Wrangler: Git-Repository-Verwaltung",
                         "dt": "2024",
                         "bullets": [
-                            "Bash-Skripte zur Massenverwaltung und -manipulation von Git-Repositories"
+                            "Bash-Skripte zur Massenverwaltung und -manipulation von Git-Repositories",
+                            "Automatisiert Aufgaben wie Lizenzierung, Klonen und Umschreiben der Commit-Historie"
                         ],
                         "tags": [
                             "Bash",
@@ -482,44 +530,56 @@
                             "GitHub CLI",
                             "git-filter-repo"
                         ],
-                        "url": "https://github.com/davidkaufmann/repomanip"
+                        "url": "https://github.com/kaufmann-dev/git-wrangler",
+                        "urlLabel": "GitHub öffnen"
                     },
                     {
                         "org": "Jung in Krems: Full-Stack-Webanwendung",
                         "dt": "2023",
                         "bullets": [
                             "Veranstaltungskalender und Übersicht über Bildungsangebote für Jugendliche in Krems",
-                            "Diplomarbeit, im Auftrag der Stadt Krems und in Zusammenarbeit mit ihr entwickelt"
+                            "Praktischer Teil meiner Diplomarbeit, im Auftrag und in Zusammenarbeit mit der Stadt Krems"
                         ],
                         "tags": [
-                            "MySQL",
-                            "Laravel",
-                            "Svelte",
+                            "MySQL 8",
+                            "Laravel 9",
+                            "Svelte 3",
                             "Eloquent",
                             "Inertia",
                             "REST",
                             "Laravel Sanctum",
                             "Tailwind"
                         ],
-                        "url": "https://github.com/davidkaufmann/jung-in-krems"
+                        "url": "https://github.com/kaufmann-dev/jung-in-krems",
+                        "urlLabel": "GitHub öffnen"
                     },
                     {
-                        "org": "MoviesAsync: Asynchrone Programmierung",
+                        "org": "Async Cinema: Asynchrone Programmierung",
                         "dt": "2022",
                         "bullets": [
                             "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank",
                             "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
                         ],
                         "tags": [
-                            ".NET",
-                            "C#",
-                            "MySQL",
+                            ".NET 7",
+                            "C# 11",
+                            "MySQL 8",
                             "Blazor",
                             "Entity Framework",
                             "Swagger"
                         ],
-                        "url": "https://github.com/davidkaufmann/moviesasync",
-                        "urlLabel": "Visit Website"
+                        "url": "https://github.com/kaufmann-dev/async-cinema",
+                        "urlLabel": "GitHub öffnen"
+                    },
+                    {
+                        "org": "Purus CSS: Minimalistisches CSS-Framework",
+                        "dt": "2021",
+                        "bullets": [
+                            "Responsives Drop-in-Framework ohne JavaScript-Abhängigkeiten",
+                            "Mobile-First-Ansatz mit voller Anpassbarkeit und nützlichen Utility-Klassen"
+                        ],
+                        "url": "https://puruscss.kaufmann.dev",
+                        "urlLabel": "Website besuchen"
                     }
                 ]
             },

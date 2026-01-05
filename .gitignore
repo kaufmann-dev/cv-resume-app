@@ -1,0 +1,28 @@
+# Node packages
+node_modules/
+package-lock.json
+
+# Build artifacts
+dist/
+dist-ssr/
+*.local
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Project specific
+passcodes.json
+database.db
+*.log
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.DS_Store

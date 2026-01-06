@@ -307,13 +307,13 @@ details[open]>summary .chev {
   margin-bottom: 1px;
 }
 
-.org {
+.entry-title {
   font-weight: 700;
   font-size: 0.92rem;
   color: var(--t1);
 }
 
-.dt {
+.entry-date {
   font-size: 0.75rem;
   font-weight: 400;
   color: var(--t1);
@@ -321,12 +321,12 @@ details[open]>summary .chev {
   font-variant-numeric: tabular-nums;
 }
 
-.role {
+.entry-subtitle {
   font-size: 0.82rem;
   color: var(--t2);
 }
 
-.loc {
+.entry-location {
   font-size: 0.75rem;
   color: var(--t3);
 }
@@ -415,7 +415,7 @@ ul li::before {
 
 .info-grid {
   display: grid;
-  grid-template-columns: 104px 1fr;
+  grid-template-columns: 150px 1fr;
   gap: 8px 20px;
   padding: 2px 0 6px;
 }
@@ -548,11 +548,11 @@ ul li::before {
     margin-bottom: 4px;
   }
 
-  .e-r1 .dt {
+  .e-r1 .entry-date {
     display: none;
   }
 
-  .e-r2 .loc {
+  .e-r2 .entry-location {
     display: none;
   }
 

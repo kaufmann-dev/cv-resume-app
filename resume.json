@@ -138,39 +138,39 @@
                 "type": "entries",
                 "entries": [
                     {
-                        "org": "Audencia Business School",
+                        "org": "Digital Transformation: Thriving in the Digital Era · 4 ECTS",
                         "loc": "Nantes, France",
-                        "role": "Digital Transformation: Thriving in the Digital Era · 4 ECTS",
+                        "role": "Audencia Business School",
                         "dt": "Jan 2026"
                     },
                     {
-                        "org": "Austrian Federal Academy of Public Administration (VAB)",
+                        "org": "Seminar: Project Management",
                         "loc": "Vienna, Austria",
-                        "role": "Seminar: Project Management",
+                        "role": "Austrian Federal Academy of Public Administration (VAB)",
                         "dt": "Sep 2025"
                     },
                     {
-                        "org": "Masaryk University",
+                        "org": "Business Process Analysis · 3 ECTS",
                         "loc": "Brno, Czechia",
-                        "role": "Business Process Analysis · 3 ECTS",
+                        "role": "Masaryk University",
                         "dt": "Jul 2025"
                     },
                     {
-                        "org": "Debatingclub Munich",
+                        "org": "Transrapid Debate Tournament 2025",
                         "loc": "Munich, Germany",
-                        "role": "Transrapid Debate Tournament 2025",
+                        "role": "Debatingclub Munich",
                         "dt": "Jan 2025"
                     },
                     {
-                        "org": "Bereavement Network Europe",
+                        "org": "European Grief Conference 2024",
                         "loc": "Dublin, Ireland",
-                        "role": "European Grief Conference 2024",
+                        "role": "Bereavement Network Europe",
                         "dt": "Nov 2024"
                     },
                     {
-                        "org": "EF International Language Campuses",
+                        "org": "C2 Proficiency · Cambridge English Certificate",
                         "loc": "St. Julians, Malta",
-                        "role": "C2 Proficiency · Cambridge English Certificate",
+                        "role": "EF International Language Campuses",
                         "dt": "Aug 2020"
                     }
                 ]
@@ -440,39 +440,39 @@
                 "type": "entries",
                 "entries": [
                     {
-                        "org": "Audencia Business School",
+                        "org": "Digitale Transformation: Im digitalen Zeitalter bestehen · 4 ECTS",
                         "loc": "Nantes, Frankreich",
-                        "role": "Digitale Transformation: Im digitalen Zeitalter bestehen · 4 ECTS",
+                        "role": "Audencia Business School",
                         "dt": "Jan. 2026"
                     },
                     {
-                        "org": "Verwaltungsakademie des Bundes (VAB)",
+                        "org": "Seminar: Projektmanagement",
                         "loc": "Wien, Österreich",
-                        "role": "Seminar: Projektmanagement",
+                        "role": "Verwaltungsakademie des Bundes (VAB)",
                         "dt": "Sep. 2025"
                     },
                     {
-                        "org": "Masaryk-Universität",
+                        "org": "Geschäftsprozessanalyse · 3 ECTS",
                         "loc": "Brno, Tschechien",
-                        "role": "Geschäftsprozessanalyse · 3 ECTS",
+                        "role": "Masaryk-Universität",
                         "dt": "Jul. 2025"
                     },
                     {
-                        "org": "Debattierclub München",
+                        "org": "Transrapid-Debatierturnier 2025",
                         "loc": "München, Deutschland",
-                        "role": "Transrapid-Debatierturnier 2025",
+                        "role": "Debattierclub München",
                         "dt": "Jan. 2025"
                     },
                     {
-                        "org": "Bereavement Network Europe",
+                        "org": "Europäische Trauerkonferenz 2024",
                         "loc": "Dublin, Irland",
-                        "role": "Europäische Trauerkonferenz 2024",
+                        "role": "Bereavement Network Europe",
                         "dt": "Nov. 2024"
                     },
                     {
-                        "org": "EF International Language Campuses",
+                        "org": "C2-Kompetenz · Cambridge-Zertifikat Englisch",
                         "loc": "St. Julians, Malta",
-                        "role": "C2-Kompetenz · Cambridge-Zertifikat Englisch",
+                        "role": "EF International Language Campuses",
                         "dt": "Aug. 2020"
                     }
                 ]

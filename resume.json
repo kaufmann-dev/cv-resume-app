@@ -26,7 +26,7 @@
       "id": "personal",
       "title": {
         "en": "Personal Information",
-        "de": "Persönliche Informationen"
+        "de": "Persönliche Daten"
       },
       "open": true,
       "type": "info",
@@ -48,7 +48,7 @@
           },
           "value": {
             "en": "28 Nov 2003",
-            "de": "28. Nov. 2003"
+            "de": "28. November 2003"
           }
         },
         {
@@ -70,8 +70,8 @@
         },
         {
           "label": {
-            "en": "Mobile",
-            "de": "Mobil"
+            "en": "Phone",
+            "de": "Telefon"
           },
           "value": "<a href=\"tel:+436703585527\">+43 670 3585527</a>"
         },
@@ -99,7 +99,7 @@
             "de": "Bildungsdirektion für Wien"
           },
           "subtitle": {
-            "en": "IT Consultant",
+            "en": "IT Officer",
             "de": "IT-Referent"
           },
           "location": {
@@ -108,7 +108,7 @@
           },
           "date": {
             "en": "Apr 2024 – Present",
-            "de": "Apr. 2024 – Heute"
+            "de": "April 2024 – Heute"
           },
           "highlights": [
             {
@@ -142,7 +142,7 @@
           },
           "date": {
             "en": "Dec 2023 – Mar 2024",
-            "de": "Dez. 2023 – März 2024"
+            "de": "Dezember 2023 – März 2024"
           },
           "highlights": [
             {
@@ -162,7 +162,7 @@
         {
           "title": {
             "en": "City Pharmacy Wismar at the Market",
-            "de": "Rats Apotheke Wismar am Markt"
+            "de": "Ratsapotheke Wismar am Markt"
           },
           "subtitle": {
             "en": "Intern",
@@ -174,7 +174,7 @@
           },
           "date": {
             "en": "Jul 2023",
-            "de": "Jul. 2023"
+            "de": "Juli 2023"
           },
           "highlights": [
             {
@@ -206,7 +206,7 @@
           },
           "date": {
             "en": "Aug 2022",
-            "de": "Aug. 2022"
+            "de": "August 2022"
           },
           "highlights": [
             {
@@ -235,7 +235,7 @@
           },
           "date": {
             "en": "Jul 2021",
-            "de": "Jul. 2021"
+            "de": "Juli 2021"
           },
           "highlights": [
             {
@@ -267,7 +267,7 @@
           },
           "date": {
             "en": "Jul 2019",
-            "de": "Jul. 2019"
+            "de": "Juli 2019"
           },
           "highlights": [
             {
@@ -286,7 +286,7 @@
       "id": "education",
       "title": {
         "en": "Education",
-        "de": "Ausbildung"
+        "de": "Bildungsweg"
       },
       "open": true,
       "type": "entries",
@@ -306,7 +306,7 @@
           },
           "date": {
             "en": "Sep 2018 – Jun 2023",
-            "de": "Sep. 2018 – Jun. 2023"
+            "de": "September 2018 – Juni 2023"
           },
           "highlights": [
             {
@@ -342,13 +342,13 @@
           },
           "date": {
             "en": "Jan 2026",
-            "de": "Jan. 2026"
+            "de": "Januar 2026"
           }
         },
         {
           "title": {
             "en": "Project Management Course",
-            "de": "Projektmanagement Lehrgang"
+            "de": "Projektmanagement-Lehrgang"
           },
           "subtitle": {
             "en": "Austrian Federal Academy of Public Administration",
@@ -360,7 +360,7 @@
           },
           "date": {
             "en": "Sep 2025",
-            "de": "Sep. 2025"
+            "de": "September 2025"
           }
         },
         {
@@ -378,13 +378,13 @@
           },
           "date": {
             "en": "Jul 2025",
-            "de": "Jul. 2025"
+            "de": "Juli 2025"
           }
         },
         {
           "title": {
             "en": "Transrapid Debate Tournament",
-            "de": "Transrapid-Debatierturnier"
+            "de": "Transrapid-Debattierturnier"
           },
           "subtitle": {
             "en": "Debatingclub Munich",
@@ -396,7 +396,7 @@
           },
           "date": {
             "en": "Jan 2025",
-            "de": "Jan. 2025"
+            "de": "Januar 2025"
           }
         },
         {
@@ -411,19 +411,19 @@
           },
           "date": {
             "en": "Nov 2024",
-            "de": "Nov. 2024"
+            "de": "November 2024"
           }
         },
         {
           "title": {
             "en": "Certificate of C2 Proficiency in English",
-            "de": "Zertifikat für C2-Sprachkompetenz in Englisch"
+            "de": "C2-Zertifikat in Englisch"
           },
           "subtitle": "EF International Language Campuses",
           "location": "St. Julians, Malta",
           "date": {
             "en": "Aug 2020",
-            "de": "Aug. 2020"
+            "de": "August 2020"
           }
         }
       ]
@@ -450,7 +450,7 @@
         {
           "title": {
             "en": "Market Deck — data visualization & finance",
-            "de": "Market Deck: Finanz-Dashboard"
+            "de": "Market Deck — Datenvisualisierung & Finanzen"
           },
           "date": "2026",
           "highlights": [
@@ -463,19 +463,10 @@
               "de": "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
             }
           ],
-          "tags": [
-            "FastAPI",
-            "SQLite",
-            "yfinance",
-            "Python",
-            "Vanilla JS"
-          ],
+          "tags": ["FastAPI", "SQLite", "yfinance", "Python", "Vanilla JS"],
           "link": {
             "href": "https://github.com/kaufmann-dev/market-deck",
-            "label": {
-              "en": "Open GitHub",
-              "de": "GitHub öffnen"
-            }
+            "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
           }
         },
         {
@@ -487,7 +478,7 @@
           "highlights": [
             {
               "en": "Segmented CT scan data to isolate bone structures",
-              "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung von Originalgroßdrucken"
+              "de": "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
             },
             {
               "en": "Converted segmented data into a printable 3D mesh and produced lifesize prints",
@@ -496,16 +487,13 @@
           ],
           "link": {
             "href": "https://kaufmann.dev/article/ct2mesh2print",
-            "label": {
-              "en": "Read Article",
-              "de": "Artikel lesen"
-            }
+            "label": { "en": "Read Article", "de": "Artikel lesen" }
           }
         },
         {
           "title": {
             "en": "Git Wrangler — shell scripting & git automation",
-            "de": "Git Wrangler: Git-Repository-Verwaltung"
+            "de": "Git Wrangler — Shell-Skripting & Git-Automatisierung"
           },
           "date": "2024",
           "highlights": [
@@ -518,18 +506,10 @@
               "de": "Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets u. v. m."
             }
           ],
-          "tags": [
-            "Bash",
-            "Git",
-            "GitHub CLI",
-            "git-filter-repo"
-          ],
+          "tags": ["Bash", "Git", "GitHub CLI", "git-filter-repo"],
           "link": {
             "href": "https://github.com/kaufmann-dev/git-wrangler",
-            "label": {
-              "en": "Open GitHub",
-              "de": "GitHub öffnen"
-            }
+            "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
           }
         },
         {
@@ -548,22 +528,10 @@
               "de": "Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
             }
           ],
-          "tags": [
-            "MySQL 8",
-            "Laravel 9",
-            "Svelte 3",
-            "Eloquent",
-            "Inertia",
-            "REST",
-            "Laravel Sanctum",
-            "Tailwind"
-          ],
+          "tags": ["MySQL 8", "Laravel 9", "Svelte 3", "Eloquent", "Inertia", "REST", "Laravel Sanctum", "Tailwind"],
           "link": {
             "href": "https://github.com/kaufmann-dev/jung-in-krems",
-            "label": {
-              "en": "Open GitHub",
-              "de": "GitHub öffnen"
-            }
+            "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
           }
         },
         {
@@ -574,7 +542,7 @@
           "date": "2022",
           "highlights": [
             {
-              "en": "Full-Stack-.NET-MVC-Anwendung mit REST-API zur Verwaltung einer MySQL-Filmdatenbank",
+              "en": "Full-stack .NET MVC app with REST API for managing a MySQL film database",
               "de": "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
             },
             {
@@ -582,20 +550,10 @@
               "de": "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
             }
           ],
-          "tags": [
-            ".NET 7",
-            "C# 11",
-            "MySQL 8",
-            "Blazor",
-            "Entity Framework",
-            "Swagger"
-          ],
+          "tags": [".NET 7", "C# 11", "MySQL 8", "Blazor", "Entity Framework", "Swagger"],
           "link": {
             "href": "https://github.com/kaufmann-dev/async-cinema",
-            "label": {
-              "en": "Open GitHub",
-              "de": "GitHub öffnen"
-            }
+            "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
           }
         },
         {
@@ -616,10 +574,7 @@
           ],
           "link": {
             "href": "https://puruscss.kaufmann.dev",
-            "label": {
-              "en": "Visit Website",
-              "de": "Website besuchen"
-            }
+            "label": { "en": "Visit Website", "de": "Website besuchen" }
           }
         }
       ]
@@ -628,7 +583,7 @@
       "id": "volunteer",
       "title": {
         "en": "Volunteer Work",
-        "de": "Ehrenamtliche Tätigkeit"
+        "de": "Ehrenamt"
       },
       "open": false,
       "type": "entries",
@@ -640,7 +595,7 @@
           },
           "subtitle": {
             "en": "Communication Volunteer",
-            "de": "Ehrenamtlicher im Kommunikationsbereich"
+            "de": "Ehrenamtlicher in der Kommunikation"
           },
           "location": {
             "en": "Vienna, Austria",

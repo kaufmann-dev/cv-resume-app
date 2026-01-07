@@ -1,0 +1,916 @@
+{
+  "ui":{
+    "downloadPdf":{
+      "en":"Download PDF",
+      "de":"PDF herunterladen"
+    },
+    "themeLight":{
+      "en":"Light",
+      "de":"Hell"
+    },
+    "themeDark":{
+      "en":"Dark",
+      "de":"Dunkel"
+    },
+    "showMore":{
+      "en":"Show more",
+      "de":"Mehr anzeigen"
+    },
+    "showLess":{
+      "en":"Show less",
+      "de":"Weniger anzeigen"
+    }
+  },
+  "sections":[
+    {
+      "id":"personal",
+      "title":{
+        "en":"Personal Information",
+        "de":"Persönliche Daten"
+      },
+      "open":true,
+      "type":"info",
+      "rows":[
+        {
+          "label":{
+            "en":"Citizenship",
+            "de":"Staatsbürgerschaft"
+          },
+          "value":{
+            "en":"Austrian",
+            "de":"Österreich"
+          }
+        },
+        {
+          "label":{
+            "en":"Date of birth",
+            "de":"Geburtsdatum"
+          },
+          "value":{
+            "en":"28 Nov 2003",
+            "de":"28. November 2003"
+          }
+        },
+        {
+          "label":{
+            "en":"Location",
+            "de":"Wohnort"
+          },
+          "value":{
+            "en":"Vienna, Austria",
+            "de":"Wien, Österreich"
+          }
+        },
+        {
+          "label":{
+            "en":"Email",
+            "de":"E-Mail"
+          },
+          "value":"<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>"
+        },
+        {
+          "label":{
+            "en":"Phone",
+            "de":"Telefon"
+          },
+          "value":"<a href=\"tel:+436703585527\">+43 670 3585527</a>"
+        },
+        {
+          "label":{
+            "en":"Website",
+            "de":"Webseite"
+          },
+          "value":"<a href=\"https://kaufmann.dev\" target=\"_blank\" rel=\"noopener\">kaufmann.dev</a>"
+        }
+      ]
+    },
+    {
+      "id":"work",
+      "title":{
+        "en":"Work Experience",
+        "de":"Berufserfahrung"
+      },
+      "open":true,
+      "type":"entries",
+      "items":[
+        {
+          "title":{
+            "en":"Board of Education Vienna",
+            "de":"Bildungsdirektion für Wien"
+          },
+          "subtitle":{
+            "en":"IT Officer",
+            "de":"IT-Referent"
+          },
+          "location":{
+            "en":"Vienna, Austria",
+            "de":"Wien, Österreich"
+          },
+          "date":{
+            "en":"Apr 2024 – Present",
+            "de":"April 2024 – Heute"
+          },
+          "highlights":[
+            {
+              "en":"Administering time tracking and eGovernment document/business process management software",
+              "de":"Administration von Zeiterfassungs- und eGovernment-Software für Dokumenten- und Geschäftsprozessmanagement"
+            },
+            {
+              "en":"Organizing and moderating meetings for creation and revision of business processes",
+              "de":"Organisation und Moderation von Meetings zur Erstellung und Überarbeitung von Geschäftsprozessen"
+            },
+            {
+              "en":"Onboarding new employees and delivering continuous training to existing staff",
+              "de":"Einarbeitung neuer sowie laufende Schulung bestehender Mitarbeiter"
+            },
+            {
+              "en":"Providing technical support to internal staff, schools, and prospective teachers",
+              "de":"Technischer Support für interne Mitarbeiter, Schulen und angehende Lehrkräfte"
+            },
+            {
+              "en":"Managing and assigning user permissions for internal staff and schools",
+              "de":"Verwaltung von Benutzerberechtigungen für interne Mitarbeiter und Schulen"
+            }
+          ]
+        },
+        {
+          "title":"Fabasoft",
+          "subtitle":"Cloud Systems Engineer",
+          "location":{
+            "en":"Vienna, Austria",
+            "de":"Wien, Österreich"
+          },
+          "date":{
+            "en":"Dec 2023 – Mar 2024",
+            "de":"Dezember 2023 – März 2024"
+          },
+          "highlights":[
+            {
+              "en":"Developed Bash scripts to standardize and aggregate Syslog error messages for efficient error diagnosis",
+              "de":"Entwicklung von Bash-Skripten zur Standardisierung und Aggregation von Syslog-Fehlermeldungen für eine effiziente Fehlerdiagnose"
+            },
+            {
+              "en":"Performed hardware upgrades and reconfigurations across 3 data centers to improve system stability",
+              "de":"Durchführung von Hardware-Upgrades und Rekonfigurationen in 3 Rechenzentren zur Verbesserung der Systemstabilität"
+            },
+            {
+              "en":"Implemented hotfixes and security patches on Fabasoft customer servers",
+              "de":"Implementierung von Hotfixes und Sicherheitspatches auf Fabasoft-Kundenservern"
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"City Pharmacy Wismar at the Market",
+            "de":"Ratsapotheke Wismar am Markt"
+          },
+          "subtitle":{
+            "en":"Intern",
+            "de":"Praktikant"
+          },
+          "location":{
+            "en":"Wismar, Germany",
+            "de":"Wismar, Deutschland"
+          },
+          "date":{
+            "en":"Jul 2023",
+            "de":"Juli 2023"
+          },
+          "highlights":[
+            {
+              "en":"Reconciled software medication records with actual inventory",
+              "de":"Abgleich von Software-Medikamentendatensätzen mit dem tatsächlichen Bestand"
+            },
+            {
+              "en":"Collected prescriptions and delivered/returned medications via e-scooter",
+              "de":"Rezeptabholung sowie Auslieferung und Rückgabe von Medikamenten per E-Scooter"
+            },
+            {
+              "en":"Logged and organized incoming pharmacy inventory",
+              "de":"Erfassung und Organisation eingehender Apothekenware"
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"Cardiology Practice Langenlois",
+            "de":"Herzpraxis Langenlois"
+          },
+          "subtitle":{
+            "en":"Intern",
+            "de":"Praktikant"
+          },
+          "location":{
+            "en":"Langenlois, Austria",
+            "de":"Langenlois, Österreich"
+          },
+          "date":{
+            "en":"Aug 2022",
+            "de":"August 2022"
+          },
+          "highlights":[
+            {
+              "en":"Prototyped a web-based patient record, including design and system architecture",
+              "de":"Entwicklung eines Prototyps für eine webbasierte Patientenakte, einschließlich Design und Systemarchitektur"
+            },
+            {
+              "en":"Supported reception staff in patient care",
+              "de":"Unterstützung des Empfangspersonals bei der Patientenbetreuung"
+            },
+            {
+              "en":"Handled logistics, supplies, errands, and technical maintenance",
+              "de":"Logistik, Einkäufe, Besorgungen und technische Wartung"
+            }
+          ]
+        },
+        {
+          "title":"Raiffeisen Software",
+          "subtitle":{
+            "en":"Controlling Intern",
+            "de":"Praktikant im Controlling"
+          },
+          "location":{
+            "en":"Vienna, Austria",
+            "de":"Wien, Österreich"
+          },
+          "date":{
+            "en":"Jul 2021",
+            "de":"Juli 2021"
+          },
+          "highlights":[
+            {
+              "en":"Expanded a C# deployment tool for managing MS SQL databases with schema versioning and rollback",
+              "de":"Erweiterung eines C#-Deployment-Tools für MS-SQL-Datenbanken mit Schema-Versionierung und Rollback"
+            },
+            {
+              "en":"Created documentation for data marts and tenants across various development environments",
+              "de":"Dokumentation von Data Marts und Mandanten in verschiedenen Entwicklungsumgebungen"
+            },
+            {
+              "en":"Redesigned and restructured an internal sales controlling dashboard",
+              "de":"Neugestaltung und Restrukturierung eines internen Vertriebscontrolling-Dashboards"
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"IMC University of Applied Sciences Krems",
+            "de":"IMC Hochschule für Angewandte Wissenschaften Krems"
+          },
+          "subtitle":{
+            "en":"IT Services Intern",
+            "de":"Praktikant im IT-Service"
+          },
+          "location":{
+            "en":"Krems, Austria",
+            "de":"Krems, Österreich"
+          },
+          "date":{
+            "en":"Jul 2019",
+            "de":"Juli 2019"
+          },
+          "highlights":[
+            {
+              "en":"Client lifecycle management, including configuring and deploying new client systems",
+              "de":"Client Lifecycle Management, einschließlich der Konfiguration und Bereitstellung neuer Client-Systeme"
+            },
+            {
+              "en":"Planned, built, and maintained network infrastructure",
+              "de":"Planung, Aufbau und Wartung von Netzwerkinfrastruktur"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id":"education",
+      "title":{
+        "en":"Education",
+        "de":"Bildungsweg"
+      },
+      "open":true,
+      "type":"entries",
+      "items":[
+        {
+          "title":{
+            "en":"Higher Federal Technical College Krems",
+            "de":"Höhere Technische Bundeslehranstalt Krems"
+          },
+          "subtitle":{
+            "en":"Diploma in Information Technology + Matura",
+            "de":"Diplom in Informationstechnologie + Matura"
+          },
+          "location":{
+            "en":"Krems, Austria",
+            "de":"Krems, Österreich"
+          },
+          "date":{
+            "en":"Sep 2018 – Jun 2023",
+            "de":"September 2018 – Juni 2023"
+          },
+          "highlights":[
+            {
+              "en":"Specialization: Media Technology",
+              "de":"Spezialisierung: Medientechnik"
+            },
+            {
+              "en":"Final Exam Elective: Software Development",
+              "de":"Abschlussprüfung Wahlfach: Softwareentwicklung"
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"Federal Secondary School Kremszeile",
+            "de":"Bundesrealgymnasium Kremszeile"
+          },
+          "subtitle":{
+            "en":"Secondary Education",
+            "de":"Unterstufe"
+          },
+          "location":{
+            "en":"Krems, Austria",
+            "de":"Krems, Österreich"
+          },
+          "date":{
+            "en":"Sep 2014 – Jun 2018",
+            "de":"September 2014 – Juni 2018"
+          }
+        }
+      ]
+    },
+    {
+      "id":"dev",
+      "title":{
+        "en":"Continuing Education",
+        "de":"Weiterbildung"
+      },
+      "open":false,
+      "type":"entries",
+      "items":[
+        {
+          "title":{
+            "en":"Digital Transformation (4 ECTS)",
+            "de":"Digitale Transformation (4 ECTS)"
+          },
+          "subtitle":"Audencia Business School",
+          "location":{
+            "en":"Nantes, France",
+            "de":"Nantes, Frankreich"
+          },
+          "date":{
+            "en":"Jan 2026",
+            "de":"Januar 2026"
+          }
+        },
+        {
+          "title":{
+            "en":"Project Management Course",
+            "de":"Projektmanagement-Lehrgang"
+          },
+          "subtitle":{
+            "en":"Austrian Federal Academy of Public Administration",
+            "de":"Verwaltungsakademie des Bundes"
+          },
+          "location":{
+            "en":"Vienna, Austria",
+            "de":"Wien, Österreich"
+          },
+          "date":{
+            "en":"Sep 2025",
+            "de":"September 2025"
+          }
+        },
+        {
+          "title":{
+            "en":"Business Process Analysis (3 ECTS)",
+            "de":"Geschäftsprozessanalyse (3 ECTS)"
+          },
+          "subtitle":{
+            "en":"Masaryk University",
+            "de":"Masaryk-Universität"
+          },
+          "location":{
+            "en":"Brno, Czechia",
+            "de":"Brünn, Tschechien"
+          },
+          "date":{
+            "en":"Jul 2025",
+            "de":"Juli 2025"
+          }
+        },
+        {
+          "title":{
+            "en":"Certificate of C2 Proficiency in English",
+            "de":"C2-Zertifikat in Englisch"
+          },
+          "subtitle":"EF International Language Campuses",
+          "location":"St. Julians, Malta",
+          "date":{
+            "en":"Aug 2020",
+            "de":"August 2020"
+          }
+        }
+      ]
+    },
+    {
+      "id":"pubs",
+      "title":{
+        "en":"Publications",
+        "de":"Publikationen"
+      },
+      "open":false,
+      "type":"pub",
+      "content":"<strong>Kaufmann, D.</strong> &amp; Spindelberger, J. (2023). <em>Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.</em> Höhere Technische Bundeslehranstalt Krems."
+    },
+    {
+      "id":"projects",
+      "title":{
+        "en":"Projects",
+        "de":"Projekte"
+      },
+      "open":false,
+      "type":"entries",
+      "items":[
+        {
+          "title":{
+            "en":"Market Deck — data visualization & finance",
+            "de":"Market Deck — Datenvisualisierung & Finanzen"
+          },
+          "date":"2026",
+          "highlights":[
+            {
+              "en":"Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
+              "de":"Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
+            },
+            {
+              "en":"Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
+              "de":"Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
+            }
+          ],
+          "tags":[
+            "FastAPI",
+            "SQLite",
+            "yfinance",
+            "Python",
+            "Vanilla JS"
+          ],
+          "link":{
+            "href":"https://github.com/kaufmann-dev/market-deck",
+            "label":{
+              "en":"Open GitHub",
+              "de":"GitHub öffnen"
+            }
+          }
+        },
+        {
+          "title":{
+            "en":"CT2Mesh2Print — medical imaging & 3D printing",
+            "de":"CT2Mesh2Print — Medizinische Bildgebung & 3D-Druck"
+          },
+          "date":"2025",
+          "highlights":[
+            {
+              "en":"Segmented CT scan data to isolate bone structures",
+              "de":"Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
+            },
+            {
+              "en":"Converted segmented data into a printable 3D mesh and produced lifesize prints",
+              "de":"Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
+            }
+          ],
+          "link":{
+            "href":"https://kaufmann.dev/article/ct2mesh2print",
+            "label":{
+              "en":"Read Article",
+              "de":"Artikel lesen"
+            }
+          }
+        },
+        {
+          "title":{
+            "en":"Git Wrangler — shell scripting & git automation",
+            "de":"Git Wrangler — Shell-Skripting & Git-Automatisierung"
+          },
+          "date":"2024",
+          "highlights":[
+            {
+              "en":"Bash scripts for the bulk management and manipulation of Git repositories",
+              "de":"Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
+            },
+            {
+              "en":"Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
+              "de":"Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets u. v. m."
+            }
+          ],
+          "tags":[
+            "Bash",
+            "Git",
+            "GitHub CLI",
+            "git-filter-repo"
+          ],
+          "link":{
+            "href":"https://github.com/kaufmann-dev/git-wrangler",
+            "label":{
+              "en":"Open GitHub",
+              "de":"GitHub öffnen"
+            }
+          }
+        },
+        {
+          "title":{
+            "en":"Jung in Krems — full-stack web development",
+            "de":"Jung in Krems — Full-Stack-Webentwicklung"
+          },
+          "date":"2023",
+          "highlights":[
+            {
+              "en":"Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
+              "de":"Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
+            },
+            {
+              "en":"Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
+              "de":"Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
+            }
+          ],
+          "tags":[
+            "MySQL 8",
+            "Laravel 9",
+            "Svelte 3",
+            "Eloquent",
+            "Inertia",
+            "REST",
+            "Laravel Sanctum",
+            "Tailwind"
+          ],
+          "link":{
+            "href":"https://github.com/kaufmann-dev/jung-in-krems",
+            "label":{
+              "en":"Open GitHub",
+              "de":"GitHub öffnen"
+            }
+          }
+        },
+        {
+          "title":{
+            "en":"Async Cinema — asynchronous programming",
+            "de":"Async Cinema — Asynchrone Programmierung"
+          },
+          "date":"2022",
+          "highlights":[
+            {
+              "en":"Full-stack .NET MVC app with REST API for managing a MySQL film database",
+              "de":"Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
+            },
+            {
+              "en":"Asynchronous CRUD operations with Swagger documentation and Blazor UI",
+              "de":"Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
+            }
+          ],
+          "tags":[
+            ".NET 7",
+            "C# 11",
+            "MySQL 8",
+            "Blazor",
+            "Entity Framework",
+            "Swagger"
+          ],
+          "link":{
+            "href":"https://github.com/kaufmann-dev/async-cinema",
+            "label":{
+              "en":"Open GitHub",
+              "de":"GitHub öffnen"
+            }
+          }
+        },
+        {
+          "title":{
+            "en":"Purus CSS — frontend development & CSS",
+            "de":"Purus CSS — Frontend-Entwicklung & CSS"
+          },
+          "date":"2021",
+          "highlights":[
+            {
+              "en":"Responsive CSS drop-in framework with no JavaScript dependencies",
+              "de":"Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
+            },
+            {
+              "en":"CSS variable customization and utility classes for layout, spacing, and typography",
+              "de":"CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
+            }
+          ],
+          "link":{
+            "href":"https://puruscss.kaufmann.dev",
+            "label":{
+              "en":"Visit Website",
+              "de":"Website besuchen"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id":"volunteer",
+      "title":{
+        "en":"Volunteer Work",
+        "de":"Ehrenamt"
+      },
+      "open":false,
+      "type":"entries",
+      "items":[
+        {
+          "title":{
+            "en":"Austrian Association of Hospice and Palliative Care",
+            "de":"Dachverband HOSPIZ Österreich"
+          },
+          "subtitle":{
+            "en":"Communication Volunteer",
+            "de":"Ehrenamtlicher in der Kommunikation"
+          },
+          "location":{
+            "en":"Vienna, Austria",
+            "de":"Wien, Österreich"
+          },
+          "date":{
+            "en":"May 2024 – Present",
+            "de":"Mai 2024 – Heute"
+          },
+          "highlights":[
+            {
+              "en":"Creation of graphics, flyers, and invitations for internal communication and social media",
+              "de":"Erstellung von Grafiken, Flyern und Einladungen für interne Kommunikation und Social Media"
+            },
+            {
+              "en":"Support with IT problems and infrastructure management in the office",
+              "de":"Unterstützung bei IT-Problemen und Infrastrukturverwaltung im Büro"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id":"programs",
+      "title":{
+        "en":"Programs and Conferences",
+        "de":"Programme und Konferenzen"
+      },
+      "open":false,
+      "type":"entries",
+      "items":[
+        {
+          "title":{
+            "en":"European Grief Conference",
+            "de":"Europäische Trauerkonferenz"
+          },
+          "subtitle":"Bereavement Network Europe",
+          "date":{
+            "en":"Nov 2024 · Dublin, Ireland",
+            "de":"November 2024 · Dublin, Irland"
+          },
+          "highlights":[
+            {
+              "en":"Partly paid for by DVHÖ because of my volunteer work.",
+              "de":"Teilweise vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit finanziert."
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"EF International Language Campuses – Language Trip",
+            "de":"EF International Language Campuses – Sprachreise"
+          },
+          "subtitle":"EF International Language Campuses",
+          "date":{
+            "en":"Aug 2020 · St. Julians, Malta",
+            "de":"August 2020 · St. Julians, Malta"
+          }
+        },
+        {
+          "title":{
+            "en":"Austrian Youth Red Cross – Youth Conference",
+            "de":"Österreichisches Jugendrotkreuz – Jugendkonferenz"
+          },
+          "subtitle":{
+            "en":"Austrian Youth Red Cross",
+            "de":"Österreichisches Jugendrotkreuz"
+          },
+          "date":{
+            "en":"Apr 2019 · Tulln, Austria",
+            "de":"April 2019 · Tulln, Österreich"
+          }
+        },
+        {
+          "title":{
+            "en":"ComputerCamp Workshop – 3D Art Design",
+            "de":"ComputerCamp Workshop – 3D-Kunstdesign"
+          },
+          "subtitle":"ComputerCamp",
+          "date":{
+            "en":"Jul 2018 · Schlins, Austria",
+            "de":"Juli 2018 · Schlins, Österreich"
+          }
+        },
+        {
+          "title":{
+            "en":"Swimming Camp Krems",
+            "de":"Schwimmcamp Krems"
+          },
+          "date":{
+            "en":"Jul 2016 · Krems, Austria",
+            "de":"Juli 2016 · Krems, Österreich"
+          },
+          "highlights":[
+            {
+              "en":"Achieved the national lifeguard qualification Helfer, qualifying for assisting lifeguard work in Austria.",
+              "de":"Erwerb der nationalen Rettungsschwimmer-Qualifikation 'Helfer', die zur unterstützenden Rettungsschwimmtätigkeit in Österreich berechtigt."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id":"clubs",
+      "title":{
+        "en":"Club Memberships",
+        "de":"Vereinsmitgliedschaften"
+      },
+      "open":false,
+      "type":"entries",
+      "items":[
+        {
+          "title":{
+            "en":"Debate Club Vienna",
+            "de":"Debattierclub Wien"
+          },
+          "date":{
+            "en":"Nov 2024 – Present · Vienna, Austria",
+            "de":"November 2024 – Heute · Wien, Österreich"
+          },
+          "highlights":[
+            {
+              "en":"Helped organize the VIV 2025, an international debate tournament held in Vienna, as part of the sponsoring team.",
+              "de":"Mitorganisation des VIV 2025, eines internationalen Debatten-Turniers in Wien, als Teil des Sponsoring-Teams."
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"Flow Culture — Parkour and Freerunning Club",
+            "de":"Flow Culture — Parkour- und Freerunning-Club"
+          },
+          "date":{
+            "en":"2017 · Krems, Austria",
+            "de":"2017 · Krems, Österreich"
+          }
+        },
+        {
+          "title":{
+            "en":"Fencing Club Krems",
+            "de":"Fechtclub Krems"
+          },
+          "date":{
+            "en":"2014 – 2016 · Krems, Austria",
+            "de":"2014 – 2016 · Krems, Österreich"
+          }
+        },
+        {
+          "title":{
+            "en":"Badminton Club Krems",
+            "de":"Badmintonclub Krems"
+          },
+          "date":{
+            "en":"2013 · Krems, Austria",
+            "de":"2013 · Krems, Österreich"
+          }
+        },
+        {
+          "title":{
+            "en":"Swimming Club Krems",
+            "de":"Schwimmclub Krems"
+          },
+          "date":{
+            "en":"2011 – 2012 · Krems, Austria",
+            "de":"2011 – 2012 · Krems, Österreich"
+          }
+        }
+      ]
+    },
+    {
+      "id":"competitions",
+      "title":{
+        "en":"Competitions",
+        "de":"Wettbewerbe"
+      },
+      "open":false,
+      "type":"entries",
+      "items":[
+        {
+          "title":{
+            "en":"Transrapid 2025 – International Debate Tournament",
+            "de":"Transrapid 2025 – Internationales Debattierturnier"
+          },
+          "date":{
+            "en":"Jan 2025 · Munich, Germany",
+            "de":"Januar 2025 · München, Deutschland"
+          },
+          "highlights":[
+            {
+              "en":"Held by Debattierclub München.",
+              "de":"Ausgetragen vom Debattierclub München."
+            },
+            {
+              "en":"Participated in British Parliamentary Style debating for the Debate Club Vienna.",
+              "de":"Teilnahme am British Parliamentary Style Debattieren für den Debattierclub Wien."
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"Annual School-Wide Swimming Competitions",
+            "de":"Jährliche Schulschwimmwettkämpfe"
+          },
+          "date":{
+            "en":"2017 – 2018 · Krems, Austria",
+            "de":"2017 – 2018 · Krems, Österreich"
+          },
+          "highlights":[
+            {
+              "en":"Achieved up to 2nd place in the 100m breaststroke and 100m freestyle events.",
+              "de":"Erreichte bis zu Platz 2 in den Disziplinen 100m Brust und 100m Freistil."
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"Math Kangaroo – International Math Competition",
+            "de":"Känguru der Mathematik – Internationaler Mathematikwettbewerb"
+          },
+          "date":{
+            "en":"Mar 2017 · Krems, Austria",
+            "de":"März 2017 · Krems, Österreich"
+          },
+          "highlights":[
+            {
+              "en":"Held by European Mathematical Society (EMS).",
+              "de":"Ausgetragen von der European Mathematical Society (EMS)."
+            },
+            {
+              "en":"Achieved 3rd place out of all participants in the cadet class at my school.",
+              "de":"Erreichte Platz 3 unter allen Teilnehmern der Kadettenklasse an meiner Schule."
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"Beaver of Informatics – International Computer Science Competition",
+            "de":"Biber der Informatik – Internationaler Informatikwettbewerb"
+          },
+          "date":{
+            "en":"Nov 2016 · Krems, Austria",
+            "de":"November 2016 · Krems, Österreich"
+          },
+          "highlights":[
+            {
+              "en":"Held by 3 leading German informatics institutions under the umbrella of Bundesweite Informatikwettbewerbe.",
+              "de":"Ausgetragen von 3 führenden deutschen Informatik-Institutionen unter dem Dach der Bundesweiten Informatikwettbewerbe."
+            },
+            {
+              "en":"Achieved 4th place out of all participants in stages 7 and 8 at my school.",
+              "de":"Erreichte Platz 4 unter allen Teilnehmern der Stufen 7 und 8 an meiner Schule."
+            }
+          ]
+        },
+        {
+          "title":{
+            "en":"Local and State-Level Fencing Competitions",
+            "de":"Lokale und landesweite Fechtwettkämpfe"
+          },
+          "date":{
+            "en":"2014 – 2016 · Austria",
+            "de":"2014 – 2016 · Österreich"
+          }
+        },
+        {
+          "title":{
+            "en":"KTM Kamptal Trophy – International XCO Mountain Bike Race",
+            "de":"KTM Kamptal Trophy – Internationales XCO-Mountainbike-Rennen"
+          },
+          "date":{
+            "en":"Mar 2013 · Langenlois, Austria",
+            "de":"März 2013 · Langenlois, Österreich"
+          },
+          "highlights":[
+            {
+              "en":"Held by KTM Sportmotorcycle GmbH.",
+              "de":"Ausgetragen von KTM Sportmotorcycle GmbH."
+            },
+            {
+              "en":"Achieved 8th place in the YoungsterCup U11 as an independent competitor.",
+              "de":"Erreichte Platz 8 im YoungsterCup U11 als unabhängiger Teilnehmer."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

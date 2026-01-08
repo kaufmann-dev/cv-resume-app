@@ -159,6 +159,24 @@ header {
   gap: 24px;
 }
 
+.variant-note {
+  margin-top: 12px;
+  font-size: 0.72rem;
+  color: var(--t2);
+}
+
+.variant-note a {
+  color: var(--t1);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border2);
+  transition: color .2s, border-color .2s;
+}
+
+.variant-note a:hover {
+  color: var(--t1);
+  border-bottom-color: var(--t1);
+}
+
 .name {
   font-size: clamp(1.9rem, 4.2vw, 3.2rem);
   font-weight: 500;

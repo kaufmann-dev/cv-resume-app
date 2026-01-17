@@ -23,6 +23,7 @@ const passcodeInput = document.getElementById('passcode-input');
 
 const openState = {};
 const expandedState = {};
+const PASSCODE_STORAGE_PREFIX = 'kaufmann.dev.passcode';
 
 function buildApiUrl(path) {
   return new URL(path, API_BASE_URL || window.location.origin);
@@ -33,6 +34,34 @@ function localize(value) {
   if (typeof value === 'string') return value;
   if (Array.isArray(value)) return value;
   return value[lang] ?? value.en ?? value.de ?? '';
+}
+
+function getPasscodeStorageKey(variantId = activeVariant.id) {
+  return `${PASSCODE_STORAGE_PREFIX}:${variantId}`;
+}
+
+function getStoredPasscode(variantId = activeVariant.id) {
+  try {
+    return window.localStorage.getItem(getPasscodeStorageKey(variantId)) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function storePasscode(passcode, variantId = activeVariant.id) {
+  try {
+    window.localStorage.setItem(getPasscodeStorageKey(variantId), passcode);
+  } catch {
+    // Ignore storage failures and keep the regular login flow working.
+  }
+}
+
+function clearStoredPasscode(variantId = activeVariant.id) {
+  try {
+    window.localStorage.removeItem(getPasscodeStorageKey(variantId));
+  } catch {
+    // Ignore storage failures and keep the regular login flow working.
+  }
 }
 
 function applyVariantChrome() {
@@ -125,8 +154,18 @@ function render() {
   applyThemeIcons();
 }
 
-async function handleLogin() {
-  const passcode = document.getElementById('passcode-input').value;
+function showAuthenticatedView() {
+  authContainer.style.display = 'none';
+  contentContainer.style.display = 'block';
+}
+
+async function authenticate(passcode, options = {}) {
+  const {
+    persistPasscode = false,
+    clearStoredPasscodeOnAccessFailure = false,
+    suppressAccessErrors = false
+  } = options;
+
   authError.textContent = '';
 
   try {
@@ -138,18 +177,73 @@ async function handleLogin() {
 
     const result = await response.json();
 
-    if (result.success) {
-      documentData = result.data;
-      currentPasscode = passcode;
-      activeVariant = getVariantConfigById(result.variant);
-      authContainer.style.display = 'none';
-      contentContainer.style.display = 'block';
-      render();
-    } else {
-      authError.textContent = result.error || 'Login failed';
+    if (!response.ok || !result.success) {
+      if (clearStoredPasscodeOnAccessFailure) {
+        clearStoredPasscode();
+      }
+
+      if (!suppressAccessErrors) {
+        authError.textContent = result.error || 'Login failed';
+      }
+
+      return false;
     }
+
+    const previousVariantId = activeVariant.id;
+
+    documentData = result.data;
+    currentPasscode = passcode;
+    activeVariant = getVariantConfigById(result.variant);
+
+    if (persistPasscode) {
+      if (previousVariantId !== activeVariant.id) {
+        clearStoredPasscode(previousVariantId);
+      }
+
+      storePasscode(passcode, activeVariant.id);
+    }
+
+    showAuthenticatedView();
+    render();
+    return true;
   } catch (error) {
     authError.textContent = 'Server error. Is the backend running?';
+    return false;
+  }
+}
+
+async function handleLogin() {
+  const passcode = passcodeInput.value.trim();
+
+  if (!passcode) {
+      authError.textContent = 'Please enter a passcode';
+      return;
+  }
+
+  const success = await authenticate(passcode, { persistPasscode: true });
+
+  if (!success) {
+    currentPasscode = '';
+  }
+}
+
+async function restoreStoredSession() {
+  const storedPasscode = getStoredPasscode();
+
+  if (!storedPasscode) {
+    return;
+  }
+
+  const restored = await authenticate(storedPasscode, {
+    clearStoredPasscodeOnAccessFailure: true,
+    suppressAccessErrors: true
+  });
+
+  if (!restored) {
+    currentPasscode = '';
+    passcodeInput.value = '';
+  } else {
+    passcodeInput.value = storedPasscode;
   }
 }
 
@@ -202,3 +296,4 @@ window.addEventListener('afterprint', () => {
 });
 
 applyVariantChrome();
+restoreStoredSession();

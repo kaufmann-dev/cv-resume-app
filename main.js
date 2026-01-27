@@ -301,17 +301,8 @@ async function handleDownload() {
       return;
     }
 
-    const link = document.createElement('a');
-
-    link.href = downloadUrl.toString();
-    link.download = activeVariant.pdfDownloadName || 'resume.pdf';
-    link.style.display = 'none';
-
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-
     clearStatusMessage();
+    window.location.assign(downloadUrl.toString());
   } catch (error) {
     setStatusMessage(getMessage({
       en: 'Download failed. Please check your connection and try again.',

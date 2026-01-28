@@ -115,18 +115,17 @@ function handleDownloadRequest(req, res) {
     return res.status(404).send('PDF not found');
   }
 
-  return res.sendFile(pdfPath, {
+  res.set({
+    'Cache-Control': 'private, no-store, no-cache, must-revalidate',
+    Pragma: 'no-cache',
+    Expires: '0',
+    'X-Content-Type-Options': 'nosniff'
+  });
+
+  return res.download(pdfPath, variant.pdfDownloadName, {
     acceptRanges: true,
     cacheControl: false,
-    lastModified: true,
-    headers: {
-      'Content-Disposition': `attachment; filename="${variant.pdfDownloadName}"`,
-      'Content-Type': 'application/pdf',
-      'Cache-Control': 'private, no-store, no-cache, must-revalidate',
-      Pragma: 'no-cache',
-      Expires: '0',
-      'X-Content-Type-Options': 'nosniff'
-    }
+    lastModified: true
   }, (error) => {
     if (!error || res.headersSent) {
       return;
@@ -140,7 +139,6 @@ function handleDownloadRequest(req, res) {
   });
 }
 
-app.head('/api/download', handleDownloadRequest);
 app.get('/api/download', handleDownloadRequest);
 
 app.listen(PORT, () => {

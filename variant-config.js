@@ -52,7 +52,7 @@ export const VARIANT_CONFIGS = {
         label: 'resume.kaufmann.dev'
       },
       de: {
-        text: 'Fuer eine kompakte Version siehe',
+        text: 'Für eine kompakte Version siehe',
         href: 'https://resume.kaufmann.dev',
         label: 'resume.kaufmann.dev'
       }

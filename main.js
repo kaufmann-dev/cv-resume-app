@@ -4,8 +4,12 @@ import {
   isLocalDevelopmentHostname
 } from './variant-config.js';
 
-let lang = 'en';
-let theme = 'light';
+const DEFAULT_LANG = 'en';
+const DEFAULT_THEME = 'light';
+const PREF_COOKIE_MAX_AGE = 31536000;
+
+let lang = DEFAULT_LANG;
+let theme = DEFAULT_THEME;
 let documentData = null;
 let activeVariant = getVariantConfig(window.location.hostname);
 
@@ -26,6 +30,59 @@ const expandedState = {};
 
 function buildApiUrl(path) {
   return new URL(path, API_BASE_URL || window.location.origin);
+}
+
+function getSharedPreferenceCookieDomain() {
+  const hostname = window.location.hostname.toLowerCase();
+
+  if (hostname === 'kaufmann.dev' || hostname.endsWith('.kaufmann.dev')) {
+    return '.kaufmann.dev';
+  }
+
+  return '';
+}
+
+function getCookieValue(name) {
+  const encodedName = `${name}=`;
+  const cookiePart = document.cookie
+    .split(';')
+    .map((part) => part.trim())
+    .find((part) => part.startsWith(encodedName));
+
+  if (!cookiePart) {
+    return '';
+  }
+
+  return decodeURIComponent(cookiePart.slice(encodedName.length));
+}
+
+function setCookieValue(name, value, options = {}) {
+  const {
+    maxAge = PREF_COOKIE_MAX_AGE,
+    domain = getSharedPreferenceCookieDomain()
+  } = options;
+
+  const securePart = window.location.protocol === 'https:' ? '; Secure' : '';
+  const domainPart = domain ? `; Domain=${domain}` : '';
+  document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=${maxAge}; SameSite=Lax${domainPart}${securePart}`;
+}
+
+function getStoredTheme() {
+  const storedTheme = getCookieValue('kaufmann_dev_theme');
+  return storedTheme === 'dark' ? 'dark' : DEFAULT_THEME;
+}
+
+function getStoredLanguage() {
+  const storedLanguage = getCookieValue('kaufmann_dev_lang');
+  return storedLanguage === 'de' ? 'de' : DEFAULT_LANG;
+}
+
+function persistTheme() {
+  setCookieValue('kaufmann_dev_theme', theme);
+}
+
+function persistLanguage() {
+  setCookieValue('kaufmann_dev_lang', lang);
 }
 
 function localize(value) {
@@ -238,12 +295,14 @@ passcodeInput.addEventListener('keypress', (event) => {
 document.getElementById('btn-lang').addEventListener('click', () => {
   saveOpen();
   lang = lang === 'en' ? 'de' : 'en';
+  persistLanguage();
   applyVariantChrome();
   render();
 });
 
 document.getElementById('btn-theme').addEventListener('click', () => {
   theme = theme === 'light' ? 'dark' : 'light';
+  persistTheme();
   document.documentElement.setAttribute('data-theme', theme);
   if (documentData) applyThemeIcons();
 });
@@ -273,5 +332,8 @@ window.addEventListener('afterprint', () => {
   });
 });
 
+lang = getStoredLanguage();
+theme = getStoredTheme();
+document.documentElement.setAttribute('data-theme', theme);
 applyVariantChrome();
 restoreStoredSession();

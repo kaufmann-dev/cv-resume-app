@@ -25,7 +25,7 @@ export const VARIANT_CONFIGS = {
         label: 'cv.kaufmann.dev'
       },
       de: {
-        text: 'Fuer eine umfassendere Version siehe',
+        text: 'Für eine umfassendere Version siehe',
         href: 'https://cv.kaufmann.dev',
         label: 'cv.kaufmann.dev'
       }

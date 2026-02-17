@@ -31,6 +31,8 @@ resume-app-new/
 |-- resume.json         # Resume dataset
 |-- cv.json             # CV dataset
 |-- resume.pdf          # Current PDF download file
+|-- deploy.sh           # Deployment helper for pull/build/restart
+|-- cv-resume-app.service # Example systemd service file
 |-- package.json
 |-- package-lock.json
 `-- passcodes.json      # Local/private passcodes file
@@ -123,38 +125,14 @@ Do not run the backend only in an editor terminal for production. If you start i
 
 For production, run the backend as a background service with `systemd`.
 
-Example service file:
+This repo already includes a reusable service file:
 
-```ini
-[Unit]
-Description=CV Resume App
-After=network.target
+- `cv-resume-app.service`
 
-[Service]
-Type=simple
-WorkingDirectory=/var/www/cv-resume-app
-ExecStart=/usr/bin/npm run server
-Restart=always
-RestartSec=5
-Environment=NODE_ENV=production
-Environment=PORT=3001
-User=www-data
-Group=www-data
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Save that as:
+Install it on the server like this:
 
 ```bash
-/etc/systemd/system/cv-resume-app.service
-```
-
-Then enable and start it:
-
-```bash
-sudo chown -R www-data:www-data /var/www/cv-resume-app
+sudo cp ./cv-resume-app.service /etc/systemd/system/cv-resume-app.service
 sudo systemctl daemon-reload
 sudo systemctl enable cv-resume-app
 sudo systemctl start cv-resume-app
@@ -175,6 +153,53 @@ Notes:
 - It also restarts automatically after crashes or server reboots
 - `www-data` is safer than running the app as `root`
 - If `npm` is installed somewhere else, check it with `which npm` and adjust `ExecStart`
+- If you deploy to another path, update `WorkingDirectory` in `cv-resume-app.service`
+
+### Ownership
+
+To avoid Git's "detected dubious ownership" warning:
+
+- keep the repo owned by your deploy user or by `root`
+- do not `chown -R` the repo to `www-data`
+- let only the running service use `www-data`
+
+Recommended simple setup on a small server:
+
+```bash
+sudo chown -R root:root /var/www/cv-resume-app
+sudo find /var/www/cv-resume-app -type d -exec chmod 755 {} \;
+sudo find /var/www/cv-resume-app -type f -exec chmod 644 {} \;
+sudo chmod 755 /var/www/cv-resume-app/deploy.sh
+sudo chown root:www-data /var/www/cv-resume-app/passcodes.json
+sudo chmod 640 /var/www/cv-resume-app/passcodes.json
+```
+
+If you already changed ownership to `www-data` and Git now refuses to run, reset it back to your deploy user or `root` and the warning should go away.
+
+### Updating the app
+
+This repo also includes a simple deployment helper:
+
+- `deploy.sh`
+
+Run it from the project directory on the server:
+
+```bash
+./deploy.sh
+```
+
+It will:
+
+- `git pull --ff-only`
+- `npm ci`
+- `npm run build`
+- restart the `cv-resume-app` systemd service
+
+If your service has a different name, run:
+
+```bash
+SERVICE_NAME=your-service-name ./deploy.sh
+```
 
 ### Nginx
 

@@ -324,10 +324,6 @@
             "en":"Federal Secondary School Kremszeile",
             "de":"Bundesrealgymnasium Kremszeile"
           },
-          "subtitle":{
-            "en":"Secondary Education",
-            "de":"Unterstufe"
-          },
           "location":{
             "en":"Krems, Austria",
             "de":"Krems, Österreich"
@@ -424,191 +420,170 @@
       "content":"<strong>Kaufmann, D.</strong> &amp; Spindelberger, J. (2023). <em>Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.</em> Höhere Technische Bundeslehranstalt Krems."
     },
     {
-      "id":"projects",
-      "title":{
-        "en":"Projects",
-        "de":"Projekte"
+  "id": "projects",
+  "title": {
+    "en": "Projects",
+    "de": "Projekte"
+  },
+  "open": false,
+  "type": "entries",
+  "items": [
+    {
+      "title": {
+        "en": "Market Deck",
+        "de": "Market Deck"
       },
-      "open":false,
-      "type":"entries",
-      "items":[
+      "subtitle": {
+        "en": "data visualization & finance",
+        "de": "Datenvisualisierung & Finanzen"
+      },
+      "date": "2026",
+      "highlights": [
         {
-          "title":{
-            "en":"Market Deck — data visualization & finance",
-            "de":"Market Deck — Datenvisualisierung & Finanzen"
-          },
-          "date":"2026",
-          "highlights":[
-            {
-              "en":"Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
-              "de":"Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
-            },
-            {
-              "en":"Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
-              "de":"Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
-            }
-          ],
-          "tags":[
-            "FastAPI",
-            "SQLite",
-            "yfinance",
-            "Python",
-            "Vanilla JS"
-          ],
-          "link":{
-            "href":"https://github.com/kaufmann-dev/market-deck",
-            "label":{
-              "en":"Open GitHub",
-              "de":"GitHub öffnen"
-            }
-          }
+          "en": "Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
+          "de": "Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
         },
         {
-          "title":{
-            "en":"CT2Mesh2Print — medical imaging & 3D printing",
-            "de":"CT2Mesh2Print — Medizinische Bildgebung & 3D-Druck"
-          },
-          "date":"2025",
-          "highlights":[
-            {
-              "en":"Segmented CT scan data to isolate bone structures",
-              "de":"Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
-            },
-            {
-              "en":"Converted segmented data into a printable 3D mesh and produced lifesize prints",
-              "de":"Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
-            }
-          ],
-          "link":{
-            "href":"https://kaufmann.dev/article/ct2mesh2print",
-            "label":{
-              "en":"Read Article",
-              "de":"Artikel lesen"
-            }
-          }
-        },
-        {
-          "title":{
-            "en":"Git Wrangler — shell scripting & git automation",
-            "de":"Git Wrangler — Shell-Skripting & Git-Automatisierung"
-          },
-          "date":"2024",
-          "highlights":[
-            {
-              "en":"Bash scripts for the bulk management and manipulation of Git repositories",
-              "de":"Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
-            },
-            {
-              "en":"Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
-              "de":"Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets u. v. m."
-            }
-          ],
-          "tags":[
-            "Bash",
-            "Git",
-            "GitHub CLI",
-            "git-filter-repo"
-          ],
-          "link":{
-            "href":"https://github.com/kaufmann-dev/git-wrangler",
-            "label":{
-              "en":"Open GitHub",
-              "de":"GitHub öffnen"
-            }
-          }
-        },
-        {
-          "title":{
-            "en":"Jung in Krems — full-stack web development",
-            "de":"Jung in Krems — Full-Stack-Webentwicklung"
-          },
-          "date":"2023",
-          "highlights":[
-            {
-              "en":"Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
-              "de":"Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
-            },
-            {
-              "en":"Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
-              "de":"Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
-            }
-          ],
-          "tags":[
-            "MySQL 8",
-            "Laravel 9",
-            "Svelte 3",
-            "Eloquent",
-            "Inertia",
-            "REST",
-            "Laravel Sanctum",
-            "Tailwind"
-          ],
-          "link":{
-            "href":"https://github.com/kaufmann-dev/jung-in-krems",
-            "label":{
-              "en":"Open GitHub",
-              "de":"GitHub öffnen"
-            }
-          }
-        },
-        {
-          "title":{
-            "en":"Async Cinema — asynchronous programming",
-            "de":"Async Cinema — Asynchrone Programmierung"
-          },
-          "date":"2022",
-          "highlights":[
-            {
-              "en":"Full-stack .NET MVC app with REST API for managing a MySQL film database",
-              "de":"Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
-            },
-            {
-              "en":"Asynchronous CRUD operations with Swagger documentation and Blazor UI",
-              "de":"Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
-            }
-          ],
-          "tags":[
-            ".NET 7",
-            "C# 11",
-            "MySQL 8",
-            "Blazor",
-            "Entity Framework",
-            "Swagger"
-          ],
-          "link":{
-            "href":"https://github.com/kaufmann-dev/async-cinema",
-            "label":{
-              "en":"Open GitHub",
-              "de":"GitHub öffnen"
-            }
-          }
-        },
-        {
-          "title":{
-            "en":"Purus CSS — frontend development & CSS",
-            "de":"Purus CSS — Frontend-Entwicklung & CSS"
-          },
-          "date":"2021",
-          "highlights":[
-            {
-              "en":"Responsive CSS drop-in framework with no JavaScript dependencies",
-              "de":"Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
-            },
-            {
-              "en":"CSS variable customization and utility classes for layout, spacing, and typography",
-              "de":"CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
-            }
-          ],
-          "link":{
-            "href":"https://puruscss.kaufmann.dev",
-            "label":{
-              "en":"Visit Website",
-              "de":"Website besuchen"
-            }
-          }
+          "en": "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
+          "de": "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
         }
-      ]
+      ],
+      "tags": ["FastAPI", "SQLite", "yfinance", "Python", "Vanilla JS"],
+      "link": {
+        "href": "https://github.com/kaufmann-dev/market-deck",
+        "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
+      }
     },
+    {
+      "title": {
+        "en": "CT2Mesh2Print",
+        "de": "CT2Mesh2Print"
+      },
+      "subtitle": {
+        "en": "medical imaging & 3D printing",
+        "de": "Medizinische Bildgebung & 3D-Druck"
+      },
+      "date": "2025",
+      "highlights": [
+        {
+          "en": "Segmented CT scan data to isolate bone structures",
+          "de": "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
+        },
+        {
+          "en": "Converted segmented data into a printable 3D mesh and produced lifesize prints",
+          "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
+        }
+      ],
+      "link": {
+        "href": "https://kaufmann.dev/article/ct2mesh2print",
+        "label": { "en": "Read Article", "de": "Artikel lesen" }
+      }
+    },
+    {
+      "title": {
+        "en": "Git Wrangler",
+        "de": "Git Wrangler"
+      },
+      "subtitle": {
+        "en": "shell scripting & git automation",
+        "de": "Shell-Skripting & Git-Automatisierung"
+      },
+      "date": "2024",
+      "highlights": [
+        {
+          "en": "Bash scripts for the bulk management and manipulation of Git repositories",
+          "de": "Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
+        },
+        {
+          "en": "Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
+          "de": "Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets u. v. m."
+        }
+      ],
+      "tags": ["Bash", "Git", "GitHub CLI", "git-filter-repo"],
+      "link": {
+        "href": "https://github.com/kaufmann-dev/git-wrangler",
+        "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
+      }
+    },
+    {
+      "title": {
+        "en": "Jung in Krems",
+        "de": "Jung in Krems"
+      },
+      "subtitle": {
+        "en": "full-stack web development",
+        "de": "Full-Stack-Webentwicklung"
+      },
+      "date": "2023",
+      "highlights": [
+        {
+          "en": "Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
+          "de": "Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
+        },
+        {
+          "en": "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
+          "de": "Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
+        }
+      ],
+      "tags": ["MySQL 8", "Laravel 9", "Svelte 3", "Eloquent", "Inertia", "REST", "Laravel Sanctum", "Tailwind"],
+      "link": {
+        "href": "https://github.com/kaufmann-dev/jung-in-krems",
+        "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
+      }
+    },
+    {
+      "title": {
+        "en": "Async Cinema",
+        "de": "Async Cinema"
+      },
+      "subtitle": {
+        "en": "asynchronous programming",
+        "de": "Asynchrone Programmierung"
+      },
+      "date": "2022",
+      "highlights": [
+        {
+          "en": "Full-stack .NET MVC app with REST API for managing a MySQL film database",
+          "de": "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
+        },
+        {
+          "en": "Asynchronous CRUD operations with Swagger documentation and Blazor UI",
+          "de": "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
+        }
+      ],
+      "tags": [".NET 7", "C# 11", "MySQL 8", "Blazor", "Entity Framework", "Swagger"],
+      "link": {
+        "href": "https://github.com/kaufmann-dev/async-cinema",
+        "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
+      }
+    },
+    {
+      "title": {
+        "en": "Purus CSS",
+        "de": "Purus CSS"
+      },
+      "subtitle": {
+        "en": "frontend development & CSS",
+        "de": "Frontend-Entwicklung & CSS"
+      },
+      "date": "2021",
+      "highlights": [
+        {
+          "en": "Responsive CSS drop-in framework with no JavaScript dependencies",
+          "de": "Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
+        },
+        {
+          "en": "CSS variable customization and utility classes for layout, spacing, and typography",
+          "de": "CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
+        }
+      ],
+      "link": {
+        "href": "https://puruscss.kaufmann.dev",
+        "label": { "en": "Visit Website", "de": "Website besuchen" }
+      }
+    }
+  ]
+},
     {
       "id":"volunteer",
       "title":{
@@ -659,10 +634,29 @@
       "items":[
         {
           "title":{
+            "en":"DIGITAL X Vienna",
+            "de":"DIGITAL X Wien"
+          },
+          "date":{
+            "en":"Mar 2026",
+            "de":"März 2026"
+          },
+          "location":{
+            "en":"Vienna, Austria",
+            "de":"Wien, Österreich"
+          },
+          "highlights":[
+            {
+              "en":"Attended by professional invitation as IT Officer at Bildungsdirektion Wien",
+              "de":"Als IT-Referent der Bildungsdirektion Wien auf berufliche Einladung teilgenommen"
+            }
+          ]
+        },
+        {
+          "title":{
             "en":"European Grief Conference",
             "de":"Europäische Trauerkonferenz"
           },
-          "subtitle":"Bereavement Network Europe",
           "date":{
             "en":"Nov 2024",
             "de":"November 2024"
@@ -673,17 +667,16 @@
           },
           "highlights":[
             {
-              "en":"Partly paid for by the Austrian Association of Hospice and Palliative Care because of my volunteer work",
-              "de":"Teilweise vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit finanziert"
+              "en":"Attendance partially funded by Austrian Association of Hospice and Palliative Care for my volunteer work",
+              "de":"Teilnahme vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit teilfinanziert"
             }
           ]
         },
         {
           "title":{
-            "en":"Malta Language Trip",
-            "de":"Sprachreise in Malta"
+            "en":"EF Language Trip in Malta",
+            "de":"EF Sprachreise in Malta"
           },
-          "subtitle":"EF International Language Campuses",
           "date":{
             "en":"Aug 2020",
             "de":"August 2020"
@@ -692,12 +685,8 @@
         },
         {
           "title":{
-            "en":"Youth Conference",
-            "de":"Jugendtagung"
-          },
-          "subtitle":{
-            "en":"Austrian Youth Red Cross",
-            "de":"Österreichisches Jugendrotkreuz"
+            "en":"Youth Conference of the Austrian Youth Red Cross",
+            "de":"Jugendtagung des Österreichischen Jugendrotkreuzes"
           },
           "date":{
             "en":"Apr 2019",
@@ -710,10 +699,9 @@
         },
         {
           "title":{
-            "en":"3D Design Workshop",
-            "de":"Workshop für 3D-Design"
+            "en":"ComputerCamp 3D Design Workshop",
+            "de":"ComputerCamp Workshop für 3D-Design"
           },
-          "subtitle":"ComputerCamp Schlins",
           "date":{
             "en":"Jul 2018",
             "de":"Juli 2018"
@@ -728,10 +716,6 @@
             "en":"Swimming Camp Krems",
             "de":"Schwimmcamp Krems"
           },
-          "subtitle":{
-            "en":"Obtained the Lifesaver Certificate Helper",
-            "de":"Erwerb des Helferscheins"
-          },
           "date":{
             "en":"Jul 2016",
             "de":"Juli 2016"
@@ -739,7 +723,13 @@
           "location":{
             "en":"Krems, Austria",
             "de":"Krems, Österreich"
-          }
+          },
+          "highlights":[
+            {
+              "en":"Obtained the Lifesaver Certificate Helper",
+              "de":"Erwerb des Helferscheins"
+            }
+          ]
         }
       ]
     },

@@ -1,7 +1,9 @@
 import {
   getVariantConfig,
   getVariantConfigById,
-  isLocalDevelopmentHostname
+  isKnownVariant,
+  isLocalDevelopmentHostname,
+  resolveVariantId
 } from './variant-config.js';
 
 const DEFAULT_LANG = 'en';
@@ -11,7 +13,7 @@ const PREF_COOKIE_MAX_AGE = 31536000;
 let lang = DEFAULT_LANG;
 let theme = DEFAULT_THEME;
 let documentData = null;
-let activeVariant = getVariantConfig(window.location.hostname);
+let activeVariant = getInitialVariantConfig();
 
 const API_BASE_URL = isLocalDevelopmentHostname(window.location.hostname)
   ? 'http://localhost:3001'
@@ -96,6 +98,43 @@ function getMessage(value) {
   return localize(value);
 }
 
+function getRequestedLocalVariantId() {
+  if (!isLocalDevelopmentHostname(window.location.hostname)) {
+    return '';
+  }
+
+  const requestedVariant = new URLSearchParams(window.location.search).get('variant');
+  return isKnownVariant(requestedVariant) ? requestedVariant : '';
+}
+
+function getInitialVariantConfig() {
+  const requestedLocalVariantId = getRequestedLocalVariantId();
+
+  if (requestedLocalVariantId) {
+    return getVariantConfigById(requestedLocalVariantId);
+  }
+
+  return getVariantConfig(window.location.hostname);
+}
+
+function getVariantNoteHref(note) {
+  if (!note?.href) return '';
+
+  if (!isLocalDevelopmentHostname(window.location.hostname)) {
+    return note.href;
+  }
+
+  const targetVariantId = resolveVariantId(note.href);
+
+  if (!targetVariantId) {
+    return note.href;
+  }
+
+  const localUrl = new URL(window.location.href);
+  localUrl.searchParams.set('variant', targetVariantId);
+  return localUrl.toString();
+}
+
 function applyVariantChrome() {
   document.title = localize(activeVariant.pageTitle);
   document.getElementById('login-btn').textContent = localize(activeVariant.authButtonLabel);
@@ -107,7 +146,7 @@ function renderVariantNote() {
 
   if (!noteElement || !note) return;
 
-  noteElement.innerHTML = `${note.text} <a href="${note.href}">${note.label}</a>`;
+  noteElement.innerHTML = `${note.text} <a href="${getVariantNoteHref(note)}">${note.label}</a>`;
 }
 
 function saveOpen() {
@@ -123,11 +162,25 @@ function mkEntry(item) {
   const date = localize(item.date);
   const highlights = (item.highlights || []).map(localize);
   const mobMeta = [date, location].filter(Boolean).join(' &#183; ');
+  const hasTitle = Boolean(title);
+  const hasSubtitle = Boolean(subtitle);
+  const hasLocation = Boolean(location);
+  const hasDate = Boolean(date);
+  const useInlineMeta = hasTitle && !hasSubtitle && (hasDate || hasLocation);
+  const inlineMeta = useInlineMeta ? `
+      <span class="entry-meta">
+        ${hasDate ? `<span class="entry-date">${date}</span>` : ''}
+        ${(hasDate && hasLocation) ? '<span class="entry-meta-sep">&#183;</span>' : ''}
+        ${hasLocation ? `<span class="entry-location entry-location-inline">${location}</span>` : ''}
+      </span>
+    ` : '';
+  const showSecondRow = hasSubtitle || (hasLocation && !useInlineMeta);
+  const secondRowClass = hasSubtitle ? 'e-r2' : 'e-r2 e-r2--meta-only';
 
   return `<div class="entry"><div class="e-line"></div><div class="e-body">
     ${mobMeta ? `<div class="e-mob">${mobMeta}</div>` : ''}
-    <div class="e-r1"><span class="entry-title">${title}</span><span class="entry-date">${date}</span></div>
-    ${(subtitle || location) ? `<div class="e-r2"><span class="entry-subtitle">${subtitle}</span><span class="entry-location">${location}</span></div>` : ''}
+    <div class="e-r1"><span class="entry-title">${title}</span>${useInlineMeta ? inlineMeta : (hasDate ? `<span class="entry-date">${date}</span>` : '')}</div>
+    ${showSecondRow ? `<div class="${secondRowClass}">${hasSubtitle ? `<span class="entry-subtitle">${subtitle}</span>` : ''}${hasLocation ? `<span class="entry-location">${location}</span>` : ''}</div>` : ''}
     ${highlights.length ? `<ul>${highlights.map((highlight) => `<li>${highlight}</li>`).join('')}</ul>` : ''}
     ${item.tags?.length ? `<div class="tags">${item.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
     ${item.link?.href ? `<a class="proj-link" href="${item.link.href}" target="_blank" rel="noopener">${localize(item.link.label) || 'Open GitHub'}</a>` : ''}

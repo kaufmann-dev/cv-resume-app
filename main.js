@@ -167,7 +167,35 @@ function mkEntry(item) {
   const hasLocation = Boolean(location);
   const hasDate = Boolean(date);
   const hasLink = Boolean(item.link?.href);
-  const mobMeta = [location, date].filter(Boolean).join(' &#183; ');
+  const mobileMetaParts = [];
+
+  if (hasLink) {
+    if (hasDate) {
+      mobileMetaParts.push(`<span class="entry-date">${date}</span>`);
+    }
+
+    if (hasDate && linkLabel) {
+      mobileMetaParts.push('<span class="entry-meta-sep">&#183;</span>');
+    }
+
+    if (linkLabel) {
+      mobileMetaParts.push(`<a class="entry-link entry-link--mobile" href="${item.link.href}" target="_blank" rel="noopener">${linkLabel}</a>`);
+    }
+  } else {
+    if (hasLocation) {
+      mobileMetaParts.push(`<span class="entry-location">${location}</span>`);
+    }
+
+    if (hasLocation && hasDate) {
+      mobileMetaParts.push('<span class="entry-meta-sep">&#183;</span>');
+    }
+
+    if (hasDate) {
+      mobileMetaParts.push(`<span class="entry-date">${date}</span>`);
+    }
+  }
+
+  const mobMeta = mobileMetaParts.join('');
   const useInlineMeta = hasTitle && !hasSubtitle && !hasLink && (hasLocation || hasDate);
   const topRightMeta = hasLink
     ? `<a class="entry-link" href="${item.link.href}" target="_blank" rel="noopener">${linkLabel}</a>`

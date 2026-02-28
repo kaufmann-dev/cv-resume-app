@@ -167,9 +167,12 @@ function mkEntry(item) {
   const hasLocation = Boolean(location);
   const hasDate = Boolean(date);
   const hasLink = Boolean(item.link?.href);
+  const promoteDateToTopRow = hasSubtitle && hasDate && !hasLocation && !hasLink;
   const mobileMetaParts = [];
 
-  if (hasLink) {
+  if (promoteDateToTopRow) {
+    // On mobile the promoted top-row date is already visible, so avoid duplicating it.
+  } else if (hasLink) {
     if (hasDate) {
       mobileMetaParts.push(`<span class="entry-date">${date}</span>`);
     }
@@ -199,7 +202,9 @@ function mkEntry(item) {
   const useInlineMeta = hasTitle && !hasSubtitle && !hasLink && (hasLocation || hasDate);
   const topRightMeta = hasLink
     ? `<a class="entry-link" href="${item.link.href}" target="_blank" rel="noopener">${linkLabel}</a>`
-    : (hasLocation ? `<span class="entry-location">${location}</span>` : '');
+    : (hasLocation
+      ? `<span class="entry-location">${location}</span>`
+      : (promoteDateToTopRow ? `<span class="entry-date">${date}</span>` : ''));
   const inlineMeta = useInlineMeta ? `
       <span class="entry-inline-meta entry-inline-meta--text">
         ${hasLocation ? `<span class="entry-location">${location}</span>` : ''}
@@ -207,13 +212,14 @@ function mkEntry(item) {
         ${hasDate ? `<span class="entry-date">${date}</span>` : ''}
       </span>
     ` : '';
-  const bottomRightMeta = !useInlineMeta && hasDate ? `<span class="entry-date">${date}</span>` : '';
+  const bottomRightMeta = !useInlineMeta && hasDate && !promoteDateToTopRow ? `<span class="entry-date">${date}</span>` : '';
   const showSecondRow = hasSubtitle || Boolean(bottomRightMeta);
+  const firstRowClass = promoteDateToTopRow ? 'e-r1 e-r1--date-first' : 'e-r1';
   const secondRowClass = hasSubtitle ? 'e-r2' : 'e-r2 e-r2--meta-only';
 
   return `<div class="entry"><div class="e-line"></div><div class="e-body">
     ${mobMeta ? `<div class="e-mob">${mobMeta}</div>` : ''}
-    <div class="e-r1"><span class="entry-title">${title}</span>${useInlineMeta ? inlineMeta : topRightMeta}</div>
+    <div class="${firstRowClass}"><span class="entry-title">${title}</span>${useInlineMeta ? inlineMeta : topRightMeta}</div>
     ${showSecondRow ? `<div class="${secondRowClass}">${hasSubtitle ? `<span class="entry-subtitle">${subtitle}</span>` : ''}${bottomRightMeta}</div>` : ''}
     ${highlights.length ? `<ul>${highlights.map((highlight) => `<li>${highlight}</li>`).join('')}</ul>` : ''}
     ${item.tags?.length ? `<div class="tags">${item.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}

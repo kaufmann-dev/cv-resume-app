@@ -599,4 +599,8 @@ ul li::before {
     align-items: flex-start;
     gap: 1px;
   }
+
+  .e-r1--date-first .entry-date {
+    order: -1;
+  }
 }

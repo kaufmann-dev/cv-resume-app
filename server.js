@@ -1,25 +1,28 @@
 import express from 'express';
 import cors from 'cors';
-import Database from 'better-sqlite3';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const db = new Database(path.join(__dirname, 'database.db'));
 const app = express();
 const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
 
+// Load data
+const getPasscodes = () => JSON.parse(fs.readFileSync(path.join(__dirname, 'passcodes.json'), 'utf-8'));
+const getResume = () => JSON.parse(fs.readFileSync(path.join(__dirname, 'resume.json'), 'utf-8'));
+
 // Auth endpoint
 app.post('/api/auth', (req, res) => {
   const { passcode } = req.body;
+  const passcodes = getPasscodes();
 
-  const match = db.prepare('SELECT * FROM passcodes WHERE code = ?').get(passcode);
+  const match = passcodes.find(p => p.code === passcode);
 
   if (!match) {
     return res.status(401).json({ error: 'Invalid passcode' });
@@ -32,22 +35,15 @@ app.post('/api/auth', (req, res) => {
     return res.status(403).json({ error: 'Passcode has expired' });
   }
 
-  // Get resume data (all languages for simplicity, or we could filter here)
-  const rows = db.prepare('SELECT lang, content FROM resume').all();
-  const resumeData = {};
-  rows.forEach(row => {
-    resumeData[row.lang] = JSON.parse(row.content);
-  });
-
   // Return the resume data and a simple success flag
-  res.json({ success: true, data: resumeData });
+  res.json({ success: true, data: getResume() });
 });
 
 // Secure PDF download endpoint
 app.get('/api/download', (req, res) => {
   const { passcode } = req.query;
-
-  const match = db.prepare('SELECT * FROM passcodes WHERE code = ?').get(passcode);
+  const passcodes = getPasscodes();
+  const match = passcodes.find(p => p.code === passcode);
 
   if (!match || new Date() > new Date(match.expires)) {
     return res.status(403).send('Unauthorized');

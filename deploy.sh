@@ -13,13 +13,17 @@ fi
 
 cd "${APP_DIR}"
 
+RED=$'\033[1;31m'
+YELLOW=$'\033[1;33m'
+RESET=$'\033[0m'
+
 echo "Deploying from ${APP_DIR}"
-echo "WARNING: This deploy will discard all local commits, tracked changes, and untracked files in this repository."
+echo "${RED}WARNING:${RESET} ${YELLOW}This deploy will discard all local commits, tracked changes, and untracked files in this repository.${RESET}"
 
-if [[ "${CONFIRM_DEPLOY:-}" != "YES" ]]; then
-  read -r -p "Type YES to continue: " confirmation
+if [[ "${CONFIRM_DEPLOY:-}" != "y" ]]; then
+  read -r -p "$(printf "${YELLOW}Type y to continue:${RESET} ")" confirmation
 
-  if [[ "${confirmation}" != "YES" ]]; then
+  if [[ "${confirmation}" != "y" ]]; then
     echo "Deployment cancelled."
     exit 1
   fi

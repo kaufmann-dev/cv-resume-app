@@ -20,13 +20,11 @@ const authContainer = document.getElementById('auth-container');
 const contentContainer = document.getElementById('cv-container');
 const authError = document.getElementById('auth-error');
 const passcodeInput = document.getElementById('passcode-input');
-const statusNote = document.getElementById('status-note');
 const downloadButton = document.getElementById('btn-dl');
 
 const openState = {};
 const expandedState = {};
 const PASSCODE_STORAGE_PREFIX = 'kaufmann.dev.passcode';
-let isDownloadingPdf = false;
 
 function buildApiUrl(path) {
   return new URL(path, API_BASE_URL || window.location.origin);
@@ -65,23 +63,6 @@ function clearStoredPasscode(variantId = activeVariant.id) {
   } catch {
     // Ignore storage failures and keep the regular login flow working.
   }
-}
-
-function setStatusMessage(message = '', state = 'info') {
-  if (!statusNote) return;
-
-  statusNote.textContent = message;
-  statusNote.dataset.state = state;
-  statusNote.hidden = !message;
-}
-
-function clearStatusMessage() {
-  setStatusMessage('');
-}
-
-function setDownloadButtonState(isBusy) {
-  isDownloadingPdf = isBusy;
-  downloadButton.disabled = isBusy;
 }
 
 function getMessage(value) {
@@ -254,63 +235,21 @@ async function handleLogin() {
   }
 }
 
-async function handleDownload() {
-  if (isDownloadingPdf) {
-    return;
-  }
-
+function handleDownload() {
   if (!currentPasscode) {
-    setStatusMessage(getMessage({
-      en: 'Your session is missing. Please sign in again.',
-      de: 'Deine Sitzung fehlt. Bitte erneut anmelden.'
-    }), 'error');
+    contentContainer.style.display = 'none';
+    authContainer.style.display = 'flex';
+    authError.textContent = getMessage({
+      en: 'Your session has ended. Please sign in again.',
+      de: 'Deine Sitzung ist beendet. Bitte erneut anmelden.'
+    });
     return;
   }
 
   const downloadUrl = buildApiUrl('/api/download');
   downloadUrl.searchParams.set('passcode', currentPasscode);
   downloadUrl.searchParams.set('variant', activeVariant.id);
-
-  setDownloadButtonState(true);
-  setStatusMessage(getMessage({
-    en: 'Starting PDF download...',
-    de: 'PDF-Download wird gestartet...'
-  }));
-
-  try {
-    const response = await fetch(downloadUrl, {
-      method: 'HEAD',
-      cache: 'no-store'
-    });
-
-    if (!response.ok) {
-      const responseText = (await response.text()).trim();
-
-      if (response.status === 401 || response.status === 403) {
-        clearStoredPasscode(activeVariant.id);
-        currentPasscode = '';
-      }
-
-      setStatusMessage(
-        responseText || getMessage({
-          en: 'Download failed. Please try again.',
-          de: 'Download fehlgeschlagen. Bitte erneut versuchen.'
-        }),
-        'error'
-      );
-      return;
-    }
-
-    clearStatusMessage();
-    window.location.assign(downloadUrl.toString());
-  } catch (error) {
-    setStatusMessage(getMessage({
-      en: 'Download failed. Please check your connection and try again.',
-      de: 'Download fehlgeschlagen. Bitte Verbindung pruefen und erneut versuchen.'
-    }), 'error');
-  } finally {
-    setDownloadButtonState(false);
-  }
+  window.location.assign(downloadUrl.toString());
 }
 
 async function restoreStoredSession() {

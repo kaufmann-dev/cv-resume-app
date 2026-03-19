@@ -77,129 +77,6 @@ function getDocumentData(variantId) {
   return readJsonFile(variant.dataFile);
 }
 
-function parseRangeHeader(rangeHeader, fileSize) {
-  if (!rangeHeader) return null;
-
-  const match = /^bytes=(\d*)-(\d*)$/i.exec(String(rangeHeader).trim());
-  if (!match) return null;
-
-  const rawStart = match[1];
-  const rawEnd = match[2];
-
-  let start = rawStart === '' ? null : Number(rawStart);
-  let end = rawEnd === '' ? null : Number(rawEnd);
-
-  if ((start != null && Number.isNaN(start)) || (end != null && Number.isNaN(end))) {
-    return null;
-  }
-
-  if (start == null && end == null) {
-    return null;
-  }
-
-  if (start == null) {
-    const suffixLength = end;
-
-    if (!suffixLength || suffixLength < 0) {
-      return null;
-    }
-
-    start = Math.max(fileSize - suffixLength, 0);
-    end = fileSize - 1;
-  } else {
-    if (end == null || end >= fileSize) {
-      end = fileSize - 1;
-    }
-  }
-
-  if (start < 0 || end < start || start >= fileSize) {
-    return 'invalid';
-  }
-
-  return { start, end };
-}
-
-function setPdfResponseHeaders(res, downloadName, options) {
-  const {
-    totalSize,
-    start = null,
-    end = null,
-    partial = false
-  } = options;
-
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', `attachment; filename="${downloadName}"`);
-  res.setHeader('Accept-Ranges', 'bytes');
-  res.setHeader('Cache-Control', 'private, no-store, no-cache, must-revalidate');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-
-  if (partial) {
-    res.setHeader('Content-Range', `bytes ${start}-${end}/${totalSize}`);
-    res.setHeader('Content-Length', end - start + 1);
-  } else {
-    res.setHeader('Content-Length', totalSize);
-  }
-}
-
-function streamPdfFile(req, res, pdfPath, downloadName) {
-  const stat = fs.statSync(pdfPath);
-  const totalSize = stat.size;
-  const requestedRange = parseRangeHeader(req.headers.range, totalSize);
-
-  if (requestedRange === 'invalid') {
-    res.setHeader('Content-Range', `bytes */${totalSize}`);
-    return res.status(416).end();
-  }
-
-  if (requestedRange) {
-    const { start, end } = requestedRange;
-    setPdfResponseHeaders(res, downloadName, {
-      totalSize,
-      start,
-      end,
-      partial: true
-    });
-    res.status(206);
-
-    if (req.method === 'HEAD') {
-      return res.end();
-    }
-
-    const stream = fs.createReadStream(pdfPath, { start, end });
-    stream.on('error', () => {
-      if (!res.headersSent) {
-        res.status(500).send('Failed to read PDF');
-      } else {
-        res.destroy();
-      }
-    });
-
-    res.flushHeaders();
-    return stream.pipe(res);
-  }
-
-  setPdfResponseHeaders(res, downloadName, { totalSize });
-  res.status(200);
-
-  if (req.method === 'HEAD') {
-    return res.end();
-  }
-
-  const stream = fs.createReadStream(pdfPath);
-  stream.on('error', () => {
-    if (!res.headersSent) {
-      res.status(500).send('Failed to read PDF');
-    } else {
-      res.destroy();
-    }
-  });
-
-  res.flushHeaders();
-  return stream.pipe(res);
-}
-
 app.post('/api/auth', (req, res) => {
   const { passcode } = req.body ?? {};
   const validation = validatePasscode(passcode);
@@ -238,7 +115,29 @@ function handleDownloadRequest(req, res) {
     return res.status(404).send('PDF not found');
   }
 
-  return streamPdfFile(req, res, pdfPath, variant.pdfDownloadName);
+  return res.sendFile(pdfPath, {
+    acceptRanges: true,
+    cacheControl: false,
+    lastModified: true,
+    headers: {
+      'Content-Disposition': `attachment; filename="${variant.pdfDownloadName}"`,
+      'Content-Type': 'application/pdf',
+      'Cache-Control': 'private, no-store, no-cache, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'X-Content-Type-Options': 'nosniff'
+    }
+  }, (error) => {
+    if (!error || res.headersSent) {
+      return;
+    }
+
+    if (error.code === 'ECONNABORTED') {
+      return;
+    }
+
+    res.status(error.statusCode || 500).send('Failed to send PDF');
+  });
 }
 
 app.head('/api/download', handleDownloadRequest);

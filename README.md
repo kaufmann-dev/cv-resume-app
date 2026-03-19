@@ -1,80 +1,83 @@
 # Resume Claude
 
-A modern, interactive resume application built with Vite (Frontend) and Express (Backend). This application features a secure authentication system to access and download resume data.
+A modern, interactive resume application built with Vite (frontend) and Express (backend). The app now supports both `resume.kaufmann.dev` and `cv.kaufmann.dev` from one shared codebase and one deployment.
 
 ## Features
 
-- 📄 **Interactive Resume**: View professional experience and skills in a clean, modern interface.
-- 🔒 **Secure Access**: Protected by passcode authentication.
-- 📥 **PDF Download**: Securely download the resume in PDF format.
-- ⚡ **Fast & Responsive**: Built with Vite for a smooth user experience.
+- Interactive resume/CV UI with one shared renderer
+- Passcode-protected access
+- Hostname-based dataset selection
+- Concise cross-link between the resume and CV variants
+- Local development fallback to the resume dataset
 
 ## Project Structure
 
-```
+```text
 resume-app-new/
-├── server.js          # Express backend server
-├── index.html         # Frontend entry point
-├── main.js            # Frontend logic
-├── style.css          # Styling
-├── resume.json        # Resume data (source of truth)
-├── passcodes.json     # Authentication passcodes (ignored by git)
-└── database.db        # Backend database (ignored by git)
+|-- server.js           # Express backend server
+|-- variant-config.js   # Hostname -> variant -> file mapping
+|-- index.html          # Frontend entry point
+|-- main.js             # Frontend logic
+|-- style.css           # Styling
+|-- resume.json         # Resume dataset
+|-- cv.json             # CV dataset
+|-- passcodes.json      # Authentication passcodes
+`-- resume.pdf          # Current PDF download file
 ```
+
+## Variant Routing
+
+- `resume.kaufmann.dev` loads `resume.json`
+- `cv.kaufmann.dev` loads `cv.json`
+- Unknown or local hostnames fall back to the resume variant by default
+
+The fallback is configured in `variant-config.js`.
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16 or higher)
-- npm (comes with Node.js)
+- Node.js 16 or higher
+- npm
 
 ### Installation
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd resume-app-new
-   ```
+1. Clone the repository.
+2. Run `npm install`.
+3. Create `passcodes.json` in the project root if needed:
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+```json
+[
+  { "code": "your-code", "expires": "2026-12-31" }
+]
+```
 
-3. Configure passcodes:
-   Create a `passcodes.json` file in the root directory (refer to the existing structure if available):
-   ```json
-   [
-     { "code": "your-code", "expires": "2026-12-31" }
-   ]
-   ```
+## Running the App
 
-### Running the Application
+This project uses a frontend dev server and the backend server together.
 
-This project requires both the frontend dev server and the backend server to be running.
+### 1. Start the backend
 
-#### 1. Start the Backend Server
 ```bash
 npm run server
 ```
-The server will start at `http://localhost:3001`.
 
-#### 2. Start the Frontend Dev Server
-In a new terminal:
+The backend runs at `http://localhost:3001`.
+
+### 2. Start the frontend
+
 ```bash
 npm run dev
 ```
-The application will be available at the URL provided by Vite (usually `http://localhost:5173`).
 
-## Building for Production
+The frontend runs at the Vite URL shown in the terminal, usually `http://localhost:5173`.
 
-To create a production build of the frontend:
+During local development, the frontend automatically calls the backend on `http://localhost:3001` and defaults to the resume variant.
+
+## Production Build
+
 ```bash
 npm run build
 ```
-The build artifacts will be located in the `dist/` directory.
 
-## License
-
-This project is private and intended for personal use.
+The frontend build artifacts are written to `dist/`.

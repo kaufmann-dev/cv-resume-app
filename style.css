@@ -504,10 +504,6 @@ ul li::before {
     display: grid !important;
   }
 
-  details {
-    open: '';
-  }
-
   details .sec-body {
     display: block !important;
   }

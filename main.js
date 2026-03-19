@@ -25,7 +25,6 @@ const downloadButton = document.getElementById('btn-dl');
 const openState = {};
 const expandedState = {};
 const PASSCODE_STORAGE_PREFIX = 'kaufmann.dev.passcode';
-const PASSCODE_COOKIE_PREFIX = 'kaufmann_dev_passcode';
 
 function buildApiUrl(path) {
   return new URL(path, API_BASE_URL || window.location.origin);
@@ -42,66 +41,15 @@ function getPasscodeStorageKey(variantId = activeVariant.id) {
   return `${PASSCODE_STORAGE_PREFIX}:${variantId}`;
 }
 
-function getPasscodeCookieName(variantId = activeVariant.id) {
-  return `${PASSCODE_COOKIE_PREFIX}_${variantId}`;
-}
-
-function getCookieValue(name) {
-  const encodedName = `${name}=`;
-  const cookie = document.cookie
-    .split(';')
-    .map((part) => part.trim())
-    .find((part) => part.startsWith(encodedName));
-
-  if (!cookie) {
+function getStoredPasscode(variantId = activeVariant.id) {
+  try {
+    return window.localStorage.getItem(getPasscodeStorageKey(variantId)) ?? '';
+  } catch {
     return '';
   }
-
-  return decodeURIComponent(cookie.slice(encodedName.length));
-}
-
-function setCookieValue(name, value) {
-  const securePart = window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${name}=${encodeURIComponent(value)}; Path=/; Max-Age=31536000; SameSite=Lax${securePart}`;
-}
-
-function clearCookieValue(name) {
-  const securePart = window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${name}=; Path=/; Max-Age=0; SameSite=Lax${securePart}`;
-}
-
-function getStoredPasscode(variantId = activeVariant.id) {
-  const cookieName = getPasscodeCookieName(variantId);
-  const cookieValue = getCookieValue(cookieName);
-
-  try {
-    const storedValue = window.localStorage.getItem(getPasscodeStorageKey(variantId)) ?? '';
-
-    if (storedValue) {
-      if (cookieValue !== storedValue) {
-        setCookieValue(cookieName, storedValue);
-      }
-
-      return storedValue;
-    }
-  } catch {
-    // Fall back to cookies when localStorage is unavailable.
-  }
-
-  if (cookieValue) {
-    try {
-      window.localStorage.setItem(getPasscodeStorageKey(variantId), cookieValue);
-    } catch {
-      // Ignore sync failures and still use the cookie value.
-    }
-  }
-
-  return cookieValue;
 }
 
 function storePasscode(passcode, variantId = activeVariant.id) {
-  setCookieValue(getPasscodeCookieName(variantId), passcode);
-
   try {
     window.localStorage.setItem(getPasscodeStorageKey(variantId), passcode);
   } catch {
@@ -110,8 +58,6 @@ function storePasscode(passcode, variantId = activeVariant.id) {
 }
 
 function clearStoredPasscode(variantId = activeVariant.id) {
-  clearCookieValue(getPasscodeCookieName(variantId));
-
   try {
     window.localStorage.removeItem(getPasscodeStorageKey(variantId));
   } catch {
@@ -214,7 +160,6 @@ function render() {
 }
 
 function showAuthenticatedView() {
-  authContainer.style.visibility = '';
   authContainer.style.display = 'none';
   contentContainer.style.display = 'block';
 }
@@ -308,13 +253,9 @@ function handleDownload() {
 }
 
 async function restoreStoredSession() {
-  authContainer.style.visibility = 'hidden';
-
   const storedPasscode = getStoredPasscode();
 
   if (!storedPasscode) {
-    authContainer.style.visibility = '';
-    authContainer.style.display = 'flex';
     return;
   }
 
@@ -326,8 +267,6 @@ async function restoreStoredSession() {
   if (!restored) {
     currentPasscode = '';
     passcodeInput.value = '';
-    authContainer.style.visibility = '';
-    authContainer.style.display = 'flex';
   } else {
     passcodeInput.value = storedPasscode;
   }

@@ -338,8 +338,8 @@
     {
       "id":"dev",
       "title":{
-        "en":"Continuing Education",
-        "de":"Weiterbildung"
+        "en":"Courses and Certificates",
+        "de":"Kurse und Zertifikate"
       },
       "open":false,
       "type":"entries",

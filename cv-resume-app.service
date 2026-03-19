@@ -1,0 +1,20 @@
+# Update WorkingDirectory if you deploy this project to a different path.
+# Keep the repo owned by your deploy user or root. The app process itself runs as www-data.
+
+[Unit]
+Description=CV Resume App
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/var/www/cv-resume-app
+ExecStart=/usr/bin/npm run server
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3001
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

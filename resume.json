@@ -1,606 +1,667 @@
 {
-    "en": {
-        "dl": "Download PDF",
-        "themeLight": "Light",
-        "themeDark": "Dark",
-        "showMore": "Show more",
-        "showLess": "Show less",
-        "sections": [
-            {
-                "id": "personal",
-                "title": "Personal Information",
-                "open": true,
-                "type": "info",
-                "rows": [
-                    [
-                        "Nationality",
-                        "Austrian"
-                    ],
-                    [
-                        "Born",
-                        "28 Nov 2003 · Krems, Austria"
-                    ],
-                    [
-                        "Address",
-                        "Fuhrmannsgasse 18A/23, 1080 Vienna, Austria"
-                    ],
-                    [
-                        "Email",
-                        "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>"
-                    ],
-                    [
-                        "Phone",
-                        "<a href=\"tel:+436703585527\">+43 670 3585527</a>"
-                    ],
-                    [
-                        "Website",
-                        "<a href=\"https://kaufmann.dev\" target=\"_blank\" rel=\"noopener\">kaufmann.dev</a>"
-                    ]
-                ]
-            },
-            {
-                "id": "work",
-                "title": "Work Experience",
-                "open": true,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Board of Education Vienna",
-                        "loc": "Vienna, Austria",
-                        "role": "IT Consultant",
-                        "dt": "Apr 2024 – Present",
-                        "bullets": [
-                            "Administered time tracking and eGovernment document/business process management software",
-                            "Onboarded new employees and delivered continuous training to existing staff",
-                            "Provided technical support to employees, schools, and prospective hires",
-                            "Managed user permissions for all Viennese schools in ISO.Web Schooloffice",
-                            "Organized and moderated meetings for creation and revision of business processes"
-                        ]
-                    },
-                    {
-                        "org": "Fabasoft",
-                        "loc": "Vienna, Austria",
-                        "role": "Cloud Systems Engineer",
-                        "dt": "Dec 2023 – Mar 2024",
-                        "bullets": [
-                            "Developed Bash scripts to standardize and aggregate Syslog error messages for efficient diagnosis",
-                            "Performed hardware upgrades and reconfigurations across data centers",
-                            "Implemented hotfixes and security patches on Fabasoft customer servers"
-                        ]
-                    },
-                    {
-                        "org": "City Pharmacy Wismar at the Market",
-                        "loc": "Wismar, Germany",
-                        "role": "Intern",
-                        "dt": "Jul 2023",
-                        "bullets": [
-                            "Reconciled software medication records with actual inventory",
-                            "Collected prescriptions and delivered/returned medications via e-scooter",
-                            "Logged and organized incoming pharmacy inventory"
-                        ]
-                    },
-                    {
-                        "org": "Cardiology Practice Langenlois",
-                        "loc": "Langenlois, Austria",
-                        "role": "Intern",
-                        "dt": "Aug 2022",
-                        "bullets": [
-                            "Prototyped a web-based patient record system",
-                            "Supported reception staff in patient care",
-                            "Handled logistics, supplies, errands, and maintenance"
-                        ]
-                    },
-                    {
-                        "org": "Raiffeisen Software",
-                        "loc": "Vienna, Austria",
-                        "role": "Intern in Controlling",
-                        "dt": "Jul 2021",
-                        "bullets": [
-                            "Expanded a C# deployment tool for managing MS SQL databases with schema versioning and rollback",
-                            "Created documentation for data marts and tenants across various development environments",
-                            "Redesigned an internal sales controlling dashboard"
-                        ]
-                    },
-                    {
-                        "org": "IMC University of Applied Sciences Krems",
-                        "loc": "Krems, Austria",
-                        "role": "Intern in IT Services",
-                        "dt": "Jul 2019",
-                        "bullets": [
-                            "Client lifecycle management",
-                            "Planned, built, and maintained network infrastructure"
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": "education",
-                "title": "Education",
-                "open": true,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Higher Federal Technical College (HTBL) Krems",
-                        "loc": "Krems, Austria",
-                        "role": "Matura + Diploma in Information Technology",
-                        "dt": "Sep 2018 – Jun 2023",
-                        "bullets": [
-                            "Specialization: Media Technology",
-                            "Final Exam Elective: Software Development"
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": "dev",
-                "title": "Professional Development",
-                "open": false,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Digital Transformation: Thriving in the Digital Era · 4 ECTS",
-                        "loc": "Nantes, France",
-                        "role": "Audencia Business School",
-                        "dt": "Jan 2026"
-                    },
-                    {
-                        "org": "Seminar: Project Management",
-                        "loc": "Vienna, Austria",
-                        "role": "Austrian Federal Academy of Public Administration (VAB)",
-                        "dt": "Sep 2025"
-                    },
-                    {
-                        "org": "Business Process Analysis · 3 ECTS",
-                        "loc": "Brno, Czechia",
-                        "role": "Masaryk University",
-                        "dt": "Jul 2025"
-                    },
-                    {
-                        "org": "Transrapid Debate Tournament 2025",
-                        "loc": "Munich, Germany",
-                        "role": "Debatingclub Munich",
-                        "dt": "Jan 2025"
-                    },
-                    {
-                        "org": "European Grief Conference 2024",
-                        "loc": "Dublin, Ireland",
-                        "role": "Bereavement Network Europe",
-                        "dt": "Nov 2024"
-                    },
-                    {
-                        "org": "C2 Proficiency · Cambridge English Certificate",
-                        "loc": "St. Julians, Malta",
-                        "role": "EF International Language Campuses",
-                        "dt": "Aug 2020"
-                    }
-                ]
-            },
-            {
-                "id": "pubs",
-                "title": "Publications",
-                "open": false,
-                "type": "pub",
-                "content": "<strong>Kaufmann, D.</strong> &amp; Spindelberger, J. (2023). <em>Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.</em> Höhere Technische Bundeslehranstalt Krems."
-            },
-            {
-                "id": "projects",
-                "title": "Projects",
-                "open": false,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Market Deck: Financial Dashboard",
-                        "dt": "2026",
-                        "bullets": [
-                            "Rank financial assets by price momentum across configurable watchlists",
-                            "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance"
-                        ],
-                        "tags": [
-                            "FastAPI",
-                            "SQLite",
-                            "yfinance",
-                            "Python",
-                            "Vanilla JS"
-                        ],
-                        "url": "https://github.com/kaufmann-dev/market-deck",
-                        "urlLabel": "Open GitHub"
-                    },
-                    {
-                        "org": "CT2Mesh2Print: Medical Imaging & 3D Printing",
-                        "dt": "2025",
-                        "bullets": [
-                            "Segmented CT scan data to isolate bone structures",
-                            "Converted segmented data into a printable 3D mesh and produced lifesize prints"
-                        ],
-                        "url": "https://kaufmann.dev/article/ct2mesh2print",
-                        "urlLabel": "Read Article"
-                    },
-                    {
-                        "org": "Git Wrangler: Git Repository Manipulation",
-                        "dt": "2024",
-                        "bullets": [
-                            "Bash scripts for the bulk management and manipulation of Git repositories",
-                            "Automates tasks like licensing, cloning and rewriting commit history"
-                        ],
-                        "tags": [
-                            "Bash",
-                            "Git",
-                            "GitHub CLI",
-                            "git-filter-repo"
-                        ],
-                        "url": "https://github.com/kaufmann-dev/git-wrangler",
-                        "urlLabel": "Open GitHub"
-                    },
-                    {
-                        "org": "Jung in Krems: Full-stack Web Application",
-                        "dt": "2023",
-                        "bullets": [
-                            "Event calendar and an overview of educational offerings for young people in Krems",
-                            "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems"
-                        ],
-                        "tags": [
-                            "MySQL 8",
-                            "Laravel 9",
-                            "Svelte 3",
-                            "Eloquent",
-                            "Inertia",
-                            "REST",
-                            "Laravel Sanctum",
-                            "Tailwind"
-                        ],
-                        "url": "https://github.com/kaufmann-dev/jung-in-krems",
-                        "urlLabel": "Open GitHub"
-                    },
-                    {
-                        "org": "Async Cinema: Asynchronous Programming",
-                        "dt": "2022",
-                        "bullets": [
-                            "Full-stack .NET MVC app with REST API for managing a MySQL film database",
-                            "Asynchronous CRUD operations with Swagger documentation and Blazor UI"
-                        ],
-                        "tags": [
-                            ".NET 7",
-                            "C# 11",
-                            "MySQL 8",
-                            "Blazor",
-                            "Entity Framework",
-                            "Swagger"
-                        ],
-                        "url": "https://github.com/kaufmann-dev/async-cinema",
-                        "urlLabel": "Open GitHub"
-                    },
-                    {
-                        "org": "Purus CSS: Minimalist CSS Framework",
-                        "dt": "2021",
-                        "bullets": [
-                            "Responsive drop-in framework with no JavaScript dependencies",
-                            "Mobile first-approach with full customizability and useful utility classes"
-                        ],
-                        "url": "https://puruscss.kaufmann.dev",
-                        "urlLabel": "Visit Website"
-                    }
-                ]
-            },
-            {
-                "id": "volunteer",
-                "title": "Volunteer Work",
-                "open": false,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Austrian Association of Hospice (DVHÖ)",
-                        "loc": "Vienna, Austria",
-                        "role": "Volunteer in Communication",
-                        "dt": "May 2024 – Present",
-                        "bullets": [
-                            "Creation of graphics, flyers, and invitations for internal communication and social media",
-                            "Support with IT problems and infrastructure management"
-                        ]
-                    }
-                ]
-            }
-        ]
+  "ui": {
+    "downloadPdf": {
+      "en": "Download PDF",
+      "de": "PDF herunterladen"
     },
-    "de": {
-        "dl": "PDF herunterladen",
-        "themeLight": "Hell",
-        "themeDark": "Dunkel",
-        "showMore": "Mehr anzeigen",
-        "showLess": "Weniger anzeigen",
-        "sections": [
-            {
-                "id": "personal",
-                "title": "Persönliche Informationen",
-                "open": true,
-                "type": "info",
-                "rows": [
-                    [
-                        "Nationalität",
-                        "Österreichisch"
-                    ],
-                    [
-                        "Geboren",
-                        "28. Nov. 2003 · Krems, Österreich"
-                    ],
-                    [
-                        "Adresse",
-                        "Fuhrmannsgasse 18A/23, 1080 Wien, Österreich"
-                    ],
-                    [
-                        "E-Mail",
-                        "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>"
-                    ],
-                    [
-                        "Telefon",
-                        "<a href=\"tel:+436703585527\">+43 670 3585527</a>"
-                    ],
-                    [
-                        "Website",
-                        "<a href=\"https://kaufmann.dev\" target=\"_blank\" rel=\"noopener\">kaufmann.dev</a>"
-                    ]
-                ]
-            },
-            {
-                "id": "work",
-                "title": "Berufserfahrung",
-                "open": true,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Bildungsdirektion Wien",
-                        "loc": "Wien, Österreich",
-                        "role": "IT-Berater",
-                        "dt": "Apr. 2024 – Heute",
-                        "bullets": [
-                            "Administration von Zeiterfassungs- und eGovernment-Dokumentenmanagementsoftware",
-                            "Einarbeitung neuer sowie laufende Schulung bestehender Mitarbeiter",
-                            "Technischer Support für Mitarbeiter, Schulen und Bewerber",
-                            "Verwaltung von Benutzerberechtigungen für alle Wiener Schulen in ISO.Web Schulbüro",
-                            "Organisation und Moderation von Meetings zur Erstellung und Überarbeitung von Geschäftsprozessen"
-                        ]
-                    },
-                    {
-                        "org": "Fabasoft",
-                        "loc": "Wien, Österreich",
-                        "role": "Cloud Systems Engineer",
-                        "dt": "Dez. 2023 – März 2024",
-                        "bullets": [
-                            "Entwicklung von Bash-Skripten zur Standardisierung und Aggregation von Syslog-Fehlermeldungen",
-                            "Hardware-Upgrades und Umkonfigurationen in Rechenzentren",
-                            "Implementierung von Hotfixes und Sicherheitspatches auf Fabasoft-Kundenservern"
-                        ]
-                    },
-                    {
-                        "org": "Stadt-Apotheke Wismar am Markt",
-                        "loc": "Wismar, Deutschland",
-                        "role": "Praktikant",
-                        "dt": "Jul. 2023",
-                        "bullets": [
-                            "Abgleich von Software-Medikamentendatensätzen mit dem tatsächlichen Bestand",
-                            "Rezeptabholung sowie Auslieferung und Rückgabe von Medikamenten per E-Scooter",
-                            "Erfassung und Organisation eingehender Apothekenware"
-                        ]
-                    },
-                    {
-                        "org": "Kardiologische Praxis Langenlois",
-                        "loc": "Langenlois, Österreich",
-                        "role": "Praktikant",
-                        "dt": "Aug. 2022",
-                        "bullets": [
-                            "Prototyp einer webbasierten Patientenakte",
-                            "Unterstützung des Empfangspersonals bei der Patientenbetreuung",
-                            "Logistik, Einkäufe, Besorgungen und Wartung"
-                        ]
-                    },
-                    {
-                        "org": "Raiffeisen Software",
-                        "loc": "Wien, Österreich",
-                        "role": "Praktikant im Controlling",
-                        "dt": "Jul. 2021",
-                        "bullets": [
-                            "Erweiterung eines C#-Deployment-Tools für MS-SQL-Datenbanken mit Schema-Versionierung und Rollback",
-                            "Dokumentation von Data Marts und Mandanten in verschiedenen Entwicklungsumgebungen",
-                            "Neugestaltung eines internen Vertriebscontrolling-Dashboards"
-                        ]
-                    },
-                    {
-                        "org": "FH IMC Krems",
-                        "loc": "Krems, Österreich",
-                        "role": "Praktikant IT-Services",
-                        "dt": "Jul. 2019",
-                        "bullets": [
-                            "Client-Lifecycle-Management",
-                            "Planung, Aufbau und Wartung von Netzwerkinfrastruktur"
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": "education",
-                "title": "Ausbildung",
-                "open": true,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Höhere Technische Bundeslehranstalt (HTBL) Krems",
-                        "loc": "Krems, Österreich",
-                        "role": "Matura + Diplom in Informationstechnologie",
-                        "dt": "Sep. 2018 – Jun. 2023",
-                        "bullets": [
-                            "Spezialisierung: Medientechnik",
-                            "Abschlussprüfung Wahlfach: Softwareentwicklung"
-                        ]
-                    }
-                ]
-            },
-            {
-                "id": "dev",
-                "title": "Weiterbildung",
-                "open": false,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Digitale Transformation: Im digitalen Zeitalter bestehen · 4 ECTS",
-                        "loc": "Nantes, Frankreich",
-                        "role": "Audencia Business School",
-                        "dt": "Jan. 2026"
-                    },
-                    {
-                        "org": "Seminar: Projektmanagement",
-                        "loc": "Wien, Österreich",
-                        "role": "Verwaltungsakademie des Bundes (VAB)",
-                        "dt": "Sep. 2025"
-                    },
-                    {
-                        "org": "Geschäftsprozessanalyse · 3 ECTS",
-                        "loc": "Brno, Tschechien",
-                        "role": "Masaryk-Universität",
-                        "dt": "Jul. 2025"
-                    },
-                    {
-                        "org": "Transrapid-Debatierturnier 2025",
-                        "loc": "München, Deutschland",
-                        "role": "Debattierclub München",
-                        "dt": "Jan. 2025"
-                    },
-                    {
-                        "org": "Europäische Trauerkonferenz 2024",
-                        "loc": "Dublin, Irland",
-                        "role": "Bereavement Network Europe",
-                        "dt": "Nov. 2024"
-                    },
-                    {
-                        "org": "C2-Kompetenz · Cambridge-Zertifikat Englisch",
-                        "loc": "St. Julians, Malta",
-                        "role": "EF International Language Campuses",
-                        "dt": "Aug. 2020"
-                    }
-                ]
-            },
-            {
-                "id": "pubs",
-                "title": "Publikationen",
-                "open": false,
-                "type": "pub",
-                "content": "<strong>Kaufmann, D.</strong> &amp; Spindelberger, J. (2023). <em>Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.</em> Höhere Technische Bundeslehranstalt Krems."
-            },
-            {
-                "id": "projects",
-                "title": "Projekte",
-                "open": false,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Market Deck: Finanz-Dashboard",
-                        "dt": "2026",
-                        "bullets": [
-                            "Ranking von Finanzwerten nach Preis-Momentum über konfigurierbare Watchlists",
-                            "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
-                        ],
-                        "tags": [
-                            "FastAPI",
-                            "SQLite",
-                            "yfinance",
-                            "Python",
-                            "Vanilla JS"
-                        ],
-                        "url": "https://github.com/kaufmann-dev/market-deck",
-                        "urlLabel": "GitHub öffnen"
-                    },
-                    {
-                        "org": "CT2Mesh2Print: Medizinische Bildgebung & 3D-Druck",
-                        "dt": "2025",
-                        "bullets": [
-                            "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen",
-                            "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
-                        ],
-                        "url": "https://kaufmann.dev/article/ct2mesh2print",
-                        "urlLabel": "Artikel lesen"
-                    },
-                    {
-                        "org": "Git Wrangler: Git-Repository-Verwaltung",
-                        "dt": "2024",
-                        "bullets": [
-                            "Bash-Skripte zur Massenverwaltung und -manipulation von Git-Repositories",
-                            "Automatisiert Aufgaben wie Lizenzierung, Klonen und Umschreiben der Commit-Historie"
-                        ],
-                        "tags": [
-                            "Bash",
-                            "Git",
-                            "GitHub CLI",
-                            "git-filter-repo"
-                        ],
-                        "url": "https://github.com/kaufmann-dev/git-wrangler",
-                        "urlLabel": "GitHub öffnen"
-                    },
-                    {
-                        "org": "Jung in Krems: Full-Stack-Webanwendung",
-                        "dt": "2023",
-                        "bullets": [
-                            "Veranstaltungskalender und Übersicht über Bildungsangebote für Jugendliche in Krems",
-                            "Praktischer Teil meiner Diplomarbeit, im Auftrag und in Zusammenarbeit mit der Stadt Krems"
-                        ],
-                        "tags": [
-                            "MySQL 8",
-                            "Laravel 9",
-                            "Svelte 3",
-                            "Eloquent",
-                            "Inertia",
-                            "REST",
-                            "Laravel Sanctum",
-                            "Tailwind"
-                        ],
-                        "url": "https://github.com/kaufmann-dev/jung-in-krems",
-                        "urlLabel": "GitHub öffnen"
-                    },
-                    {
-                        "org": "Async Cinema: Asynchrone Programmierung",
-                        "dt": "2022",
-                        "bullets": [
-                            "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank",
-                            "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
-                        ],
-                        "tags": [
-                            ".NET 7",
-                            "C# 11",
-                            "MySQL 8",
-                            "Blazor",
-                            "Entity Framework",
-                            "Swagger"
-                        ],
-                        "url": "https://github.com/kaufmann-dev/async-cinema",
-                        "urlLabel": "GitHub öffnen"
-                    },
-                    {
-                        "org": "Purus CSS: Minimalistisches CSS-Framework",
-                        "dt": "2021",
-                        "bullets": [
-                            "Responsives Drop-in-Framework ohne JavaScript-Abhängigkeiten",
-                            "Mobile-First-Ansatz mit voller Anpassbarkeit und nützlichen Utility-Klassen"
-                        ],
-                        "url": "https://puruscss.kaufmann.dev",
-                        "urlLabel": "Website besuchen"
-                    }
-                ]
-            },
-            {
-                "id": "volunteer",
-                "title": "Ehrenamtliche Tätigkeit",
-                "open": false,
-                "type": "entries",
-                "entries": [
-                    {
-                        "org": "Dachverband Hospiz Österreich (DVHÖ)",
-                        "loc": "Wien, Österreich",
-                        "role": "Freiwilliger im Kommunikationsbereich",
-                        "dt": "Mai 2024 – Heute",
-                        "bullets": [
-                            "Erstellung von Grafiken, Flyern und Einladungen für interne Kommunikation und Social Media",
-                            "Unterstützung bei IT-Problemen und Infrastrukturverwaltung im Büro"
-                        ]
-                    }
-                ]
-            }
-        ]
+    "themeLight": {
+      "en": "Light",
+      "de": "Hell"
+    },
+    "themeDark": {
+      "en": "Dark",
+      "de": "Dunkel"
+    },
+    "showMore": {
+      "en": "Show more",
+      "de": "Mehr anzeigen"
+    },
+    "showLess": {
+      "en": "Show less",
+      "de": "Weniger anzeigen"
     }
+  },
+  "sections": [
+    {
+      "id": "personal",
+      "title": {
+        "en": "Personal Information",
+        "de": "Persönliche Informationen"
+      },
+      "open": true,
+      "type": "info",
+      "rows": [
+        {
+          "label": {
+            "en": "Citizenship",
+            "de": "Staatsbürgerschaft"
+          },
+          "value": {
+            "en": "Austrian",
+            "de": "Österreich"
+          }
+        },
+        {
+          "label": {
+            "en": "Date of birth",
+            "de": "Geburtsdatum"
+          },
+          "value": {
+            "en": "28 Nov 2003",
+            "de": "28. Nov. 2003"
+          }
+        },
+        {
+          "label": {
+            "en": "Location",
+            "de": "Wohnort"
+          },
+          "value": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          }
+        },
+        {
+          "label": {
+            "en": "Email",
+            "de": "E-Mail"
+          },
+          "value": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>"
+        },
+        {
+          "label": {
+            "en": "Mobile",
+            "de": "Mobil"
+          },
+          "value": "<a href=\"tel:+436703585527\">+43 670 3585527</a>"
+        },
+        {
+          "label": {
+            "en": "Website",
+            "de": "Webseite"
+          },
+          "value": "<a href=\"https://kaufmann.dev\" target=\"_blank\" rel=\"noopener\">kaufmann.dev</a>"
+        }
+      ]
+    },
+    {
+      "id": "work",
+      "title": {
+        "en": "Work Experience",
+        "de": "Berufserfahrung"
+      },
+      "open": true,
+      "type": "entries",
+      "items": [
+        {
+          "title": {
+            "en": "Board of Education Vienna",
+            "de": "Bildungsdirektion für Wien"
+          },
+          "subtitle": {
+            "en": "IT Consultant",
+            "de": "IT-Referent"
+          },
+          "location": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "date": {
+            "en": "Apr 2024 – Present",
+            "de": "Apr. 2024 – Heute"
+          },
+          "highlights": [
+            {
+              "en": "Administering time tracking and eGovernment document/business process management software",
+              "de": "Administration von Zeiterfassungs- und eGovernment-Software für Dokumenten- und Geschäftsprozessmanagement"
+            },
+            {
+              "en": "Organizing and moderating meetings for creation and revision of business processes",
+              "de": "Organisation und Moderation von Meetings zur Erstellung und Überarbeitung von Geschäftsprozessen"
+            },
+            {
+              "en": "Onboarding new employees and delivering continuous training to existing staff",
+              "de": "Einarbeitung neuer sowie laufende Schulung bestehender Mitarbeiter"
+            },
+            {
+              "en": "Providing technical support to internal staff, schools, and prospective teachers",
+              "de": "Technischer Support für interne Mitarbeiter, Schulen und angehende Lehrkräfte"
+            },
+            {
+              "en": "Managing and assigning user permissions for internal staff and schools",
+              "de": "Verwaltung von Benutzerberechtigungen für interne Mitarbeiter und Schulen"
+            }
+          ]
+        },
+        {
+          "title": "Fabasoft",
+          "subtitle": "Cloud Systems Engineer",
+          "location": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "date": {
+            "en": "Dec 2023 – Mar 2024",
+            "de": "Dez. 2023 – März 2024"
+          },
+          "highlights": [
+            {
+              "en": "Developed Bash scripts to standardize and aggregate Syslog error messages for efficient error diagnosis",
+              "de": "Entwicklung von Bash-Skripten zur Standardisierung und Aggregation von Syslog-Fehlermeldungen für eine effiziente Fehlerdiagnose"
+            },
+            {
+              "en": "Performed hardware upgrades and reconfigurations across 3 data centers to improve system stability",
+              "de": "Durchführung von Hardware-Upgrades und Rekonfigurationen in 3 Rechenzentren zur Verbesserung der Systemstabilität"
+            },
+            {
+              "en": "Implemented hotfixes and security patches on Fabasoft customer servers",
+              "de": "Implementierung von Hotfixes und Sicherheitspatches auf Fabasoft-Kundenservern"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "City Pharmacy Wismar at the Market",
+            "de": "Rats Apotheke Wismar am Markt"
+          },
+          "subtitle": {
+            "en": "Intern",
+            "de": "Praktikant"
+          },
+          "location": {
+            "en": "Wismar, Germany",
+            "de": "Wismar, Deutschland"
+          },
+          "date": {
+            "en": "Jul 2023",
+            "de": "Jul. 2023"
+          },
+          "highlights": [
+            {
+              "en": "Reconciled software medication records with actual inventory",
+              "de": "Abgleich von Software-Medikamentendatensätzen mit dem tatsächlichen Bestand"
+            },
+            {
+              "en": "Collected prescriptions and delivered/returned medications via e-scooter",
+              "de": "Rezeptabholung sowie Auslieferung und Rückgabe von Medikamenten per E-Scooter"
+            },
+            {
+              "en": "Logged and organized incoming pharmacy inventory",
+              "de": "Erfassung und Organisation eingehender Apothekenware"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "Cardiology Practice Langenlois",
+            "de": "Herzpraxis Langenlois"
+          },
+          "subtitle": {
+            "en": "Intern",
+            "de": "Praktikant"
+          },
+          "location": {
+            "en": "Langenlois, Austria",
+            "de": "Langenlois, Österreich"
+          },
+          "date": {
+            "en": "Aug 2022",
+            "de": "Aug. 2022"
+          },
+          "highlights": [
+            {
+              "en": "Prototyped a web-based patient record, including design and system architecture",
+              "de": "Entwicklung eines Prototyps für eine webbasierte Patientenakte, einschließlich Design und Systemarchitektur"
+            },
+            {
+              "en": "Supported reception staff in patient care",
+              "de": "Unterstützung des Empfangspersonals bei der Patientenbetreuung"
+            },
+            {
+              "en": "Handled logistics, supplies, errands, and technical maintenance",
+              "de": "Logistik, Einkäufe, Besorgungen und technische Wartung"
+            }
+          ]
+        },
+        {
+          "title": "Raiffeisen Software",
+          "subtitle": {
+            "en": "Controlling Intern",
+            "de": "Praktikant im Controlling"
+          },
+          "location": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "date": {
+            "en": "Jul 2021",
+            "de": "Jul. 2021"
+          },
+          "highlights": [
+            {
+              "en": "Expanded a C# deployment tool for managing MS SQL databases with schema versioning and rollback",
+              "de": "Erweiterung eines C#-Deployment-Tools für MS-SQL-Datenbanken mit Schema-Versionierung und Rollback"
+            },
+            {
+              "en": "Created documentation for data marts and tenants across various development environments",
+              "de": "Dokumentation von Data Marts und Mandanten in verschiedenen Entwicklungsumgebungen"
+            },
+            {
+              "en": "Redesigned and restructured an internal sales controlling dashboard",
+              "de": "Neugestaltung und Restrukturierung eines internen Vertriebscontrolling-Dashboards"
+            }
+          ]
+        },
+        {
+          "title": {
+            "en": "IMC University of Applied Sciences Krems",
+            "de": "IMC Hochschule für Angewandte Wissenschaften Krems"
+          },
+          "subtitle": {
+            "en": "IT Services Intern",
+            "de": "Praktikant im IT-Service"
+          },
+          "location": {
+            "en": "Krems, Austria",
+            "de": "Krems, Österreich"
+          },
+          "date": {
+            "en": "Jul 2019",
+            "de": "Jul. 2019"
+          },
+          "highlights": [
+            {
+              "en": "Client lifecycle management, including configuring and deploying new client systems",
+              "de": "Client Lifecycle Management, einschließlich der Konfiguration und Bereitstellung neuer Client-Systeme"
+            },
+            {
+              "en": "Planned, built, and maintained network infrastructure",
+              "de": "Planung, Aufbau und Wartung von Netzwerkinfrastruktur"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "title": {
+        "en": "Education",
+        "de": "Ausbildung"
+      },
+      "open": true,
+      "type": "entries",
+      "items": [
+        {
+          "title": {
+            "en": "Higher Federal Technical College Krems",
+            "de": "Höhere Technische Bundeslehranstalt Krems"
+          },
+          "subtitle": {
+            "en": "Diploma in Information Technology + Matura",
+            "de": "Diplom in Informationstechnologie + Matura"
+          },
+          "location": {
+            "en": "Krems, Austria",
+            "de": "Krems, Österreich"
+          },
+          "date": {
+            "en": "Sep 2018 – Jun 2023",
+            "de": "Sep. 2018 – Jun. 2023"
+          },
+          "highlights": [
+            {
+              "en": "Specialization: Media Technology",
+              "de": "Spezialisierung: Medientechnik"
+            },
+            {
+              "en": "Final Exam Elective: Software Development",
+              "de": "Abschlussprüfung Wahlfach: Softwareentwicklung"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dev",
+      "title": {
+        "en": "Professional Development",
+        "de": "Weiterbildung"
+      },
+      "open": false,
+      "type": "entries",
+      "items": [
+        {
+          "title": {
+            "en": "Digital Transformation (4 ECTS)",
+            "de": "Digitale Transformation (4 ECTS)"
+          },
+          "subtitle": "Audencia Business School",
+          "location": {
+            "en": "Nantes, France",
+            "de": "Nantes, Frankreich"
+          },
+          "date": {
+            "en": "Jan 2026",
+            "de": "Jan. 2026"
+          }
+        },
+        {
+          "title": {
+            "en": "Project Management Course",
+            "de": "Projektmanagement Lehrgang"
+          },
+          "subtitle": {
+            "en": "Austrian Federal Academy of Public Administration",
+            "de": "Verwaltungsakademie des Bundes"
+          },
+          "location": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "date": {
+            "en": "Sep 2025",
+            "de": "Sep. 2025"
+          }
+        },
+        {
+          "title": {
+            "en": "Business Process Analysis (3 ECTS)",
+            "de": "Geschäftsprozessanalyse (3 ECTS)"
+          },
+          "subtitle": {
+            "en": "Masaryk University",
+            "de": "Masaryk-Universität"
+          },
+          "location": {
+            "en": "Brno, Czechia",
+            "de": "Brünn, Tschechien"
+          },
+          "date": {
+            "en": "Jul 2025",
+            "de": "Jul. 2025"
+          }
+        },
+        {
+          "title": {
+            "en": "Transrapid Debate Tournament",
+            "de": "Transrapid-Debatierturnier"
+          },
+          "subtitle": {
+            "en": "Debatingclub Munich",
+            "de": "Debattierclub München"
+          },
+          "location": {
+            "en": "Munich, Germany",
+            "de": "München, Deutschland"
+          },
+          "date": {
+            "en": "Jan 2025",
+            "de": "Jan. 2025"
+          }
+        },
+        {
+          "title": {
+            "en": "European Grief Conference",
+            "de": "Europäische Trauerkonferenz"
+          },
+          "subtitle": "Bereavement Network Europe",
+          "location": {
+            "en": "Dublin, Ireland",
+            "de": "Dublin, Irland"
+          },
+          "date": {
+            "en": "Nov 2024",
+            "de": "Nov. 2024"
+          }
+        },
+        {
+          "title": {
+            "en": "Certificate of C2 Proficiency in English",
+            "de": "Zertifikat für C2-Sprachkompetenz in Englisch"
+          },
+          "subtitle": "EF International Language Campuses",
+          "location": "St. Julians, Malta",
+          "date": {
+            "en": "Aug 2020",
+            "de": "Aug. 2020"
+          }
+        }
+      ]
+    },
+    {
+      "id": "pubs",
+      "title": {
+        "en": "Publications",
+        "de": "Publikationen"
+      },
+      "open": false,
+      "type": "pub",
+      "content": "<strong>Kaufmann, D.</strong> &amp; Spindelberger, J. (2023). <em>Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.</em> Höhere Technische Bundeslehranstalt Krems."
+    },
+    {
+      "id": "projects",
+      "title": {
+        "en": "Projects",
+        "de": "Projekte"
+      },
+      "open": false,
+      "type": "entries",
+      "items": [
+        {
+          "title": {
+            "en": "Market Deck — data visualization & finance",
+            "de": "Market Deck: Finanz-Dashboard"
+          },
+          "date": "2026",
+          "highlights": [
+            {
+              "en": "Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
+              "de": "Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
+            },
+            {
+              "en": "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
+              "de": "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
+            }
+          ],
+          "tags": [
+            "FastAPI",
+            "SQLite",
+            "yfinance",
+            "Python",
+            "Vanilla JS"
+          ],
+          "link": {
+            "href": "https://github.com/kaufmann-dev/market-deck",
+            "label": {
+              "en": "Open GitHub",
+              "de": "GitHub öffnen"
+            }
+          }
+        },
+        {
+          "title": {
+            "en": "CT2Mesh2Print — medical imaging & 3D printing",
+            "de": "CT2Mesh2Print — Medizinische Bildgebung & 3D-Druck"
+          },
+          "date": "2025",
+          "highlights": [
+            {
+              "en": "Segmented CT scan data to isolate bone structures",
+              "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung von Originalgroßdrucken"
+            },
+            {
+              "en": "Converted segmented data into a printable 3D mesh and produced lifesize prints",
+              "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
+            }
+          ],
+          "link": {
+            "href": "https://kaufmann.dev/article/ct2mesh2print",
+            "label": {
+              "en": "Read Article",
+              "de": "Artikel lesen"
+            }
+          }
+        },
+        {
+          "title": {
+            "en": "Git Wrangler — shell scripting & git automation",
+            "de": "Git Wrangler: Git-Repository-Verwaltung"
+          },
+          "date": "2024",
+          "highlights": [
+            {
+              "en": "Bash scripts for the bulk management and manipulation of Git repositories",
+              "de": "Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
+            },
+            {
+              "en": "Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
+              "de": "Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets u. v. m."
+            }
+          ],
+          "tags": [
+            "Bash",
+            "Git",
+            "GitHub CLI",
+            "git-filter-repo"
+          ],
+          "link": {
+            "href": "https://github.com/kaufmann-dev/git-wrangler",
+            "label": {
+              "en": "Open GitHub",
+              "de": "GitHub öffnen"
+            }
+          }
+        },
+        {
+          "title": {
+            "en": "Jung in Krems — full-stack web development",
+            "de": "Jung in Krems — Full-Stack-Webentwicklung"
+          },
+          "date": "2023",
+          "highlights": [
+            {
+              "en": "Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
+              "de": "Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
+            },
+            {
+              "en": "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
+              "de": "Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
+            }
+          ],
+          "tags": [
+            "MySQL 8",
+            "Laravel 9",
+            "Svelte 3",
+            "Eloquent",
+            "Inertia",
+            "REST",
+            "Laravel Sanctum",
+            "Tailwind"
+          ],
+          "link": {
+            "href": "https://github.com/kaufmann-dev/jung-in-krems",
+            "label": {
+              "en": "Open GitHub",
+              "de": "GitHub öffnen"
+            }
+          }
+        },
+        {
+          "title": {
+            "en": "Async Cinema — asynchronous programming",
+            "de": "Async Cinema — Asynchrone Programmierung"
+          },
+          "date": "2022",
+          "highlights": [
+            {
+              "en": "Full-Stack-.NET-MVC-Anwendung mit REST-API zur Verwaltung einer MySQL-Filmdatenbank",
+              "de": "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
+            },
+            {
+              "en": "Asynchronous CRUD operations with Swagger documentation and Blazor UI",
+              "de": "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
+            }
+          ],
+          "tags": [
+            ".NET 7",
+            "C# 11",
+            "MySQL 8",
+            "Blazor",
+            "Entity Framework",
+            "Swagger"
+          ],
+          "link": {
+            "href": "https://github.com/kaufmann-dev/async-cinema",
+            "label": {
+              "en": "Open GitHub",
+              "de": "GitHub öffnen"
+            }
+          }
+        },
+        {
+          "title": {
+            "en": "Purus CSS — frontend development & CSS",
+            "de": "Purus CSS — Frontend-Entwicklung & CSS"
+          },
+          "date": "2021",
+          "highlights": [
+            {
+              "en": "Responsive CSS drop-in framework with no JavaScript dependencies",
+              "de": "Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
+            },
+            {
+              "en": "CSS variable customization and utility classes for layout, spacing, and typography",
+              "de": "CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
+            }
+          ],
+          "link": {
+            "href": "https://puruscss.kaufmann.dev",
+            "label": {
+              "en": "Visit Website",
+              "de": "Website besuchen"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "volunteer",
+      "title": {
+        "en": "Volunteer Work",
+        "de": "Ehrenamtliche Tätigkeit"
+      },
+      "open": false,
+      "type": "entries",
+      "items": [
+        {
+          "title": {
+            "en": "Austrian Association of Hospice and Palliative Care",
+            "de": "Dachverband HOSPIZ Österreich"
+          },
+          "subtitle": {
+            "en": "Communication Volunteer",
+            "de": "Ehrenamtlicher im Kommunikationsbereich"
+          },
+          "location": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "date": {
+            "en": "May 2024 – Present",
+            "de": "Mai 2024 – Heute"
+          },
+          "highlights": [
+            {
+              "en": "Creation of graphics, flyers, and invitations for internal communication and social media",
+              "de": "Erstellung von Grafiken, Flyern und Einladungen für interne Kommunikation und Social Media"
+            },
+            {
+              "en": "Support with IT problems and infrastructure management in the office",
+              "de": "Unterstützung bei IT-Problemen und Infrastrukturverwaltung im Büro"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

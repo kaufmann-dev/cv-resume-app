@@ -273,13 +273,13 @@ async function handleDownload() {
 
   setDownloadButtonState(true);
   setStatusMessage(getMessage({
-    en: 'Preparing PDF download...',
-    de: 'PDF-Download wird vorbereitet...'
+    en: 'Starting PDF download...',
+    de: 'PDF-Download wird gestartet...'
   }));
 
   try {
     const response = await fetch(downloadUrl, {
-      method: 'GET',
+      method: 'HEAD',
       cache: 'no-store'
     });
 
@@ -301,21 +301,15 @@ async function handleDownload() {
       return;
     }
 
-    const blob = await response.blob();
-    const objectUrl = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
 
-    link.href = objectUrl;
+    link.href = downloadUrl.toString();
     link.download = activeVariant.pdfDownloadName || 'resume.pdf';
     link.style.display = 'none';
 
     document.body.appendChild(link);
     link.click();
     link.remove();
-
-    window.setTimeout(() => {
-      window.URL.revokeObjectURL(objectUrl);
-    }, 60000);
 
     clearStatusMessage();
   } catch (error) {

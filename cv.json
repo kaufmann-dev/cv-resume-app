@@ -806,8 +806,8 @@
       "items":[
         {
           "title":{
-            "en":"Transrapid 2025 – International Debate Tournament",
-            "de":"Transrapid 2025 – Internationales Debattierturnier"
+            "en":"Transrapid Debate Tournament",
+            "de":"Transrapid Debattierturnier"
           },
           "date":{
             "en":"Jan 2025 · Munich, Germany",
@@ -826,12 +826,12 @@
         },
         {
           "title":{
-            "en":"Annual School-Wide Swimming Competitions",
-            "de":"Jährliche Schulschwimmwettkämpfe"
+            "en":"School Swimming Competitions",
+            "de":"Schulschwimmwettkämpfe"
           },
           "date":{
-            "en":"2017 – 2018 · Krems, Austria",
-            "de":"2017 – 2018 · Krems, Österreich"
+            "en":"2017 & 2018 · Krems, Austria",
+            "de":"2017 & 2018 · Krems, Österreich"
           },
           "highlights":[
             {
@@ -842,8 +842,8 @@
         },
         {
           "title":{
-            "en":"Math Kangaroo – International Math Competition",
-            "de":"Känguru der Mathematik – Internationaler Mathematikwettbewerb"
+            "en":"Math Kangaroo",
+            "de":"Känguru der Mathematik"
           },
           "date":{
             "en":"Mar 2017 · Krems, Austria",
@@ -862,18 +862,14 @@
         },
         {
           "title":{
-            "en":"Beaver of Informatics – International Computer Science Competition",
-            "de":"Biber der Informatik – Internationaler Informatikwettbewerb"
+            "en":"Beaver of Informatics",
+            "de":"Biber der Informatik"
           },
           "date":{
             "en":"Nov 2016 · Krems, Austria",
             "de":"November 2016 · Krems, Österreich"
           },
           "highlights":[
-            {
-              "en":"Held by 3 leading German informatics institutions under the umbrella of Bundesweite Informatikwettbewerbe.",
-              "de":"Ausgetragen von 3 führenden deutschen Informatik-Institutionen unter dem Dach der Bundesweiten Informatikwettbewerbe."
-            },
             {
               "en":"Achieved 4th place out of all participants in stages 7 and 8 at my school.",
               "de":"Erreichte Platz 4 unter allen Teilnehmern der Stufen 7 und 8 an meiner Schule."
@@ -892,8 +888,8 @@
         },
         {
           "title":{
-            "en":"KTM Kamptal Trophy – International XCO Mountain Bike Race",
-            "de":"KTM Kamptal Trophy – Internationales XCO-Mountainbike-Rennen"
+            "en":"KTM Kamptal Trophy — XCO Mountain Bike Race",
+            "de":"KTM Kamptal Trophy — XCO-Mountainbike-Rennen"
           },
           "date":{
             "en":"Mar 2013 · Langenlois, Austria",
@@ -901,12 +897,8 @@
           },
           "highlights":[
             {
-              "en":"Held by KTM Sportmotorcycle GmbH.",
-              "de":"Ausgetragen von KTM Sportmotorcycle GmbH."
-            },
-            {
-              "en":"Achieved 8th place in the YoungsterCup U11 as an independent competitor.",
-              "de":"Erreichte Platz 8 im YoungsterCup U11 als unabhängiger Teilnehmer."
+              "en":"Achieved 8th place in the YoungsterCup U11 as an independent competitor",
+              "de":"Erreichte Platz 8 im YoungsterCup U11 als unabhängiger Teilnehmer"
             }
           ]
         }

@@ -1,6 +1,5 @@
 # Node packages
 node_modules/
-package-lock.json
 
 # Build artifacts
 dist/
@@ -18,7 +17,6 @@ dist-ssr/
 
 # Project specific
 passcodes.json
-database.db
 *.log
 
 # OS generated files

@@ -14,7 +14,22 @@ fi
 cd "${APP_DIR}"
 
 echo "Deploying from ${APP_DIR}"
+echo "WARNING: This deploy will discard all local commits, tracked changes, and untracked files in this repository."
 
+if [[ "${CONFIRM_DEPLOY:-}" != "YES" ]]; then
+  read -r -p "Type YES to continue: " confirmation
+
+  if [[ "${confirmation}" != "YES" ]]; then
+    echo "Deployment cancelled."
+    exit 1
+  fi
+fi
+
+UPSTREAM_REF="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}')"
+
+git fetch --prune
+git reset --hard "${UPSTREAM_REF}"
+git clean -fd
 git pull --ff-only
 npm ci
 npm run build

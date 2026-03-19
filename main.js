@@ -161,29 +161,34 @@ function mkEntry(item) {
   const location = localize(item.location);
   const date = localize(item.date);
   const highlights = (item.highlights || []).map(localize);
-  const mobMeta = [date, location].filter(Boolean).join(' &#183; ');
+  const linkLabel = localize(item.link?.label) || item.link?.href || '';
   const hasTitle = Boolean(title);
   const hasSubtitle = Boolean(subtitle);
   const hasLocation = Boolean(location);
   const hasDate = Boolean(date);
-  const useInlineMeta = hasTitle && !hasSubtitle && (hasDate || hasLocation);
+  const hasLink = Boolean(item.link?.href);
+  const mobMeta = [location, date].filter(Boolean).join(' &#183; ');
+  const useInlineMeta = hasTitle && !hasSubtitle && !hasLink && (hasLocation || hasDate);
+  const topRightMeta = hasLink
+    ? `<a class="entry-link" href="${item.link.href}" target="_blank" rel="noopener">${linkLabel}</a>`
+    : (hasLocation ? `<span class="entry-location">${location}</span>` : '');
   const inlineMeta = useInlineMeta ? `
-      <span class="entry-meta">
+      <span class="entry-inline-meta entry-inline-meta--text">
+        ${hasLocation ? `<span class="entry-location">${location}</span>` : ''}
+        ${(hasLocation && hasDate) ? '<span class="entry-meta-sep">&#183;</span>' : ''}
         ${hasDate ? `<span class="entry-date">${date}</span>` : ''}
-        ${(hasDate && hasLocation) ? '<span class="entry-meta-sep">&#183;</span>' : ''}
-        ${hasLocation ? `<span class="entry-location entry-location-inline">${location}</span>` : ''}
       </span>
     ` : '';
-  const showSecondRow = hasSubtitle || (hasLocation && !useInlineMeta);
+  const bottomRightMeta = !useInlineMeta && hasDate ? `<span class="entry-date">${date}</span>` : '';
+  const showSecondRow = hasSubtitle || Boolean(bottomRightMeta);
   const secondRowClass = hasSubtitle ? 'e-r2' : 'e-r2 e-r2--meta-only';
 
   return `<div class="entry"><div class="e-line"></div><div class="e-body">
     ${mobMeta ? `<div class="e-mob">${mobMeta}</div>` : ''}
-    <div class="e-r1"><span class="entry-title">${title}</span>${useInlineMeta ? inlineMeta : (hasDate ? `<span class="entry-date">${date}</span>` : '')}</div>
-    ${showSecondRow ? `<div class="${secondRowClass}">${hasSubtitle ? `<span class="entry-subtitle">${subtitle}</span>` : ''}${hasLocation ? `<span class="entry-location">${location}</span>` : ''}</div>` : ''}
+    <div class="e-r1"><span class="entry-title">${title}</span>${useInlineMeta ? inlineMeta : topRightMeta}</div>
+    ${showSecondRow ? `<div class="${secondRowClass}">${hasSubtitle ? `<span class="entry-subtitle">${subtitle}</span>` : ''}${bottomRightMeta}</div>` : ''}
     ${highlights.length ? `<ul>${highlights.map((highlight) => `<li>${highlight}</li>`).join('')}</ul>` : ''}
     ${item.tags?.length ? `<div class="tags">${item.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
-    ${item.link?.href ? `<a class="proj-link" href="${item.link.href}" target="_blank" rel="noopener">${localize(item.link.label) || 'Open GitHub'}</a>` : ''}
   </div></div>`;
 }
 

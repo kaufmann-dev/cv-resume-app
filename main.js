@@ -20,10 +20,13 @@ const authContainer = document.getElementById('auth-container');
 const contentContainer = document.getElementById('cv-container');
 const authError = document.getElementById('auth-error');
 const passcodeInput = document.getElementById('passcode-input');
+const statusNote = document.getElementById('status-note');
+const downloadButton = document.getElementById('btn-dl');
 
 const openState = {};
 const expandedState = {};
 const PASSCODE_STORAGE_PREFIX = 'kaufmann.dev.passcode';
+let isDownloadingPdf = false;
 
 function buildApiUrl(path) {
   return new URL(path, API_BASE_URL || window.location.origin);
@@ -62,6 +65,27 @@ function clearStoredPasscode(variantId = activeVariant.id) {
   } catch {
     // Ignore storage failures and keep the regular login flow working.
   }
+}
+
+function setStatusMessage(message = '', state = 'info') {
+  if (!statusNote) return;
+
+  statusNote.textContent = message;
+  statusNote.dataset.state = state;
+  statusNote.hidden = !message;
+}
+
+function clearStatusMessage() {
+  setStatusMessage('');
+}
+
+function setDownloadButtonState(isBusy) {
+  isDownloadingPdf = isBusy;
+  downloadButton.disabled = isBusy;
+}
+
+function getMessage(value) {
+  return localize(value);
 }
 
 function applyVariantChrome() {
@@ -216,14 +240,91 @@ async function handleLogin() {
   const passcode = passcodeInput.value.trim();
 
   if (!passcode) {
-      authError.textContent = 'Please enter a passcode';
-      return;
+    authError.textContent = getMessage({
+      en: 'Please enter a passcode',
+      de: 'Bitte Passcode eingeben'
+    });
+    return;
   }
 
   const success = await authenticate(passcode, { persistPasscode: true });
 
   if (!success) {
     currentPasscode = '';
+  }
+}
+
+async function handleDownload() {
+  if (isDownloadingPdf) {
+    return;
+  }
+
+  if (!currentPasscode) {
+    setStatusMessage(getMessage({
+      en: 'Your session is missing. Please sign in again.',
+      de: 'Deine Sitzung fehlt. Bitte erneut anmelden.'
+    }), 'error');
+    return;
+  }
+
+  const downloadUrl = buildApiUrl('/api/download');
+  downloadUrl.searchParams.set('passcode', currentPasscode);
+  downloadUrl.searchParams.set('variant', activeVariant.id);
+
+  setDownloadButtonState(true);
+  setStatusMessage(getMessage({
+    en: 'Preparing PDF download...',
+    de: 'PDF-Download wird vorbereitet...'
+  }));
+
+  try {
+    const response = await fetch(downloadUrl, {
+      method: 'GET',
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      const responseText = (await response.text()).trim();
+
+      if (response.status === 401 || response.status === 403) {
+        clearStoredPasscode(activeVariant.id);
+        currentPasscode = '';
+      }
+
+      setStatusMessage(
+        responseText || getMessage({
+          en: 'Download failed. Please try again.',
+          de: 'Download fehlgeschlagen. Bitte erneut versuchen.'
+        }),
+        'error'
+      );
+      return;
+    }
+
+    const blob = await response.blob();
+    const objectUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = objectUrl;
+    link.download = activeVariant.pdfDownloadName || 'resume.pdf';
+    link.style.display = 'none';
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    window.setTimeout(() => {
+      window.URL.revokeObjectURL(objectUrl);
+    }, 60000);
+
+    clearStatusMessage();
+  } catch (error) {
+    setStatusMessage(getMessage({
+      en: 'Download failed. Please check your connection and try again.',
+      de: 'Download fehlgeschlagen. Bitte Verbindung pruefen und erneut versuchen.'
+    }), 'error');
+  } finally {
+    setDownloadButtonState(false);
   }
 }
 
@@ -265,12 +366,7 @@ document.getElementById('btn-theme').addEventListener('click', () => {
   if (documentData) applyThemeIcons();
 });
 
-document.getElementById('btn-dl').addEventListener('click', () => {
-  const downloadUrl = buildApiUrl('/api/download');
-  downloadUrl.searchParams.set('passcode', currentPasscode);
-  downloadUrl.searchParams.set('variant', activeVariant.id);
-  window.location.href = downloadUrl.toString();
-});
+downloadButton.addEventListener('click', handleDownload);
 
 document.getElementById('cv-body').addEventListener('click', (event) => {
   const button = event.target.closest('.show-more-btn');

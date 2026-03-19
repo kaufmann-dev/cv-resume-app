@@ -259,7 +259,7 @@
           },
           "subtitle":{
             "en":"IT Services Intern",
-            "de":"Praktikant im IT-Service"
+            "de":"Praktikant in IT-Services"
           },
           "location":{
             "en":"Krems, Austria",
@@ -664,50 +664,63 @@
           },
           "subtitle":"Bereavement Network Europe",
           "date":{
-            "en":"Nov 2024 · Dublin, Ireland",
-            "de":"November 2024 · Dublin, Irland"
+            "en":"Nov 2024",
+            "de":"November 2024"
+          },
+          "location":{
+            "en":"Dublin, Ireland",
+            "de":"Dublin, Irland"
           },
           "highlights":[
             {
-              "en":"Partly paid for by DVHÖ because of my volunteer work.",
-              "de":"Teilweise vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit finanziert."
+              "en":"Partly paid for by the Austrian Association of Hospice and Palliative Care because of my volunteer work",
+              "de":"Teilweise vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit finanziert"
             }
           ]
         },
         {
           "title":{
-            "en":"EF International Language Campuses – Language Trip",
-            "de":"EF International Language Campuses – Sprachreise"
+            "en":"Malta Language Trip",
+            "de":"Sprachreise in Malta"
           },
           "subtitle":"EF International Language Campuses",
           "date":{
-            "en":"Aug 2020 · St. Julians, Malta",
-            "de":"August 2020 · St. Julians, Malta"
-          }
+            "en":"Aug 2020",
+            "de":"August 2020"
+          },
+          "location":"St. Julians, Malta"
         },
         {
           "title":{
-            "en":"Austrian Youth Red Cross – Youth Conference",
-            "de":"Österreichisches Jugendrotkreuz – Jugendkonferenz"
+            "en":"Youth Conference",
+            "de":"Jugendtagung"
           },
           "subtitle":{
             "en":"Austrian Youth Red Cross",
             "de":"Österreichisches Jugendrotkreuz"
           },
           "date":{
-            "en":"Apr 2019 · Tulln, Austria",
-            "de":"April 2019 · Tulln, Österreich"
+            "en":"Apr 2019",
+            "de":"April 2019"
+          },
+          "location":{
+            "en":"Tulln, Austria",
+            "de":"Tulln, Österreich"
           }
         },
         {
           "title":{
-            "en":"ComputerCamp Workshop – 3D Art Design",
-            "de":"ComputerCamp Workshop – 3D-Kunstdesign"
+            "en":"3D Design Workshop",
+            "de":"Workshop für 3D-Design"
           },
-          "subtitle":"ComputerCamp",
+          "subtitle":"ComputerCamp Schlins",
           "date":{
-            "en":"Jul 2018 · Schlins, Austria",
-            "de":"Juli 2018 · Schlins, Österreich"
+            "en":"Jul 2018",
+            "de":"Juli 2018"
+          },
+          "location":{
+            "en":"Schlins, Austria",
+            "de":"Schlins, Österreich"
           }
         },
         {
@@ -715,16 +728,18 @@
             "en":"Swimming Camp Krems",
             "de":"Schwimmcamp Krems"
           },
-          "date":{
-            "en":"Jul 2016 · Krems, Austria",
-            "de":"Juli 2016 · Krems, Österreich"
+          "subtitle":{
+            "en":"Obtained the Lifesaver Certificate Helper",
+            "de":"Erwerb des Helferscheins"
           },
-          "highlights":[
-            {
-              "en":"Achieved the national lifeguard qualification Helfer, qualifying for assisting lifeguard work in Austria.",
-              "de":"Erwerb der nationalen Rettungsschwimmer-Qualifikation 'Helfer', die zur unterstützenden Rettungsschwimmtätigkeit in Österreich berechtigt."
-            }
-          ]
+          "date":{
+            "en":"Jul 2016",
+            "de":"Juli 2016"
+          },
+          "location":{
+            "en":"Krems, Austria",
+            "de":"Krems, Österreich"
+          }
         }
       ]
     },
@@ -743,54 +758,54 @@
             "de":"Debattierclub Wien"
           },
           "date":{
-            "en":"Nov 2024 – Present · Vienna, Austria",
-            "de":"November 2024 – Heute · Wien, Österreich"
+            "en":"Nov 2024 – Present",
+            "de":"November 2024 – Heute"
           },
           "highlights":[
             {
-              "en":"Helped organize the VIV 2025, an international debate tournament held in Vienna, as part of the sponsoring team.",
-              "de":"Mitorganisation des VIV 2025, eines internationalen Debatten-Turniers in Wien, als Teil des Sponsoring-Teams."
+              "en":"Helped organize the international debate tournament VIV 2025 in Vienna as part of the sponsoring team",
+              "de":"Mitorganisation des internationalen Debattierturniers VIV 2025 in Wien als Teil des Sponsoring-Teams"
             }
           ]
         },
         {
           "title":{
-            "en":"Flow Culture — Parkour and Freerunning Club",
-            "de":"Flow Culture — Parkour- und Freerunning-Club"
+            "en":"Flow Culture (Parkour and Freerunning Club)",
+            "de":"Flow Culture (Parkour- und Freerunning-Club)"
           },
           "date":{
-            "en":"2017 · Krems, Austria",
-            "de":"2017 · Krems, Österreich"
+            "en":"2017",
+            "de":"2017"
           }
         },
         {
           "title":{
             "en":"Fencing Club Krems",
-            "de":"Fechtclub Krems"
+            "de":"Fechtunion Volksbank Krems"
           },
           "date":{
-            "en":"2014 – 2016 · Krems, Austria",
-            "de":"2014 – 2016 · Krems, Österreich"
+            "en":"2014 – 2016",
+            "de":"2014 – 2016"
           }
         },
         {
           "title":{
-            "en":"Badminton Club Krems",
+            "en":"Union Badminton Krems",
             "de":"Badmintonclub Krems"
           },
           "date":{
-            "en":"2013 · Krems, Austria",
-            "de":"2013 · Krems, Österreich"
+            "en":"2013",
+            "de":"2013"
           }
         },
         {
           "title":{
             "en":"Swimming Club Krems",
-            "de":"Schwimmclub Krems"
+            "de":"Schwimmverein Krems"
           },
           "date":{
-            "en":"2011 – 2012 · Krems, Austria",
-            "de":"2011 – 2012 · Krems, Österreich"
+            "en":"2011 – 2012",
+            "de":"2011 – 2012"
           }
         }
       ]
@@ -810,35 +825,32 @@
             "de":"Transrapid Debattierturnier"
           },
           "date":{
-            "en":"Jan 2025 · Munich, Germany",
-            "de":"Januar 2025 · München, Deutschland"
+            "en":"Jan 2025",
+            "de":"Januar 2025"
           },
-          "highlights":[
-            {
-              "en":"Held by Debattierclub München.",
-              "de":"Ausgetragen vom Debattierclub München."
-            },
-            {
-              "en":"Participated in British Parliamentary Style debating for the Debate Club Vienna.",
-              "de":"Teilnahme am British Parliamentary Style Debattieren für den Debattierclub Wien."
-            }
-          ]
+          "location":{
+            "en":"Munich, Germany",
+            "de":"München, Deutschland"
+          },
+          "subtitle":{
+            "en":"Participated in British Parliamentary style debating for the Debate Club Vienna",
+            "de":"Teilnahme am British Parliamentary Style Debattieren für den Debattierclub Wien"
+          }
         },
         {
           "title":{
             "en":"School Swimming Competitions",
             "de":"Schulschwimmwettkämpfe"
           },
-          "date":{
-            "en":"2017 & 2018 · Krems, Austria",
-            "de":"2017 & 2018 · Krems, Österreich"
+          "date":"2017 – 2018",
+          "location":{
+            "en":"Krems, Austria",
+            "de":"Krems, Österreich"
           },
-          "highlights":[
-            {
-              "en":"Achieved up to 2nd place in the 100m breaststroke and 100m freestyle events.",
-              "de":"Erreichte bis zu Platz 2 in den Disziplinen 100m Brust und 100m Freistil."
-            }
-          ]
+          "subtitle":{
+            "en":"Up to 2nd place in 100 m breaststroke and 100 m freestyle",
+            "de":"Bis zu 2. Platz in 100 m Brust und 100 m Freistil"
+          }
         },
         {
           "title":{
@@ -846,61 +858,68 @@
             "de":"Känguru der Mathematik"
           },
           "date":{
-            "en":"Mar 2017 · Krems, Austria",
-            "de":"März 2017 · Krems, Österreich"
+            "en":"Mar 2017",
+            "de":"März 2017"
           },
-          "highlights":[
-            {
-              "en":"Held by European Mathematical Society (EMS).",
-              "de":"Ausgetragen von der European Mathematical Society (EMS)."
-            },
-            {
-              "en":"Achieved 3rd place out of all participants in the cadet class at my school.",
-              "de":"Erreichte Platz 3 unter allen Teilnehmern der Kadettenklasse an meiner Schule."
-            }
-          ]
-        },
-        {
-          "title":{
-            "en":"Beaver of Informatics",
-            "de":"Biber der Informatik"
+          "location":{
+            "en":"Krems, Austria",
+            "de":"Krems, Österreich"
           },
-          "date":{
-            "en":"Nov 2016 · Krems, Austria",
-            "de":"November 2016 · Krems, Österreich"
-          },
-          "highlights":[
-            {
-              "en":"Achieved 4th place out of all participants in stages 7 and 8 at my school.",
-              "de":"Erreichte Platz 4 unter allen Teilnehmern der Stufen 7 und 8 an meiner Schule."
-            }
-          ]
-        },
-        {
-          "title":{
-            "en":"Local and State-Level Fencing Competitions",
-            "de":"Lokale und landesweite Fechtwettkämpfe"
-          },
-          "date":{
-            "en":"2014 – 2016 · Austria",
-            "de":"2014 – 2016 · Österreich"
+          "subtitle":{
+            "en":"3rd place (Cadet category, school-wide ranking)",
+            "de":"3. Platz (Kadettenklasse, schulweit)"
           }
         },
         {
           "title":{
-            "en":"KTM Kamptal Trophy — XCO Mountain Bike Race",
-            "de":"KTM Kamptal Trophy — XCO-Mountainbike-Rennen"
+            "en":"Bebras Informatics Challenge",
+            "de":"Biber der Informatik"
           },
           "date":{
-            "en":"Mar 2013 · Langenlois, Austria",
-            "de":"März 2013 · Langenlois, Österreich"
+            "en":"Nov 2016",
+            "de":"November 2016"
           },
-          "highlights":[
-            {
-              "en":"Achieved 8th place in the YoungsterCup U11 as an independent competitor",
-              "de":"Erreichte Platz 8 im YoungsterCup U11 als unabhängiger Teilnehmer"
-            }
-          ]
+          "location":{
+            "en":"Krems, Austria",
+            "de":"Krems, Österreich"
+          },
+          "subtitle":{
+            "en":"4th place (Grades 7–8, school-wide ranking)",
+            "de":"4. Platz (Stufen 7–8, schulweit)"
+          }
+        },
+        {
+          "title":{
+            "en":"Fencing Competitions",
+            "de":"Fechtwettkämpfe"
+          },
+          "date":"2014 – 2016",
+          "location":{
+            "en":"Austria",
+            "de":"Österreich"
+          },
+          "subtitle":{
+            "en":"Achieved various placements in regional and national competitions",
+            "de":"Mehrere Platzierungen bei regionalen und nationalen Wettbewerben"
+          }
+        },
+        {
+          "title":{
+            "en":"KTM Kamptal Trophy (XCO Mountain Bike Race)",
+            "de":"KTM Kamptal Trophy (XCO-Mountainbike-Rennen)"
+          },
+          "date":{
+            "en":"Mar 2013",
+            "de":"März 2013"
+          },
+          "location":{
+            "en":"Langenlois, Austria",
+            "de":"Langenlois, Österreich"
+          },
+          "subtitle":{
+            "en":"8th place (YoungsterCup U11, independent competitor)",
+            "de":"8. Platz (YoungsterCup U11, Einzelstarter)"
+          }
         }
       ]
     }

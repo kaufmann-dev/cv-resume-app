@@ -14,11 +14,16 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const SESSION_COOKIE_NAME = 'kaufmann_dev_session';
+
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 
 app.set('trust proxy', true);
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
 
 function readJsonFile(fileName) {
@@ -29,7 +34,125 @@ function getPasscodes() {
   return readJsonFile('passcodes.json');
 }
 
+function parseCookies(cookieHeader = '') {
+  return Object.fromEntries(
+    String(cookieHeader)
+      .split(';')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => {
+        const separatorIndex = part.indexOf('=');
+
+        if (separatorIndex === -1) {
+          return [part, ''];
+        }
+
+        const key = part.slice(0, separatorIndex);
+        const value = decodeURIComponent(part.slice(separatorIndex + 1));
+        return [key, value];
+      })
+  );
+}
+
+function getRequestHostname(req) {
+  const hostnameCandidates = [
+    req.headers['x-forwarded-host'],
+    req.headers.host,
+    req.headers.origin,
+    req.headers.referer
+  ];
+
+  for (const candidate of hostnameCandidates) {
+    const hostname = normalizeHostname(candidate);
+
+    if (hostname) {
+      return hostname;
+    }
+  }
+
+  return '';
+}
+
+function getSessionCookieDomain(req) {
+  const hostname = getRequestHostname(req);
+
+  if (hostname === 'kaufmann.dev' || hostname.endsWith('.kaufmann.dev')) {
+    return '.kaufmann.dev';
+  }
+
+  return undefined;
+}
+
+function isSecureRequest(req) {
+  const forwardedProto = String(req.headers['x-forwarded-proto'] ?? '')
+    .split(',')[0]
+    .trim()
+    .toLowerCase();
+
+  return req.secure || forwardedProto === 'https';
+}
+
+function getBaseSessionCookieOptions(req) {
+  const options = {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/'
+  };
+
+  const domain = getSessionCookieDomain(req);
+
+  if (domain) {
+    options.domain = domain;
+  }
+
+  if (isSecureRequest(req)) {
+    options.secure = true;
+  }
+
+  return options;
+}
+
+function setSessionCookie(res, req, passcode, expiresAt) {
+  res.cookie(SESSION_COOKIE_NAME, passcode, {
+    ...getBaseSessionCookieOptions(req),
+    expires: expiresAt
+  });
+}
+
+function clearSessionCookie(res, req) {
+  res.clearCookie(SESSION_COOKIE_NAME, getBaseSessionCookieOptions(req));
+}
+
+function readSessionPasscode(req) {
+  const cookies = parseCookies(req.headers.cookie);
+  return cookies[SESSION_COOKIE_NAME] ?? '';
+}
+
+function resolvePasscodeFromRequest(req) {
+  const bodyPasscode = typeof req.body?.passcode === 'string' ? req.body.passcode.trim() : '';
+  const queryPasscode = typeof req.query?.passcode === 'string' ? req.query.passcode.trim() : '';
+  const cookiePasscode = readSessionPasscode(req).trim();
+
+  if (bodyPasscode) {
+    return { passcode: bodyPasscode, source: 'body' };
+  }
+
+  if (queryPasscode) {
+    return { passcode: queryPasscode, source: 'query' };
+  }
+
+  if (cookiePasscode) {
+    return { passcode: cookiePasscode, source: 'cookie' };
+  }
+
+  return { passcode: '', source: 'none' };
+}
+
 function validatePasscode(passcode) {
+  if (!passcode) {
+    return { ok: false, status: 401, error: 'Not authenticated' };
+  }
+
   const passcodes = getPasscodes();
   const match = passcodes.find((entry) => entry.code === passcode);
 
@@ -37,11 +160,13 @@ function validatePasscode(passcode) {
     return { ok: false, status: 401, error: 'Invalid passcode' };
   }
 
-  if (new Date() > new Date(match.expires)) {
+  const expiresAt = new Date(match.expires);
+
+  if (new Date() > expiresAt) {
     return { ok: false, status: 403, error: 'Passcode has expired' };
   }
 
-  return { ok: true, match };
+  return { ok: true, match, expiresAt };
 }
 
 function resolveVariantIdFromRequest(req) {
@@ -60,6 +185,7 @@ function resolveVariantIdFromRequest(req) {
 
   for (const candidate of hostnameCandidates) {
     const hostname = normalizeHostname(candidate);
+
     if (hostname) {
       return resolveVariantId(hostname);
     }
@@ -78,12 +204,18 @@ function getDocumentData(variantId) {
 }
 
 app.post('/api/auth', (req, res) => {
-  const { passcode } = req.body ?? {};
+  const { passcode, source } = resolvePasscodeFromRequest(req);
   const validation = validatePasscode(passcode);
 
   if (!validation.ok) {
+    if (source === 'cookie') {
+      clearSessionCookie(res, req);
+    }
+
     return res.status(validation.status).json({ error: validation.error });
   }
+
+  setSessionCookie(res, req, passcode, validation.expiresAt);
 
   const variant = getVariantForRequest(req);
 
@@ -95,12 +227,18 @@ app.post('/api/auth', (req, res) => {
 });
 
 function handleDownloadRequest(req, res) {
-  const { passcode } = req.query;
+  const { passcode, source } = resolvePasscodeFromRequest(req);
   const validation = validatePasscode(passcode);
 
   if (!validation.ok) {
+    if (source === 'cookie') {
+      clearSessionCookie(res, req);
+    }
+
     return res.status(validation.status).send(validation.error);
   }
+
+  setSessionCookie(res, req, passcode, validation.expiresAt);
 
   const variant = getVariantForRequest(req);
   const pdfFile = variant.pdfFile;

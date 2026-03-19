@@ -7,7 +7,6 @@ import {
 let lang = 'en';
 let theme = 'light';
 let documentData = null;
-let currentPasscode = '';
 let activeVariant = getVariantConfig(window.location.hostname);
 
 const API_BASE_URL = isLocalDevelopmentHostname(window.location.hostname)
@@ -24,7 +23,6 @@ const downloadButton = document.getElementById('btn-dl');
 
 const openState = {};
 const expandedState = {};
-const PASSCODE_STORAGE_PREFIX = 'kaufmann.dev.passcode';
 
 function buildApiUrl(path) {
   return new URL(path, API_BASE_URL || window.location.origin);
@@ -35,34 +33,6 @@ function localize(value) {
   if (typeof value === 'string') return value;
   if (Array.isArray(value)) return value;
   return value[lang] ?? value.en ?? value.de ?? '';
-}
-
-function getPasscodeStorageKey(variantId = activeVariant.id) {
-  return `${PASSCODE_STORAGE_PREFIX}:${variantId}`;
-}
-
-function getStoredPasscode(variantId = activeVariant.id) {
-  try {
-    return window.localStorage.getItem(getPasscodeStorageKey(variantId)) ?? '';
-  } catch {
-    return '';
-  }
-}
-
-function storePasscode(passcode, variantId = activeVariant.id) {
-  try {
-    window.localStorage.setItem(getPasscodeStorageKey(variantId), passcode);
-  } catch {
-    // Ignore storage failures and keep the regular login flow working.
-  }
-}
-
-function clearStoredPasscode(variantId = activeVariant.id) {
-  try {
-    window.localStorage.removeItem(getPasscodeStorageKey(variantId));
-  } catch {
-    // Ignore storage failures and keep the regular login flow working.
-  }
 }
 
 function getMessage(value) {
@@ -164,55 +134,54 @@ function showAuthenticatedView() {
   contentContainer.style.display = 'block';
 }
 
-async function authenticate(passcode, options = {}) {
+function showAuthView(message = '') {
+  contentContainer.style.display = 'none';
+  authContainer.style.display = 'flex';
+  authError.textContent = message;
+}
+
+async function authenticate(options = {}) {
   const {
-    persistPasscode = false,
-    clearStoredPasscodeOnAccessFailure = false,
-    suppressAccessErrors = false
+    passcode = '',
+    suppressErrors = false
   } = options;
 
   authError.textContent = '';
 
   try {
+    const payload = { variant: activeVariant.id };
+
+    if (passcode) {
+      payload.passcode = passcode;
+    }
+
     const response = await fetch(buildApiUrl('/api/auth'), {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ passcode, variant: activeVariant.id })
+      body: JSON.stringify(payload)
     });
 
     const result = await response.json();
 
     if (!response.ok || !result.success) {
-      if (clearStoredPasscodeOnAccessFailure) {
-        clearStoredPasscode();
-      }
-
-      if (!suppressAccessErrors) {
-        authError.textContent = result.error || 'Login failed';
+      if (!suppressErrors) {
+        showAuthView(result.error || 'Login failed');
       }
 
       return false;
     }
 
-    const previousVariantId = activeVariant.id;
-
     documentData = result.data;
-    currentPasscode = passcode;
     activeVariant = getVariantConfigById(result.variant);
-
-    if (persistPasscode) {
-      if (previousVariantId !== activeVariant.id) {
-        clearStoredPasscode(previousVariantId);
-      }
-
-      storePasscode(passcode, activeVariant.id);
-    }
-
     showAuthenticatedView();
     render();
     return true;
   } catch (error) {
-    authError.textContent = 'Server error. Is the backend running?';
+    if (!suppressErrors) {
+      showAuthView('Server error. Is the backend running?');
+    }
+
     return false;
   }
 }
@@ -228,47 +197,36 @@ async function handleLogin() {
     return;
   }
 
-  const success = await authenticate(passcode, { persistPasscode: true });
+  const success = await authenticate({ passcode });
 
-  if (!success) {
-    currentPasscode = '';
+  if (success) {
+    passcodeInput.value = '';
   }
 }
 
 function handleDownload() {
-  if (!currentPasscode) {
-    contentContainer.style.display = 'none';
-    authContainer.style.display = 'flex';
-    authError.textContent = getMessage({
+  if (!documentData) {
+    showAuthView(getMessage({
       en: 'Your session has ended. Please sign in again.',
       de: 'Deine Sitzung ist beendet. Bitte erneut anmelden.'
-    });
+    }));
     return;
   }
 
   const downloadUrl = buildApiUrl('/api/download');
-  downloadUrl.searchParams.set('passcode', currentPasscode);
   downloadUrl.searchParams.set('variant', activeVariant.id);
   window.location.assign(downloadUrl.toString());
 }
 
 async function restoreStoredSession() {
-  const storedPasscode = getStoredPasscode();
+  authContainer.style.visibility = 'hidden';
 
-  if (!storedPasscode) {
-    return;
-  }
+  const restored = await authenticate({ suppressErrors: true });
 
-  const restored = await authenticate(storedPasscode, {
-    clearStoredPasscodeOnAccessFailure: true,
-    suppressAccessErrors: true
-  });
+  authContainer.style.visibility = '';
 
   if (!restored) {
-    currentPasscode = '';
-    passcodeInput.value = '';
-  } else {
-    passcodeInput.value = storedPasscode;
+    showAuthView();
   }
 }
 

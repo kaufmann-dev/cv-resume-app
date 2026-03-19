@@ -28,7 +28,7 @@
         "en": "Personal Information",
         "de": "Persönliche Daten"
       },
-      "open": true,
+      "open": false,
       "type": "info",
       "rows": [
         {
@@ -90,7 +90,7 @@
         "en": "Work Experience",
         "de": "Berufserfahrung"
       },
-      "open": true,
+      "open": false,
       "type": "entries",
       "items": [
         {
@@ -288,7 +288,7 @@
         "en": "Education",
         "de": "Bildungsweg"
       },
-      "open": true,
+      "open": false,
       "type": "entries",
       "items": [
         {
@@ -387,8 +387,8 @@
             "de": "Transrapid-Debattierturnier"
           },
           "subtitle": {
-            "en": "Debatingclub Munich",
-            "de": "Debattierclub München"
+            "en": "Participated in British Parliamentary style debating for the Debate Club Vienna",
+            "de": "Teilnahme am British Parliamentary Style Debattieren für den Debattierclub Wien"
           },
           "location": {
             "en": "Munich, Germany",
@@ -404,7 +404,10 @@
             "en": "European Grief Conference",
             "de": "Europäische Trauerkonferenz"
           },
-          "subtitle": "Bereavement Network Europe",
+          "subtitle": {
+            "en":"Attendance partially funded by Austrian Association of Hospice and Palliative Care for my volunteer work",
+            "de":"Teilnahme vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit teilfinanziert"
+          },
           "location": {
             "en": "Dublin, Ireland",
             "de": "Dublin, Irland"
@@ -439,142 +442,166 @@
       "content": "<strong>Kaufmann, D.</strong> &amp; Spindelberger, J. (2023). <em>Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.</em> Höhere Technische Bundeslehranstalt Krems."
     },
     {
-      "id": "projects",
-      "title": {
-        "en": "Projects",
-        "de": "Projekte"
+      "id":"projects",
+      "title":{
+        "en":"Projects",
+        "de":"Projekte"
       },
-      "open": false,
-      "type": "entries",
-      "items": [
+      "open":false,
+      "type":"entries",
+      "items":[
         {
-          "title": {
-            "en": "Market Deck — data visualization & finance",
-            "de": "Market Deck — Datenvisualisierung & Finanzen"
+          "title":{
+            "en":"Market Deck",
+            "de":"Market Deck"
           },
-          "date": "2026",
-          "highlights": [
+          "subtitle":{
+            "en":"Data Visualization & Finance",
+            "de":"Datenvisualisierung & Finanzen"
+          },
+          "date":"2026",
+          "highlights":[
             {
-              "en": "Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
-              "de": "Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
+              "en":"Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
+              "de":"Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
             },
             {
-              "en": "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
-              "de": "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
+              "en":"Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
+              "de":"Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
             }
           ],
-          "tags": ["FastAPI", "SQLite", "yfinance", "Python", "Vanilla JS"],
-          "link": {
-            "href": "https://github.com/kaufmann-dev/market-deck",
-            "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
+          "tags":["FastAPI","SQLite","yfinance","Python","Vanilla JS"],
+          "link":{
+            "href":"https://github.com/kaufmann-dev/market-deck",
+            "label":{"en":"Open GitHub","de":"GitHub öffnen"}
           }
         },
         {
-          "title": {
-            "en": "CT2Mesh2Print — medical imaging & 3D printing",
-            "de": "CT2Mesh2Print — Medizinische Bildgebung & 3D-Druck"
+          "title":{
+            "en":"CT2Mesh2Print",
+            "de":"CT2Mesh2Print"
           },
-          "date": "2025",
-          "highlights": [
+          "subtitle":{
+            "en":"Medical Imaging & 3D Printing",
+            "de":"Medizinische Bildgebung & 3D-Druck"
+          },
+          "date":"2025",
+          "highlights":[
             {
-              "en": "Segmented CT scan data to isolate bone structures",
-              "de": "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
+              "en":"Segmented CT scan data to isolate bone structures",
+              "de":"Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
             },
             {
-              "en": "Converted segmented data into a printable 3D mesh and produced lifesize prints",
-              "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
+              "en":"Converted segmented data into a printable 3D mesh and produced lifesize prints",
+              "de":"Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
             }
           ],
-          "link": {
-            "href": "https://kaufmann.dev/article/ct2mesh2print",
-            "label": { "en": "Read Article", "de": "Artikel lesen" }
+          "link":{
+            "href":"https://kaufmann.dev/article/ct2mesh2print",
+            "label":{"en":"Read Article","de":"Artikel lesen"}
           }
         },
         {
-          "title": {
-            "en": "Git Wrangler — shell scripting & git automation",
-            "de": "Git Wrangler — Shell-Skripting & Git-Automatisierung"
+          "title":{
+            "en":"Git Wrangler",
+            "de":"Git Wrangler"
           },
-          "date": "2024",
-          "highlights": [
+          "subtitle":{
+            "en":"Shell Scripting & Git Automation",
+            "de":"Shell-Skripting & Git-Automatisierung"
+          },
+          "date":"2024",
+          "highlights":[
             {
-              "en": "Bash scripts for the bulk management and manipulation of Git repositories",
-              "de": "Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
+              "en":"Bash scripts for the bulk management and manipulation of Git repositories",
+              "de":"Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
             },
             {
-              "en": "Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
-              "de": "Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets u. v. m."
+              "en":"Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
+              "de":"Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets"
             }
           ],
-          "tags": ["Bash", "Git", "GitHub CLI", "git-filter-repo"],
-          "link": {
-            "href": "https://github.com/kaufmann-dev/git-wrangler",
-            "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
+          "tags":["Bash","Git","GitHub CLI","git-filter-repo"],
+          "link":{
+            "href":"https://github.com/kaufmann-dev/git-wrangler",
+            "label":{"en":"Open GitHub","de":"GitHub öffnen"}
           }
         },
         {
-          "title": {
-            "en": "Jung in Krems — full-stack web development",
-            "de": "Jung in Krems — Full-Stack-Webentwicklung"
+          "title":{
+            "en":"Jung in Krems",
+            "de":"Jung in Krems"
           },
-          "date": "2023",
-          "highlights": [
+          "subtitle":{
+            "en":"Full-Stack Web Development",
+            "de":"Full-Stack-Webentwicklung"
+          },
+          "date":"2023",
+          "highlights":[
             {
-              "en": "Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
-              "de": "Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
+              "en":"Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
+              "de":"Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
             },
             {
-              "en": "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
-              "de": "Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
+              "en":"Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
+              "de":"Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
             }
           ],
-          "tags": ["MySQL 8", "Laravel 9", "Svelte 3", "Eloquent", "Inertia", "REST", "Laravel Sanctum", "Tailwind"],
-          "link": {
-            "href": "https://github.com/kaufmann-dev/jung-in-krems",
-            "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
+          "tags":["MySQL 8","Laravel 9","Svelte 3","Eloquent","Inertia","REST","Laravel Sanctum","Tailwind"],
+          "link":{
+            "href":"https://github.com/kaufmann-dev/jung-in-krems",
+            "label":{"en":"Open GitHub","de":"GitHub öffnen"}
           }
         },
         {
-          "title": {
-            "en": "Async Cinema — asynchronous programming",
-            "de": "Async Cinema — Asynchrone Programmierung"
+          "title":{
+            "en":"Async Cinema",
+            "de":"Async Cinema"
           },
-          "date": "2022",
-          "highlights": [
+          "subtitle":{
+            "en":"Asynchronous Programming",
+            "de":"Asynchrone Programmierung"
+          },
+          "date":"2022",
+          "highlights":[
             {
-              "en": "Full-stack .NET MVC app with REST API for managing a MySQL film database",
-              "de": "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
+              "en":"Full-stack .NET MVC app with REST API for managing a MySQL film database",
+              "de":"Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
             },
             {
-              "en": "Asynchronous CRUD operations with Swagger documentation and Blazor UI",
-              "de": "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
+              "en":"Asynchronous CRUD operations with Swagger documentation and Blazor UI",
+              "de":"Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
             }
           ],
-          "tags": [".NET 7", "C# 11", "MySQL 8", "Blazor", "Entity Framework", "Swagger"],
-          "link": {
-            "href": "https://github.com/kaufmann-dev/async-cinema",
-            "label": { "en": "Open GitHub", "de": "GitHub öffnen" }
+          "tags":[".NET 7","C# 11","MySQL 8","Blazor","Entity Framework","Swagger"],
+          "link":{
+            "href":"https://github.com/kaufmann-dev/async-cinema",
+            "label":{"en":"Open GitHub","de":"GitHub öffnen"}
           }
         },
         {
-          "title": {
-            "en": "Purus CSS — frontend development & CSS",
-            "de": "Purus CSS — Frontend-Entwicklung & CSS"
+          "title":{
+            "en":"Purus CSS",
+            "de":"Purus CSS"
           },
-          "date": "2021",
-          "highlights": [
+          "subtitle":{
+            "en":"Frontend Development & CSS",
+            "de":"Frontend-Entwicklung & CSS"
+          },
+          "date":"2021",
+          "highlights":[
             {
-              "en": "Responsive CSS drop-in framework with no JavaScript dependencies",
-              "de": "Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
+              "en":"Responsive CSS drop-in framework with no JavaScript dependencies",
+              "de":"Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
             },
             {
-              "en": "CSS variable customization and utility classes for layout, spacing, and typography",
-              "de": "CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
+              "en":"CSS variable customization and utility classes for layout, spacing, and typography",
+              "de":"CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
             }
           ],
-          "link": {
-            "href": "https://puruscss.kaufmann.dev",
-            "label": { "en": "Visit Website", "de": "Website besuchen" }
+          "link":{
+            "href":"https://puruscss.kaufmann.dev",
+            "label":{"en":"Visit Website","de":"Website besuchen"}
           }
         }
       ]

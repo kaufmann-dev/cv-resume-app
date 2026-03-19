@@ -334,7 +334,7 @@ details[open]>summary .chev {
 .entry-location {
   font-size: 0.75rem;
   font-weight: 400;
-  color: var(--t1);
+  color: var(--t2);
   white-space: nowrap;
 }
 
@@ -365,7 +365,7 @@ details[open]>summary .chev {
 
 .entry-link {
   font-size: 0.75rem;
-  color: var(--t3);
+  color: var(--t2);
   text-decoration: none;
   border-bottom: 1px solid var(--border2);
   white-space: nowrap;
@@ -561,14 +561,30 @@ ul li::before {
   }
 
   .e-mob {
-    display: block;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
     font-size: 0.7rem;
     color: var(--t3);
     margin-bottom: 4px;
   }
 
+  .e-mob .entry-location,
+  .e-mob .entry-date,
+  .e-mob .entry-meta-sep,
+  .e-mob .entry-link {
+    color: inherit;
+  }
+
+  .e-mob .entry-link {
+    font-size: 0.7rem;
+    border-bottom-color: currentColor;
+  }
+
   .e-r1 .entry-location,
-  .e-r1 .entry-inline-meta--text {
+  .e-r1 .entry-inline-meta--text,
+  .e-r1 .entry-link {
     display: none;
   }
 

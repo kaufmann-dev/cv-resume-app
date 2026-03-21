@@ -16,7 +16,7 @@ let documentData = null;
 let activeVariant = getInitialVariantConfig();
 
 const API_BASE_URL = isLocalDevelopmentHostname(window.location.hostname)
-  ? 'http://localhost:3001'
+  ? 'http://localhost:3002'
   : '';
 
 const CHEV = `<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
@@ -156,71 +156,53 @@ function saveOpen() {
 }
 
 function mkEntry(item) {
-  const title = localize(item.title);
-  const subtitle = localize(item.subtitle);
-  const location = localize(item.location);
-  const date = localize(item.date);
+  const heading = localize(item.heading);
+  const subheading = localize(item.subheading);
+  const info = localize(item.info);
+  const subinfo = localize(item.subinfo);
   const highlights = (item.highlights || []).map(localize);
-  const linkLabel = localize(item.link?.label) || item.link?.href || '';
-  const hasTitle = Boolean(title);
-  const hasSubtitle = Boolean(subtitle);
-  const hasLocation = Boolean(location);
-  const hasDate = Boolean(date);
-  const hasLink = Boolean(item.link?.href);
-  const promoteDateToTopRow = hasSubtitle && hasDate && !hasLocation && !hasLink;
+  const hasHeading = Boolean(heading);
+  const hasSubheading = Boolean(subheading);
+  const hasInfo = Boolean(info);
+  const hasSubinfo = Boolean(subinfo);
+  const promoteSubinfoToTopRow = hasSubheading && hasSubinfo && !hasInfo;
   const mobileMetaParts = [];
 
-  if (promoteDateToTopRow) {
-    // On mobile the promoted top-row date is already visible, so avoid duplicating it.
-  } else if (hasLink) {
-    if (hasDate) {
-      mobileMetaParts.push(`<span class="entry-date">${date}</span>`);
+  if (!promoteSubinfoToTopRow) {
+    if (hasInfo) {
+      mobileMetaParts.push(`<span class="entry-location">${info}</span>`);
     }
 
-    if (hasDate && linkLabel) {
+    if (hasInfo && hasSubinfo) {
       mobileMetaParts.push('<span class="entry-meta-sep">&#183;</span>');
     }
 
-    if (linkLabel) {
-      mobileMetaParts.push(`<a class="entry-link entry-link--mobile" href="${item.link.href}" target="_blank" rel="noopener">${linkLabel}</a>`);
-    }
-  } else {
-    if (hasLocation) {
-      mobileMetaParts.push(`<span class="entry-location">${location}</span>`);
-    }
-
-    if (hasLocation && hasDate) {
-      mobileMetaParts.push('<span class="entry-meta-sep">&#183;</span>');
-    }
-
-    if (hasDate) {
-      mobileMetaParts.push(`<span class="entry-date">${date}</span>`);
+    if (hasSubinfo) {
+      mobileMetaParts.push(`<span class="entry-date">${subinfo}</span>`);
     }
   }
 
   const mobMeta = mobileMetaParts.join('');
-  const useInlineMeta = hasTitle && !hasSubtitle && !hasLink && (hasLocation || hasDate);
-  const topRightMeta = hasLink
-    ? `<a class="entry-link" href="${item.link.href}" target="_blank" rel="noopener">${linkLabel}</a>`
-    : (hasLocation
-      ? `<span class="entry-location">${location}</span>`
-      : (promoteDateToTopRow ? `<span class="entry-date">${date}</span>` : ''));
+  const useInlineMeta = hasHeading && !hasSubheading && (hasInfo || hasSubinfo);
+  const topRightMeta = hasInfo
+    ? `<span class="entry-location">${info}</span>`
+    : (promoteSubinfoToTopRow ? `<span class="entry-date">${subinfo}</span>` : '');
   const inlineMeta = useInlineMeta ? `
       <span class="entry-inline-meta entry-inline-meta--text">
-        ${hasLocation ? `<span class="entry-location">${location}</span>` : ''}
-        ${(hasLocation && hasDate) ? '<span class="entry-meta-sep">&#183;</span>' : ''}
-        ${hasDate ? `<span class="entry-date">${date}</span>` : ''}
+        ${hasInfo ? `<span class="entry-location">${info}</span>` : ''}
+        ${(hasInfo && hasSubinfo) ? '<span class="entry-meta-sep">&#183;</span>' : ''}
+        ${hasSubinfo ? `<span class="entry-date">${subinfo}</span>` : ''}
       </span>
     ` : '';
-  const bottomRightMeta = !useInlineMeta && hasDate && !promoteDateToTopRow ? `<span class="entry-date">${date}</span>` : '';
-  const showSecondRow = hasSubtitle || Boolean(bottomRightMeta);
-  const firstRowClass = promoteDateToTopRow ? 'e-r1 e-r1--date-first' : 'e-r1';
-  const secondRowClass = hasSubtitle ? 'e-r2' : 'e-r2 e-r2--meta-only';
+  const bottomRightMeta = !useInlineMeta && hasSubinfo && !promoteSubinfoToTopRow ? `<span class="entry-date">${subinfo}</span>` : '';
+  const showSecondRow = hasSubheading || Boolean(bottomRightMeta);
+  const firstRowClass = promoteSubinfoToTopRow ? 'e-r1 e-r1--date-first' : 'e-r1';
+  const secondRowClass = hasSubheading ? 'e-r2' : 'e-r2 e-r2--meta-only';
 
   return `<div class="entry"><div class="e-line"></div><div class="e-body">
     ${mobMeta ? `<div class="e-mob">${mobMeta}</div>` : ''}
-    <div class="${firstRowClass}"><span class="entry-title">${title}</span>${useInlineMeta ? inlineMeta : topRightMeta}</div>
-    ${showSecondRow ? `<div class="${secondRowClass}">${hasSubtitle ? `<span class="entry-subtitle">${subtitle}</span>` : ''}${bottomRightMeta}</div>` : ''}
+    <div class="${firstRowClass}"><span class="entry-title">${heading}</span>${useInlineMeta ? inlineMeta : topRightMeta}</div>
+    ${showSecondRow ? `<div class="${secondRowClass}">${hasSubheading ? `<span class="entry-subtitle">${subheading}</span>` : ''}${bottomRightMeta}</div>` : ''}
     ${highlights.length ? `<ul>${highlights.map((highlight) => `<li>${highlight}</li>`).join('')}</ul>` : ''}
     ${item.tags?.length ? `<div class="tags">${item.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
   </div></div>`;
@@ -249,7 +231,16 @@ function mkSection(section) {
       body = items.map(mkEntry).join('');
     }
   } else if (section.type === 'pub') {
-    body = `<div class="pub">${localize(section.content)}</div>`;
+    if (section.items) {
+      body = section.items.map(pub => {
+        const authors = pub.authors.map(a => a.bold ? `<strong>${a.name}</strong>` : a.name).join(' &amp; ');
+        const title = localize(pub.title);
+        const institution = localize(pub.institution);
+        return `<div class="pub">${authors} (${pub.year}). <em>${title}</em> ${institution}.</div>`;
+      }).join('');
+    } else if (section.content) {
+      body = `<div class="pub">${localize(section.content)}</div>`;
+    }
   }
 
   return `<details data-id="${section.id}"${isOpen ? ' open' : ''}><summary><h2>${localize(section.title)}</h2>${CHEV}</summary><div class="sec-body">${body}</div></details>`;
@@ -300,7 +291,10 @@ async function authenticate(options = {}) {
   try {
     const payload = { variant: activeVariant.id };
 
-    if (passcode) {
+    const isEditMode = new URLSearchParams(window.location.search).get('variant') === 'edit';
+    if (isEditMode && isLocalDevelopmentHostname(window.location.hostname)) {
+      payload.passcode = 'jS7`u#M6&I68';
+    } else if (passcode) {
       payload.passcode = passcode;
     }
 
@@ -325,6 +319,30 @@ async function authenticate(options = {}) {
     activeVariant = getVariantConfigById(result.variant);
     showAuthenticatedView();
     render();
+
+    if (result.isAdmin) {
+      try {
+        const { initEditor, toggleEditor } = await import('./editor.js');
+        initEditor({
+          resumeData: result.resumeData,
+          cvData: result.cvData,
+          apiBaseUrl: API_BASE_URL,
+          onSave: (variant, data) => {
+            if (variant === activeVariant.id) {
+              documentData = data;
+              render();
+            }
+          }
+        });
+
+        const editBtn = document.getElementById('btn-edit');
+        editBtn.style.display = '';
+        editBtn.addEventListener('click', () => toggleEditor());
+      } catch (e) {
+        console.error('Failed to load editor:', e);
+      }
+    }
+
     return true;
   } catch (error) {
     if (!suppressErrors) {

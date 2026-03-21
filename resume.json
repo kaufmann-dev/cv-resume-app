@@ -34,11 +34,11 @@
         {
           "label": {
             "en": "Citizenship",
-            "de": "Staatsbürgerschaft"
+            "de": "Citizenship"
           },
           "value": {
             "en": "Austrian",
-            "de": "Österreich"
+            "de": "Austrian"
           }
         },
         {
@@ -66,7 +66,10 @@
             "en": "Email",
             "de": "E-Mail"
           },
-          "value": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>"
+          "value": {
+            "en": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>",
+            "de": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>"
+          }
         },
         {
           "label": {
@@ -94,19 +97,19 @@
       "type": "entries",
       "items": [
         {
-          "title": {
+          "heading": {
             "en": "Board of Education Vienna",
             "de": "Bildungsdirektion für Wien"
           },
-          "subtitle": {
+          "subheading": {
             "en": "IT Officer",
             "de": "IT-Referent"
           },
-          "location": {
+          "info": {
             "en": "Vienna, Austria",
-            "de": "Wien, Österreich"
+            "de": "Vienna, Austria"
           },
-          "date": {
+          "subinfo": {
             "en": "Apr 2024 – Present",
             "de": "April 2024 – Heute"
           },
@@ -131,19 +134,18 @@
               "en": "Managing and assigning user permissions for internal staff and schools",
               "de": "Verwaltung von Benutzerberechtigungen für interne Mitarbeiter und Schulen"
             }
+          ],
+          "tags": [
+            "test",
+            "test",
+            "test"
           ]
         },
         {
-          "title": "Fabasoft",
-          "subtitle": "Cloud Systems Engineer",
-          "location": {
-            "en": "Vienna, Austria",
-            "de": "Wien, Österreich"
-          },
-          "date": {
-            "en": "Dec 2023 – Mar 2024",
-            "de": "Dezember 2023 – März 2024"
-          },
+          "heading": "Fabasoft",
+          "subheading": "Cloud Systems Engineer",
+          "info": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>",
+          "subinfo": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>",
           "highlights": [
             {
               "en": "Developed Bash scripts to standardize and aggregate Syslog error messages for efficient error diagnosis",
@@ -160,19 +162,19 @@
           ]
         },
         {
-          "title": {
+          "heading": {
             "en": "City Pharmacy Wismar at the Market",
             "de": "Ratsapotheke Wismar am Markt"
           },
-          "subtitle": {
+          "subheading": {
             "en": "Intern",
             "de": "Praktikant"
           },
-          "location": {
+          "info": {
             "en": "Wismar, Germany",
             "de": "Wismar, Deutschland"
           },
-          "date": {
+          "subinfo": {
             "en": "Jul 2023",
             "de": "Juli 2023"
           },
@@ -192,19 +194,19 @@
           ]
         },
         {
-          "title": {
+          "heading": {
             "en": "Cardiology Practice Langenlois",
             "de": "Herzpraxis Langenlois"
           },
-          "subtitle": {
+          "subheading": {
             "en": "Intern",
             "de": "Praktikant"
           },
-          "location": {
+          "info": {
             "en": "Langenlois, Austria",
             "de": "Langenlois, Österreich"
           },
-          "date": {
+          "subinfo": {
             "en": "Aug 2022",
             "de": "August 2022"
           },
@@ -224,16 +226,16 @@
           ]
         },
         {
-          "title": "Raiffeisen Software",
-          "subtitle": {
+          "heading": "Raiffeisen Software",
+          "subheading": {
             "en": "Controlling Intern",
             "de": "Praktikant im Controlling"
           },
-          "location": {
+          "info": {
             "en": "Vienna, Austria",
             "de": "Wien, Österreich"
           },
-          "date": {
+          "subinfo": {
             "en": "Jul 2021",
             "de": "Juli 2021"
           },
@@ -253,19 +255,19 @@
           ]
         },
         {
-          "title": {
+          "heading": {
             "en": "IMC University of Applied Sciences Krems",
             "de": "IMC Hochschule für Angewandte Wissenschaften Krems"
           },
-          "subtitle": {
+          "subheading": {
             "en": "IT Services Intern",
             "de": "Praktikant in IT-Services"
           },
-          "location": {
+          "info": {
             "en": "Krems, Austria",
             "de": "Krems, Österreich"
           },
-          "date": {
+          "subinfo": {
             "en": "Jul 2019",
             "de": "Juli 2019"
           },
@@ -292,19 +294,19 @@
       "type": "entries",
       "items": [
         {
-          "title": {
+          "heading": {
             "en": "Higher Federal Technical College Krems",
             "de": "Höhere Technische Bundeslehranstalt Krems"
           },
-          "subtitle": {
+          "subheading": {
             "en": "Diploma in Information Technology + Matura",
             "de": "Diplom in Informationstechnologie + Matura"
           },
-          "location": {
+          "info": {
             "en": "Krems, Austria",
             "de": "Krems, Österreich"
           },
-          "date": {
+          "subinfo": {
             "en": "Sep 2018 – Jun 2023",
             "de": "September 2018 – Juni 2023"
           },
@@ -331,103 +333,109 @@
       "type": "entries",
       "items": [
         {
-          "title": {
+          "heading": {
             "en": "Digital Transformation (4 ECTS)",
             "de": "Digitale Transformation (4 ECTS)"
           },
-          "subtitle": "Audencia Business School",
-          "location": {
+          "subheading": "Audencia Business School",
+          "info": {
             "en": "Nantes, France",
             "de": "Nantes, Frankreich"
           },
-          "date": {
+          "subinfo": {
             "en": "Jan 2026",
             "de": "Januar 2026"
-          }
+          },
+          "highlights": []
         },
         {
-          "title": {
+          "heading": {
             "en": "Project Management Course",
             "de": "Projektmanagement-Lehrgang"
           },
-          "subtitle": {
+          "subheading": {
             "en": "Austrian Federal Academy of Public Administration",
             "de": "Verwaltungsakademie des Bundes"
           },
-          "location": {
+          "info": {
             "en": "Vienna, Austria",
             "de": "Wien, Österreich"
           },
-          "date": {
+          "subinfo": {
             "en": "Sep 2025",
             "de": "September 2025"
-          }
+          },
+          "highlights": []
         },
         {
-          "title": {
+          "heading": {
             "en": "Business Process Analysis (3 ECTS)",
             "de": "Geschäftsprozessanalyse (3 ECTS)"
           },
-          "subtitle": {
+          "subheading": {
             "en": "Masaryk University",
             "de": "Masaryk-Universität"
           },
-          "location": {
+          "info": {
             "en": "Brno, Czechia",
             "de": "Brünn, Tschechien"
           },
-          "date": {
+          "subinfo": {
             "en": "Jul 2025",
             "de": "Juli 2025"
-          }
+          },
+          "highlights": []
         },
         {
-          "title": {
+          "heading": {
             "en": "Transrapid Debate Tournament",
             "de": "Transrapid-Debattierturnier"
           },
-          "subtitle": {
+          "subheading": {
             "en": "Participated in British Parliamentary style debating for the Debate Club Vienna",
             "de": "Teilnahme am British Parliamentary Style Debattieren für den Debattierclub Wien"
           },
-          "location": {
+          "info": {
             "en": "Munich, Germany",
             "de": "München, Deutschland"
           },
-          "date": {
+          "subinfo": {
             "en": "Jan 2025",
             "de": "Januar 2025"
-          }
+          },
+          "highlights": []
         },
         {
-          "title": {
+          "heading": {
             "en": "European Grief Conference",
             "de": "Europäische Trauerkonferenz"
           },
-          "subtitle": {
-            "en":"Attendance partially funded by Austrian Association of Hospice and Palliative Care for my volunteer work",
-            "de":"Teilnahme vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit teilfinanziert"
+          "subheading": {
+            "en": "Attendance partially funded by Austrian Association of Hospice and Palliative Care for my volunteer work",
+            "de": "Teilnahme vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit teilfinanziert"
           },
-          "location": {
+          "info": {
             "en": "Dublin, Ireland",
             "de": "Dublin, Irland"
           },
-          "date": {
+          "subinfo": {
             "en": "Nov 2024",
             "de": "November 2024"
-          }
+          },
+          "highlights": []
         },
         {
-          "title": {
+          "heading": {
             "en": "Certificate of C2 Proficiency in English",
             "de": "C2-Zertifikat in Englisch"
           },
-          "subtitle": "EF International Language Campuses",
-          "location": "St. Julians, Malta",
-          "date": {
+          "subheading": "EF International Language Campuses",
+          "info": "St. Julians, Malta",
+          "subinfo": {
             "en": "Aug 2020",
             "de": "August 2020"
-          }
+          },
+          "highlights": []
         }
       ]
     },
@@ -435,173 +443,222 @@
       "id": "pubs",
       "title": {
         "en": "Publications",
-        "de": "Publikationen"
+        "de": "Publications"
       },
-      "open": false,
+      "open": true,
       "type": "pub",
-      "content": "<strong>Kaufmann, D.</strong> &amp; Spindelberger, J. (2023). <em>Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.</em> Höhere Technische Bundeslehranstalt Krems."
+      "items": [
+        {
+          "authors": [
+            {
+              "name": "Kaufmann, D.",
+              "bold": true
+            },
+            {
+              "name": "Spindelberger, J.",
+              "bold": false
+            }
+          ],
+          "year": "2023",
+          "title": {
+            "en": "Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.",
+            "de": "Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind."
+          },
+          "institution": {
+            "en": "Höhere Technische Bundeslehranstalt Krems",
+            "de": "Höhere Technische Bundeslehranstalt Krems"
+          }
+        }
+      ]
     },
     {
-      "id":"projects",
-      "title":{
-        "en":"Projects",
-        "de":"Projekte"
+      "id": "projects",
+      "title": {
+        "en": "Projects",
+        "de": "Projekte"
       },
-      "open":false,
-      "type":"entries",
-      "items":[
+      "open": false,
+      "type": "entries",
+      "items": [
         {
-          "title":{
-            "en":"Market Deck",
-            "de":"Market Deck"
+          "heading": {
+            "en": "Market Deck",
+            "de": "Market Deck"
           },
-          "subtitle":{
-            "en":"Data Visualization & Finance",
-            "de":"Datenvisualisierung & Finanzen"
+          "subheading": {
+            "en": "Data Visualization & Finance",
+            "de": "Datenvisualisierung & Finanzen"
           },
-          "date":"2026",
-          "highlights":[
+          "subinfo": "2026",
+          "highlights": [
             {
-              "en":"Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
-              "de":"Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
+              "en": "Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
+              "de": "Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
             },
             {
-              "en":"Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
-              "de":"Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
+              "en": "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
+              "de": "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
             }
           ],
-          "tags":["FastAPI","SQLite","yfinance","Python","Vanilla JS"],
-          "link":{
-            "href":"https://github.com/kaufmann-dev/market-deck",
-            "label":{"en":"Open GitHub","de":"GitHub öffnen"}
+          "tags": [
+            "FastAPI",
+            "SQLite",
+            "yfinance",
+            "Python",
+            "Vanilla JS"
+          ],
+          "info": {
+            "en": "<a href=\"https://github.com/kaufmann-dev/market-deck\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
+            "de": "<a href=\"https://github.com/kaufmann-dev/market-deck\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
           }
         },
         {
-          "title":{
-            "en":"CT2Mesh2Print",
-            "de":"CT2Mesh2Print"
+          "heading": {
+            "en": "CT2Mesh2Print",
+            "de": "CT2Mesh2Print"
           },
-          "subtitle":{
-            "en":"Medical Imaging & 3D Printing",
-            "de":"Medizinische Bildgebung & 3D-Druck"
+          "subheading": {
+            "en": "Medical Imaging & 3D Printing",
+            "de": "Medizinische Bildgebung & 3D-Druck"
           },
-          "date":"2025",
-          "highlights":[
+          "subinfo": "2025",
+          "highlights": [
             {
-              "en":"Segmented CT scan data to isolate bone structures",
-              "de":"Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
+              "en": "Segmented CT scan data to isolate bone structures",
+              "de": "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
             },
             {
-              "en":"Converted segmented data into a printable 3D mesh and produced lifesize prints",
-              "de":"Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
+              "en": "Converted segmented data into a printable 3D mesh and produced lifesize prints",
+              "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
             }
           ],
-          "link":{
-            "href":"https://kaufmann.dev/article/ct2mesh2print",
-            "label":{"en":"Read Article","de":"Artikel lesen"}
+          "info": {
+            "en": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Read Article</a>",
+            "de": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Artikel lesen</a>"
           }
         },
         {
-          "title":{
-            "en":"Git Wrangler",
-            "de":"Git Wrangler"
+          "heading": {
+            "en": "Git Wrangler",
+            "de": "Git Wrangler"
           },
-          "subtitle":{
-            "en":"Shell Scripting & Git Automation",
-            "de":"Shell-Skripting & Git-Automatisierung"
+          "subheading": {
+            "en": "Shell Scripting & Git Automation",
+            "de": "Shell-Skripting & Git-Automatisierung"
           },
-          "date":"2024",
-          "highlights":[
+          "subinfo": "2024",
+          "highlights": [
             {
-              "en":"Bash scripts for the bulk management and manipulation of Git repositories",
-              "de":"Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
+              "en": "Bash scripts for the bulk management and manipulation of Git repositories",
+              "de": "Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
             },
             {
-              "en":"Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
-              "de":"Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets"
+              "en": "Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
+              "de": "Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets"
             }
           ],
-          "tags":["Bash","Git","GitHub CLI","git-filter-repo"],
-          "link":{
-            "href":"https://github.com/kaufmann-dev/git-wrangler",
-            "label":{"en":"Open GitHub","de":"GitHub öffnen"}
+          "tags": [
+            "Bash",
+            "Git",
+            "GitHub CLI",
+            "git-filter-repo"
+          ],
+          "info": {
+            "en": "<a href=\"https://github.com/kaufmann-dev/git-wrangler\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
+            "de": "<a href=\"https://github.com/kaufmann-dev/git-wrangler\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
           }
         },
         {
-          "title":{
-            "en":"Jung in Krems",
-            "de":"Jung in Krems"
+          "heading": {
+            "en": "Jung in Krems",
+            "de": "Jung in Krems"
           },
-          "subtitle":{
-            "en":"Full-Stack Web Development",
-            "de":"Full-Stack-Webentwicklung"
+          "subheading": {
+            "en": "Full-Stack Web Development",
+            "de": "Full-Stack-Webentwicklung"
           },
-          "date":"2023",
-          "highlights":[
+          "subinfo": "2023",
+          "highlights": [
             {
-              "en":"Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
-              "de":"Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
+              "en": "Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
+              "de": "Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
             },
             {
-              "en":"Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
-              "de":"Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
+              "en": "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
+              "de": "Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
             }
           ],
-          "tags":["MySQL 8","Laravel 9","Svelte 3","Eloquent","Inertia","REST","Laravel Sanctum","Tailwind"],
-          "link":{
-            "href":"https://github.com/kaufmann-dev/jung-in-krems",
-            "label":{"en":"Open GitHub","de":"GitHub öffnen"}
+          "tags": [
+            "MySQL 8",
+            "Laravel 9",
+            "Svelte 3",
+            "Eloquent",
+            "Inertia",
+            "REST",
+            "Laravel Sanctum",
+            "Tailwind"
+          ],
+          "info": {
+            "en": "<a href=\"https://github.com/kaufmann-dev/jung-in-krems\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
+            "de": "<a href=\"https://github.com/kaufmann-dev/jung-in-krems\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
           }
         },
         {
-          "title":{
-            "en":"Async Cinema",
-            "de":"Async Cinema"
+          "heading": {
+            "en": "Async Cinema",
+            "de": "Async Cinema"
           },
-          "subtitle":{
-            "en":"Asynchronous Programming",
-            "de":"Asynchrone Programmierung"
+          "subheading": {
+            "en": "Asynchronous Programming",
+            "de": "Asynchrone Programmierung"
           },
-          "date":"2022",
-          "highlights":[
+          "subinfo": "2022",
+          "highlights": [
             {
-              "en":"Full-stack .NET MVC app with REST API for managing a MySQL film database",
-              "de":"Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
+              "en": "Full-stack .NET MVC app with REST API for managing a MySQL film database",
+              "de": "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
             },
             {
-              "en":"Asynchronous CRUD operations with Swagger documentation and Blazor UI",
-              "de":"Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
+              "en": "Asynchronous CRUD operations with Swagger documentation and Blazor UI",
+              "de": "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
             }
           ],
-          "tags":[".NET 7","C# 11","MySQL 8","Blazor","Entity Framework","Swagger"],
-          "link":{
-            "href":"https://github.com/kaufmann-dev/async-cinema",
-            "label":{"en":"Open GitHub","de":"GitHub öffnen"}
+          "tags": [
+            ".NET 7",
+            "C# 11",
+            "MySQL 8",
+            "Blazor",
+            "Entity Framework",
+            "Swagger"
+          ],
+          "info": {
+            "en": "<a href=\"https://github.com/kaufmann-dev/async-cinema\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
+            "de": "<a href=\"https://github.com/kaufmann-dev/async-cinema\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
           }
         },
         {
-          "title":{
-            "en":"Purus CSS",
-            "de":"Purus CSS"
+          "heading": {
+            "en": "Purus CSS",
+            "de": "Purus CSS"
           },
-          "subtitle":{
-            "en":"Frontend Development & CSS",
-            "de":"Frontend-Entwicklung & CSS"
+          "subheading": {
+            "en": "Frontend Development & CSS",
+            "de": "Frontend-Entwicklung & CSS"
           },
-          "date":"2021",
-          "highlights":[
+          "subinfo": "2021",
+          "highlights": [
             {
-              "en":"Responsive CSS drop-in framework with no JavaScript dependencies",
-              "de":"Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
+              "en": "Responsive CSS drop-in framework with no JavaScript dependencies",
+              "de": "Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
             },
             {
-              "en":"CSS variable customization and utility classes for layout, spacing, and typography",
-              "de":"CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
+              "en": "CSS variable customization and utility classes for layout, spacing, and typography",
+              "de": "CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
             }
           ],
-          "link":{
-            "href":"https://puruscss.kaufmann.dev",
-            "label":{"en":"Visit Website","de":"Website besuchen"}
+          "info": {
+            "en": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Visit Website</a>",
+            "de": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Website besuchen</a>"
           }
         }
       ]
@@ -616,19 +673,19 @@
       "type": "entries",
       "items": [
         {
-          "title": {
+          "heading": {
             "en": "Austrian Association of Hospice and Palliative Care",
             "de": "Dachverband HOSPIZ Österreich"
           },
-          "subtitle": {
+          "subheading": {
             "en": "Communication Volunteer",
             "de": "Ehrenamtlicher in der Kommunikation"
           },
-          "location": {
+          "info": {
             "en": "Vienna, Austria",
             "de": "Wien, Österreich"
           },
-          "date": {
+          "subinfo": {
             "en": "May 2024 – Present",
             "de": "Mai 2024 – Heute"
           },
@@ -642,6 +699,28 @@
               "de": "Unterstützung bei IT-Problemen und Infrastrukturverwaltung im Büro"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "new_1776986483069",
+      "title": {
+        "en": "New Section",
+        "de": "Neuer Abschnitt"
+      },
+      "open": false,
+      "type": "pub",
+      "items": [
+        {
+          "authors": [
+            {
+              "name": "cscdcdsdcc",
+              "bold": true
+            }
+          ],
+          "year": "234324",
+          "title": "fdsfdfvfvvxc",
+          "institution": "xcvxcvcxvcxvx"
         }
       ]
     }

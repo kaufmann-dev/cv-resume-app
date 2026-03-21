@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 const SESSION_COOKIE_NAME = 'kaufmann_dev_session';
 
 const app = express();
-const PORT = Number(process.env.PORT) || 3001;
+const PORT = Number(process.env.PORT) || 3002;
 
 app.set('trust proxy', true);
 app.use(cors({
@@ -218,12 +218,21 @@ app.post('/api/auth', (req, res) => {
   setSessionCookie(res, req, passcode, validation.expiresAt);
 
   const variant = getVariantForRequest(req);
+  const isAdmin = validation.match.isAdmin === true;
 
-  return res.json({
+  const response = {
     success: true,
     variant: variant.id,
-    data: getDocumentData(variant.id)
-  });
+    data: getDocumentData(variant.id),
+    isAdmin
+  };
+
+  if (isAdmin) {
+    response.resumeData = getDocumentData('resume');
+    response.cvData = getDocumentData('cv');
+  }
+
+  return res.json(response);
 });
 
 function handleDownloadRequest(req, res) {
@@ -278,6 +287,63 @@ function handleDownloadRequest(req, res) {
 }
 
 app.get('/api/download', handleDownloadRequest);
+
+function requireAdmin(req, res) {
+  const { passcode, source } = resolvePasscodeFromRequest(req);
+  const validation = validatePasscode(passcode);
+
+  if (!validation.ok) {
+    if (source === 'cookie') {
+      clearSessionCookie(res, req);
+    }
+    res.status(validation.status).json({ error: validation.error });
+    return false;
+  }
+
+  if (validation.match.isAdmin !== true) {
+    res.status(403).json({ error: 'Admin access required' });
+    return false;
+  }
+
+  return true;
+}
+
+app.get('/api/data/:variant', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  const variantId = req.params.variant;
+
+  if (!isKnownVariant(variantId)) {
+    return res.status(400).json({ error: 'Unknown variant' });
+  }
+
+  return res.json({ data: getDocumentData(variantId) });
+});
+
+app.post('/api/save', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  const { variant, data } = req.body;
+
+  if (!variant || !data) {
+    return res.status(400).json({ error: 'Missing variant or data' });
+  }
+
+  if (!isKnownVariant(variant)) {
+    return res.status(400).json({ error: 'Unknown variant' });
+  }
+
+  const variantConfig = getVariantConfigById(variant);
+  const filePath = path.join(__dirname, variantConfig.dataFile);
+
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+    return res.json({ success: true });
+  } catch (error) {
+    console.error('Failed to save:', error);
+    return res.status(500).json({ error: 'Failed to save file' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

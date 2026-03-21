@@ -82,7 +82,7 @@ export function isLocalDevelopmentHostname(hostname = '') {
 }
 
 export function isKnownVariant(variantId = '') {
-  return Object.prototype.hasOwnProperty.call(VARIANT_CONFIGS, variantId);
+  return variantId === 'edit' || Object.prototype.hasOwnProperty.call(VARIANT_CONFIGS, variantId);
 }
 
 export function getVariantConfigById(variantId = DEFAULT_VARIANT_ID) {

@@ -1,26 +1,4 @@
 {
-  "ui": {
-    "downloadPdf": {
-      "en": "Download PDF",
-      "de": "PDF herunterladen"
-    },
-    "themeLight": {
-      "en": "Light",
-      "de": "Hell"
-    },
-    "themeDark": {
-      "en": "Dark",
-      "de": "Dunkel"
-    },
-    "showMore": {
-      "en": "Show more",
-      "de": "Mehr anzeigen"
-    },
-    "showLess": {
-      "en": "Show less",
-      "de": "Weniger anzeigen"
-    }
-  },
   "sections": [
     {
       "id": "personal",

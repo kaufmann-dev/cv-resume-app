@@ -1,26 +1,4 @@
 {
-  "ui": {
-    "downloadPdf": {
-      "en": "Download PDF",
-      "de": "PDF herunterladen"
-    },
-    "themeLight": {
-      "en": "Light",
-      "de": "Hell"
-    },
-    "themeDark": {
-      "en": "Dark",
-      "de": "Dunkel"
-    },
-    "showMore": {
-      "en": "Show more",
-      "de": "Mehr anzeigen"
-    },
-    "showLess": {
-      "en": "Show less",
-      "de": "Weniger anzeigen"
-    }
-  },
   "sections": [
     {
       "id": "personal",
@@ -699,28 +677,6 @@
               "de": "Unterstützung bei IT-Problemen und Infrastrukturverwaltung im Büro"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "new_1776986483069",
-      "title": {
-        "en": "New Section",
-        "de": "Neuer Abschnitt"
-      },
-      "open": false,
-      "type": "pub",
-      "items": [
-        {
-          "authors": [
-            {
-              "name": "cscdcdsdcc",
-              "bold": true
-            }
-          ],
-          "year": "234324",
-          "title": "fdsfdfvfvvxc",
-          "institution": "xcvxcvcxvcxvx"
         }
       ]
     }

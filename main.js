@@ -10,6 +10,14 @@ const DEFAULT_LANG = 'en';
 const DEFAULT_THEME = 'light';
 const PREF_COOKIE_MAX_AGE = 31536000;
 
+const UI_STRINGS = {
+  downloadPdf: { en: 'PDF', de: 'PDF' },
+  themeLight: { en: 'Light', de: 'Hell' },
+  themeDark: { en: 'Dark', de: 'Dunkel' },
+  editBtn: { en: 'Edit', de: 'Bearbeiten' },
+  langSwitch: { en: 'DE', de: 'EN' }
+};
+
 let lang = DEFAULT_LANG;
 let theme = DEFAULT_THEME;
 let documentData = null;
@@ -209,7 +217,6 @@ function mkEntry(item) {
 }
 
 function mkSection(section) {
-  const ui = documentData.ui;
   const isOpen = section.id in openState ? openState[section.id] : section.open;
   const expanded = !!expandedState[section.id];
 
@@ -219,17 +226,7 @@ function mkSection(section) {
     body = `<div class="info-grid">${section.rows.map((row) => `<div class="il">${localize(row.label)}</div><div class="iv">${localize(row.value)}</div>`).join('')}</div>`;
   } else if (section.type === 'entries') {
     const items = section.items || [];
-    const cut = section.showMoreAt;
-
-    if (cut && !expanded) {
-      body = items.slice(0, cut).map(mkEntry).join('');
-      body += `<div class="show-more-wrap"><button class="show-more-btn" data-sec="${section.id}">${localize(ui.showMore)} (${items.length - cut})</button></div>`;
-    } else if (cut && expanded) {
-      body = items.map(mkEntry).join('');
-      body += `<div class="show-more-wrap"><button class="show-more-btn" data-sec="${section.id}">${localize(ui.showLess)}</button></div>`;
-    } else {
-      body = items.map(mkEntry).join('');
-    }
+    body = items.map(mkEntry).join('');
   } else if (section.type === 'pub') {
     if (section.items) {
       body = section.items.map(pub => {
@@ -254,15 +251,21 @@ function applyThemeIcons() {
 
   if (sun) sun.style.display = darkMode ? '' : 'none';
   if (moon) moon.style.display = darkMode ? 'none' : '';
-  if (label) label.textContent = darkMode ? localize(documentData.ui.themeLight) : localize(documentData.ui.themeDark);
+  if (label) label.textContent = darkMode ? localize(UI_STRINGS.themeLight) : localize(UI_STRINGS.themeDark);
 }
 
 function render() {
   if (!documentData) return;
 
   document.documentElement.lang = lang;
-  document.getElementById('dl-lbl').textContent = localize(documentData.ui.downloadPdf);
-  document.getElementById('btn-lang').textContent = lang === 'en' ? 'DE' : 'EN';
+  document.getElementById('dl-lbl').textContent = localize(UI_STRINGS.downloadPdf);
+  
+  const editLbl = document.getElementById('edit-lbl');
+  if (editLbl) editLbl.textContent = localize(UI_STRINGS.editBtn);
+  
+  const langLbl = document.getElementById('lang-lbl');
+  if (langLbl) langLbl.textContent = localize(UI_STRINGS.langSwitch);
+  
   document.getElementById('cv-body').innerHTML = documentData.sections.map(mkSection).join('');
   renderVariantNote();
   applyVariantChrome();
@@ -418,16 +421,6 @@ document.getElementById('btn-theme').addEventListener('click', () => {
 });
 
 downloadButton.addEventListener('click', handleDownload);
-
-document.getElementById('cv-body').addEventListener('click', (event) => {
-  const button = event.target.closest('.show-more-btn');
-  if (!button) return;
-
-  const sectionId = button.dataset.sec;
-  saveOpen();
-  expandedState[sectionId] = !expandedState[sectionId];
-  render();
-});
 
 window.addEventListener('beforeprint', () => {
   saveOpen();

@@ -367,17 +367,16 @@ details[open]>summary .chev {
   color: var(--t2);
 }
 
-.entry-link {
-  font-size: 0.75rem;
-  color: var(--t2);
+.entry-location a,
+.entry-date a {
+  color: inherit;
   text-decoration: none;
   border-bottom: 1px solid var(--border2);
-  white-space: nowrap;
-  line-height: 1.2;
   transition: color .2s, border-color .2s;
 }
 
-.entry-link:hover {
+.entry-location a:hover,
+.entry-date a:hover {
   color: var(--t1);
   border-bottom-color: var(--t1);
 }
@@ -576,19 +575,18 @@ ul li::before {
 
   .e-mob .entry-location,
   .e-mob .entry-date,
-  .e-mob .entry-meta-sep,
-  .e-mob .entry-link {
+  .e-mob .entry-meta-sep {
     color: inherit;
   }
 
-  .e-mob .entry-link {
+  .e-mob a {
     font-size: 0.7rem;
     border-bottom-color: currentColor;
   }
 
   .e-r1 .entry-location,
   .e-r1 .entry-inline-meta--text,
-  .e-r1 .entry-link {
+  .e-r1 a {
     display: none;
   }
 

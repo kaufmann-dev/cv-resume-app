@@ -77,11 +77,11 @@
         {
           "heading": {
             "en": "Board of Education Vienna",
-            "de": "Bildungsdirektion für Wien"
+            "de": "Board of Education Vienna"
           },
           "subheading": {
             "en": "IT Officer",
-            "de": "IT-Referent"
+            "de": "IT Officer"
           },
           "info": {
             "en": "Vienna, Austria",
@@ -89,7 +89,7 @@
           },
           "subinfo": {
             "en": "Apr 2024 – Present",
-            "de": "April 2024 – Heute"
+            "de": "Apr 2024 – Present"
           },
           "highlights": [
             {
@@ -186,7 +186,7 @@
           },
           "subinfo": {
             "en": "Aug 2022",
-            "de": "August 2022"
+            "de": "Aug 2022"
           },
           "highlights": [
             {
@@ -200,6 +200,10 @@
             {
               "en": "Handled logistics, supplies, errands, and technical maintenance",
               "de": "Logistik, Einkäufe, Besorgungen und technische Wartung"
+            },
+            {
+              "en": "",
+              "de": ""
             }
           ]
         },
@@ -266,7 +270,7 @@
       "id": "education",
       "title": {
         "en": "Education",
-        "de": "Bildungsweg"
+        "de": "Education"
       },
       "open": false,
       "type": "entries",

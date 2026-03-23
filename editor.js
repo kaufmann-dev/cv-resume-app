@@ -59,7 +59,9 @@ function inputField(label, value, onChange, placeholder) {
   const inp = h('input', { className: 'ed-input', type: 'text', value: value || '', placeholder: placeholder || '' });
   inp.addEventListener('input', () => onChange(inp.value));
   const wrap = h('div', { className: 'ed-field-col' });
-  if (label) wrap.appendChild(h('div', { className: 'ed-field-col-label' }, label));
+  const lbl = h('div', { className: 'ed-field-col-label' });
+  lbl.innerHTML = label || '&nbsp;';
+  wrap.appendChild(lbl);
   wrap.appendChild(inp);
   return wrap;
 }
@@ -118,7 +120,6 @@ function renderInfoCard(row, index, rows, onDataChange, rebuildList) {
   if (index === rows.length - 1) dn.disabled = true;
   actions.append(up, dn, del);
   header.appendChild(actions);
-  header.appendChild(h('span', { className: 'ed-item-chevron' }, CHEV_DN));
 
   header.addEventListener('click', () => card.classList.toggle('open'));
   card.appendChild(header);
@@ -200,7 +201,6 @@ function renderEntryCard(item, index, items, onDataChange, rebuildList) {
   if (index === items.length - 1) dn.disabled = true;
   actions.append(up, dn, del);
   header.appendChild(actions);
-  header.appendChild(h('span', { className: 'ed-item-chevron' }, CHEV_DN));
 
   header.addEventListener('click', () => card.classList.toggle('open'));
   card.appendChild(header);
@@ -265,7 +265,6 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
   if (index === items.length - 1) dn.disabled = true;
   actions.append(up, dn, del);
   header.appendChild(actions);
-  header.appendChild(h('span', { className: 'ed-item-chevron' }, CHEV_DN));
   header.addEventListener('click', () => card.classList.toggle('open'));
   card.appendChild(header);
 
@@ -417,7 +416,7 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
     sideHeader.appendChild(h('span', { className: 'ed-sidebar-title' }, 'Sections'));
     
     const addWrap = h('div', { style: 'display:flex; align-items:center; gap: 4px;' });
-    const typeSel = h('select', { className: 'ed-input', style: 'padding: 2px 4px; font-size: 0.8rem; width: auto;' });
+    const typeSel = h('select', { className: 'ed-select-add' });
     typeSel.appendChild(h('option', { value: 'entries' }, 'Entries'));
     typeSel.appendChild(h('option', { value: 'info' }, 'Info'));
     typeSel.appendChild(h('option', { value: 'pub' }, 'Pub'));
@@ -466,12 +465,14 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
       const secHeader = h('div', { className: 'ed-section-header' });
       const headerTop = h('div', { className: 'ed-section-header-top' });
       const meta = h('div', { className: 'ed-section-meta' });
-      meta.appendChild(h('span', { className: 'ed-section-type-badge' }, sec.type));
 
       // ID field
-      const idInp = h('input', { className: 'ed-input', type: 'text', value: sec.id, style: 'width:120px;font-size:0.7rem' });
+      const idWrap = h('div', { style: 'display:flex;align-items:center;gap:6px;' });
+      idWrap.appendChild(h('span', { className: 'ed-field-col-label', style: 'margin-bottom:0' }, 'ID'));
+      const idInp = h('input', { className: 'ed-input', type: 'text', value: sec.id, style: 'width:120px;font-size:0.7rem;padding:6px 10px;' });
       idInp.addEventListener('input', () => { sec.id = idInp.value; markDirty(); });
-      meta.appendChild(idInp);
+      idWrap.appendChild(idInp);
+      meta.appendChild(idWrap);
 
       // Open default toggle
       const openCb = h('input', { type: 'checkbox' });

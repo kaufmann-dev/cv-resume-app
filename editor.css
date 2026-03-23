@@ -234,26 +234,17 @@
 .ed-sec-arrows {
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  transform: translateX(-4px);
-  transition: var(--ed-transition);
-}
-
-.ed-sec-item:hover .ed-sec-arrows,
-.ed-sec-item.active .ed-sec-arrows {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 .ed-arrow-btn {
-  width: 20px;
-  height: 14px;
+  width: 24px;
+  height: 18px;
   background: none;
   border: none;
   color: var(--t3);
   cursor: pointer;
   border-radius: 2px;
-  font-size: 9px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -398,6 +389,36 @@ select.ed-input {
   background-image: url('data:image/svg+xml;utf8,<svg fill="%238e8e8e" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
 }
 
+/* ── Select Add Section ── */
+.ed-select-add {
+  appearance: none;
+  cursor: pointer;
+  background-color: var(--tb-bg);
+  border: 1px solid transparent;
+  border-radius: calc(var(--ed-radius) - 2px);
+  color: var(--t1);
+  font-family: inherit;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 6px 24px 6px 12px;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%237d7d7d" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  outline: none;
+  transition: var(--ed-transition);
+}
+
+.ed-select-add:focus, .ed-select-add:hover {
+  background-color: var(--tb-hbg);
+  border-color: var(--t2);
+}
+
+[data-theme="dark"] .ed-select-add {
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%238e8e8e" height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+}
+
 /* ── Shared Toggle ── */
 .ed-shared-toggle {
   display: inline-flex;
@@ -525,19 +546,6 @@ select.ed-input {
 
 .ed-item-card.open .ed-item-body {
   display: block;
-}
-
-.ed-item-card.open .ed-item-chevron {
-  transform: rotate(180deg);
-}
-
-.ed-item-chevron {
-  transition: transform .3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  font-size: 12px;
-  color: var(--t3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* ── Highlights (Bullet Points) ── */

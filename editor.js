@@ -349,6 +349,7 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
   let docs = { resume: JSON.parse(JSON.stringify(resumeData)), cv: JSON.parse(JSON.stringify(cvData)) };
   let activeDoc = 'resume';
   let selectedIdx = 0;
+  let mobileShowDetail = false;
   let dirty = false;
 
   const container = document.getElementById('editor-container');
@@ -380,6 +381,7 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
     if (dirty && !window.confirm('You have unsaved changes. Switch anyway?')) return;
     activeDoc = doc;
     selectedIdx = 0;
+    mobileShowDetail = false;
     dirty = false;
     renderEditor();
   }
@@ -408,7 +410,7 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
     overlay.appendChild(topbar);
 
     // Layout
-    const layout = h('div', { className: 'ed-layout' });
+    const layout = h('div', { className: 'ed-layout' + (mobileShowDetail ? ' show-detail' : '') });
 
     // Sidebar
     const sidebar = h('div', { className: 'ed-sidebar' });
@@ -429,6 +431,7 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
       else newSec.items = [];
       sections().push(newSec);
       selectedIdx = sections().length - 1;
+      mobileShowDetail = true;
       markDirty();
       renderEditor();
     } }, '+'));
@@ -437,7 +440,7 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
 
     const sideList = h('div', { className: 'ed-sidebar-list' });
     sections().forEach((sec, i) => {
-      const item = h('div', { className: 'ed-sec-item' + (i === selectedIdx ? ' active' : ''), onClick: () => { selectedIdx = i; renderEditor(); } });
+      const item = h('div', { className: 'ed-sec-item' + (i === selectedIdx ? ' active' : ''), onClick: () => { selectedIdx = i; mobileShowDetail = true; renderEditor(); } });
 
       const arrows = h('div', { className: 'ed-sec-arrows' });
       const upBtn = h('button', { className: 'ed-arrow-btn', onClick: e => { e.stopPropagation(); if (i > 0) { sections().splice(i - 1, 0, sections().splice(i, 1)[0]); selectedIdx = i - 1; markDirty(); renderEditor(); } } }, ARROW_UP);
@@ -463,6 +466,11 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
 
       // Section header
       const secHeader = h('div', { className: 'ed-section-header' });
+      
+      const backBtn = h('button', { className: 'ed-mobile-back-btn', onClick: () => { mobileShowDetail = false; renderEditor(); } });
+      backBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back to Sections';
+      secHeader.appendChild(backBtn);
+
       const headerTop = h('div', { className: 'ed-section-header-top' });
       const meta = h('div', { className: 'ed-section-meta' });
 

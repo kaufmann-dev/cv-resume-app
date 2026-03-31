@@ -64,13 +64,14 @@ body {
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -101,12 +102,13 @@ body {
 
 .auth-card h2 {
   font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--t3);
   margin-bottom: 24px;
 }
+
 
 .auth-card input {
   width: 100%;
@@ -138,13 +140,14 @@ body {
   color: var(--bg);
   font-family: inherit;
   font-size: 0.7rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 
 .auth-card button:hover {
   transform: translateY(-2px);
@@ -215,11 +218,12 @@ header {
 .name {
   font-size: clamp(1.9rem, 4.2vw, 3.2rem);
   font-weight: 500;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.045em;
   line-height: 1;
   color: var(--t1);
   white-space: nowrap;
 }
+
 
 .toolbar {
   display: flex;
@@ -238,13 +242,14 @@ header {
   color: var(--t1);
   font-family: inherit;
   font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
   white-space: nowrap;
 }
+
 
 .tbtn:hover {
   background: var(--tb-hbg);
@@ -286,12 +291,13 @@ summary::-webkit-details-marker {
 
 summary h2 {
   font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--t3);
   transition: color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
+
 
 details[open]>summary h2 {
   color: var(--t1);
@@ -371,10 +377,11 @@ details[open]>summary .chev {
 }
 
 .entry-title {
-  font-weight: 700;
+  font-weight: 600;
   font-size: 0.92rem;
   color: var(--t1);
 }
+
 
 .entry-location {
   font-size: 0.75rem;
@@ -455,30 +462,35 @@ ul li::before {
 }
 
 .tag {
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 600;
-  padding: 2px 7px;
-  border: 1px solid var(--tag-b);
-  border-radius: 2px;
-  color: var(--tag-c);
-  letter-spacing: .05em;
+  padding: 4px 10px;
+  background: var(--tb-bg);
+  border-radius: 6px;
+  color: var(--t2);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
 }
 
 .entry:hover .tag {
-  border-color: var(--border2);
-  color: var(--t2);
+  background: var(--tb-hbg);
+  color: var(--t1);
 }
+
 
 .cv-subtitle {
   font-size: 0.6rem;
   font-weight: 600;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--t3);
   margin-top: 7px;
 }
+
 
 .info-grid {
   display: grid;
@@ -489,12 +501,13 @@ ul li::before {
 
 .il {
   font-size: 0.6rem;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: .14em;
+  letter-spacing: .16em;
   color: var(--t3);
   padding-top: 2px;
 }
+
 
 .iv {
   font-size: 0.84rem;
@@ -516,14 +529,37 @@ ul li::before {
   font-size: 0.82rem;
   line-height: 1.75;
   color: var(--t2);
-  border-left: 1px solid var(--border);
-  padding: 10px 16px;
-  transition: border-color 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-left: 1.5px solid var(--border);
+  position: relative;
+  padding: 8px 0 18px 22px;
+  margin-bottom: 2px;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.pub::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: -4.75px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--dot);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  z-index: 2;
 }
 
 .pub:hover {
   border-left-color: var(--t1);
 }
+
+.pub:hover::before {
+  background: var(--t1);
+  border-color: var(--t1);
+  transform: scale(1.2);
+}
+
 
 .e-mob {
   display: none;

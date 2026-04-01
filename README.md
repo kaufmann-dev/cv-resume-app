@@ -92,7 +92,7 @@ npm install
 npm run server
 ```
 
-The backend runs at `http://localhost:3002`.
+The backend runs at `http://localhost:3001`.
 
 ### Run the frontend
 
@@ -104,7 +104,7 @@ The frontend usually runs at `http://localhost:5173`.
 
 In local development:
 
-- the frontend talks to `http://localhost:3002`
+- the frontend talks to `http://localhost:3001`
 - unknown or local hostnames default to the resume variant
 - session cookies stay local to your localhost environment
 - theme and language preferences still persist through cookies
@@ -222,7 +222,7 @@ server {
     }
 
     location /api/ {
-        proxy_pass http://127.0.0.1:3002;
+        proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-Host $host;

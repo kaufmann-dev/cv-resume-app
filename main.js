@@ -24,7 +24,7 @@ let documentData = null;
 let activeVariant = getInitialVariantConfig();
 
 const API_BASE_URL = isLocalDevelopmentHostname(window.location.hostname)
-  ? 'http://localhost:3002'
+  ? 'http://localhost:3001'
   : '';
 
 const CHEV = `<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;

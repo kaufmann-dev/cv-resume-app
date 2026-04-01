@@ -12,7 +12,7 @@ ExecStart=/usr/bin/npm run server
 Restart=always
 RestartSec=5
 Environment=NODE_ENV=production
-Environment=PORT=3002
+Environment=PORT=3001
 User=www-data
 Group=www-data
 

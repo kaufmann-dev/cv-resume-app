@@ -63,6 +63,60 @@
       ]
     },
     {
+      "id": "education",
+      "title": {
+        "en": "Education",
+        "de": "Bildungsweg"
+      },
+      "open": false,
+      "type": "entries",
+      "items": [
+        {
+          "heading": {
+            "en": "Higher Federal Technical College Krems",
+            "de": "Höhere Technische Bundeslehranstalt Krems"
+          },
+          "subheading": {
+            "en": "Diploma in Information Technology + Matura",
+            "de": "Diplom in Informationstechnologie + Matura"
+          },
+          "info": {
+            "en": "Krems, Austria",
+            "de": "Krems, Österreich"
+          },
+          "subinfo": {
+            "en": "Sep 2018 – Jun 2023",
+            "de": "Sept. 2018 – Juni 2023"
+          },
+          "highlights": [
+            {
+              "en": "Specialization: Media Technology",
+              "de": "Spezialisierung: Medientechnik"
+            },
+            {
+              "en": "Final Exam Elective: Software Development",
+              "de": "Abschlussprüfung Wahlfach: Softwareentwicklung"
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Federal Secondary School Kremszeile",
+            "de": "Bundesrealgymnasium Kremszeile"
+          },
+          "info": {
+            "en": "Krems, Austria",
+            "de": "Krems, Österreich"
+          },
+          "subinfo": {
+            "en": "Sep 2014 – Jun 2018",
+            "de": "Sept. 2014 – Juni 2018"
+          },
+          "highlights": []
+        }
+      ]
+    },
+    {
       "id": "work",
       "title": {
         "en": "Work Experience",
@@ -261,59 +315,6 @@
       ]
     },
     {
-      "id": "education",
-      "title": {
-        "en": "Education",
-        "de": "Bildungsweg"
-      },
-      "open": false,
-      "type": "entries",
-      "items": [
-        {
-          "heading": {
-            "en": "Higher Federal Technical College Krems",
-            "de": "Höhere Technische Bundeslehranstalt Krems"
-          },
-          "subheading": {
-            "en": "Diploma in Information Technology + Matura",
-            "de": "Diplom in Informationstechnologie + Matura"
-          },
-          "info": {
-            "en": "Krems, Austria",
-            "de": "Krems, Österreich"
-          },
-          "subinfo": {
-            "en": "Sep 2018 – Jun 2023",
-            "de": "Sept. 2018 – Juni 2023"
-          },
-          "highlights": [
-            {
-              "en": "Specialization: Media Technology",
-              "de": "Spezialisierung: Medientechnik"
-            },
-            {
-              "en": "Final Exam Elective: Software Development",
-              "de": "Abschlussprüfung Wahlfach: Softwareentwicklung"
-            }
-          ]
-        },
-        {
-          "heading": {
-            "en": "Federal Secondary School Kremszeile",
-            "de": "Bundesrealgymnasium Kremszeile"
-          },
-          "info": {
-            "en": "Krems, Austria",
-            "de": "Krems, Österreich"
-          },
-          "subinfo": {
-            "en": "Sep 2014 – Jun 2018",
-            "de": "Sept. 2014 – Juni 2018"
-          }
-        }
-      ]
-    },
-    {
       "id": "dev",
       "title": {
         "en": "Courses and Certificates",
@@ -327,7 +328,7 @@
             "en": "Digital Transformation (4 ECTS)",
             "de": "Digitale Transformation (4 ECTS)"
           },
-          "subheading": "Audencia Business School",
+          "subheading": "Audencia Business School — Winter School",
           "info": {
             "en": "Nantes, France",
             "de": "Nantes, Frankreich"
@@ -335,7 +336,8 @@
           "subinfo": {
             "en": "Jan 2026",
             "de": "Jan. 2026"
-          }
+          },
+          "highlights": []
         },
         {
           "heading": {
@@ -353,7 +355,8 @@
           "subinfo": {
             "en": "Sep 2025",
             "de": "Sept. 2025"
-          }
+          },
+          "highlights": []
         },
         {
           "heading": {
@@ -361,8 +364,8 @@
             "de": "Geschäftsprozessanalyse (3 ECTS)"
           },
           "subheading": {
-            "en": "Masaryk University",
-            "de": "Masaryk-Universität"
+            "en": "Masaryk University — Summer School",
+            "de": "Masaryk-Universität — Summer School"
           },
           "info": {
             "en": "Brno, Czechia",
@@ -371,7 +374,8 @@
           "subinfo": {
             "en": "Jul 2025",
             "de": "Juli 2025"
-          }
+          },
+          "highlights": []
         },
         {
           "heading": {
@@ -383,6 +387,208 @@
           "subinfo": {
             "en": "Aug 2020",
             "de": "Aug. 2020"
+          },
+          "highlights": []
+        }
+      ]
+    },
+    {
+      "id": "volunteer",
+      "title": {
+        "en": "Volunteer Work",
+        "de": "Ehrenamt"
+      },
+      "open": false,
+      "type": "entries",
+      "items": [
+        {
+          "heading": {
+            "en": "Austrian Association of Hospice and Palliative Care (DVHÖ)",
+            "de": "Dachverband HOSPIZ Österreich (DVHÖ)"
+          },
+          "subheading": {
+            "en": "Communication Volunteer",
+            "de": "Ehrenamtlicher in der Kommunikation"
+          },
+          "info": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "subinfo": {
+            "en": "May 2024 – Present",
+            "de": "Mai 2024 – Heute"
+          },
+          "highlights": [
+            {
+              "en": "Creation of graphics, flyers, and invitations for internal communication and social media",
+              "de": "Erstellung von Grafiken, Flyern und Einladungen für interne Kommunikation und Social Media"
+            },
+            {
+              "en": "Support with IT problems and infrastructure management in the office",
+              "de": "Unterstützung bei IT-Problemen und Infrastrukturverwaltung im Büro"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "title": {
+        "en": "Projects",
+        "de": "Projekte"
+      },
+      "open": false,
+      "type": "entries",
+      "items": [
+        {
+          "heading": "Market Deck",
+          "subheading": {
+            "en": "Data Visualization & Finance",
+            "de": "Datenvisualisierung & Finanzen"
+          },
+          "subinfo": "2026",
+          "highlights": [
+            {
+              "en": "Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
+              "de": "Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
+            },
+            {
+              "en": "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
+              "de": "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
+            }
+          ],
+          "tags": [
+            "FastAPI",
+            "SQLite",
+            "yfinance",
+            "Python",
+            "Vanilla JS"
+          ],
+          "info": "<a href=\"https://github.com/kaufmann-dev/market-deck\" target=\"_blank\" rel=\"noopener\">GitHub</a>"
+        },
+        {
+          "heading": "CT2Mesh2Print",
+          "subheading": {
+            "en": "Medical Imaging & 3D Printing",
+            "de": "Medizinische Bildgebung & 3D-Druck"
+          },
+          "subinfo": "2025",
+          "highlights": [
+            {
+              "en": "Segmented CT scan data to isolate bone structures",
+              "de": "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
+            },
+            {
+              "en": "Converted segmented data into a printable 3D mesh and produced lifesize prints",
+              "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
+            }
+          ],
+          "info": {
+            "en": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Article</a>",
+            "de": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Artikel</a>"
+          }
+        },
+        {
+          "heading": "Git Wrangler",
+          "subheading": {
+            "en": "Shell Scripting & Git Automation",
+            "de": "Shell-Skripting & Git-Automatisierung"
+          },
+          "subinfo": "2024",
+          "highlights": [
+            {
+              "en": "Bash scripts for the bulk management and manipulation of Git repositories",
+              "de": "Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
+            },
+            {
+              "en": "Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
+              "de": "Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets"
+            }
+          ],
+          "tags": [
+            "Bash",
+            "Git",
+            "GitHub CLI",
+            "git-filter-repo"
+          ],
+          "info": "<a href=\"https://github.com/kaufmann-dev/git-wrangler\" target=\"_blank\" rel=\"noopener\">GitHub</a>"
+        },
+        {
+          "heading": "Jung in Krems",
+          "subheading": {
+            "en": "Full-Stack Web Development",
+            "de": "Full-Stack-Webentwicklung"
+          },
+          "subinfo": "2023",
+          "highlights": [
+            {
+              "en": "Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
+              "de": "Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
+            },
+            {
+              "en": "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
+              "de": "Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
+            }
+          ],
+          "tags": [
+            "MySQL 8",
+            "Laravel 9",
+            "Svelte 3",
+            "Eloquent",
+            "Inertia",
+            "REST",
+            "Laravel Sanctum",
+            "Tailwind"
+          ],
+          "info": "<a href=\"https://github.com/kaufmann-dev/jung-in-krems\" target=\"_blank\" rel=\"noopener\">GitHub</a>"
+        },
+        {
+          "heading": "Async Cinema",
+          "subheading": {
+            "en": "Asynchronous Programming",
+            "de": "Asynchrone Programmierung"
+          },
+          "subinfo": "2022",
+          "highlights": [
+            {
+              "en": "Full-stack .NET MVC app with REST API for managing a MySQL film database",
+              "de": "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
+            },
+            {
+              "en": "Asynchronous CRUD operations with Swagger documentation and Blazor UI",
+              "de": "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
+            }
+          ],
+          "tags": [
+            ".NET 7",
+            "C# 11",
+            "MySQL 8",
+            "Blazor",
+            "Entity Framework",
+            "Swagger"
+          ],
+          "info": "<a href=\"https://github.com/kaufmann-dev/async-cinema\" target=\"_blank\" rel=\"noopener\">GitHub</a>"
+        },
+        {
+          "heading": "Purus CSS",
+          "subheading": {
+            "en": "Frontend Development & CSS",
+            "de": "Frontend-Entwicklung & CSS"
+          },
+          "subinfo": "2021",
+          "highlights": [
+            {
+              "en": "Responsive CSS drop-in framework with no JavaScript dependencies",
+              "de": "Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
+            },
+            {
+              "en": "CSS variable customization and utility classes for layout, spacing, and typography",
+              "de": "CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
+            }
+          ],
+          "info": {
+            "en": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Website</a>",
+            "de": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Website</a>"
           }
         }
       ]
@@ -409,244 +615,13 @@
           ],
           "year": "2023",
           "title": {
-            "en": "Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.",
-            "de": "Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind."
+            "en": "Jugendliches Krems: Conception and Implementation of a Digital Platform for Educational Institutions and Youth Events in Krems.",
+            "de": "Jugendliches Krems: Konzeption und Implementierung einer digitalen Plattform für Bildungseinrichtungen und Jugendveranstaltungen in Krems."
           },
           "institution": {
-            "en": "Höhere Technische Bundeslehranstalt Krems",
+            "en": "Higher Federal Technical College Krems",
             "de": "Höhere Technische Bundeslehranstalt Krems"
           }
-        }
-      ]
-    },
-    {
-      "id": "projects",
-      "title": {
-        "en": "Projects",
-        "de": "Projekte"
-      },
-      "open": false,
-      "type": "entries",
-      "items": [
-        {
-          "heading": {
-            "en": "Market Deck",
-            "de": "Market Deck"
-          },
-          "subheading": {
-            "en": "Data Visualization & Finance",
-            "de": "Datenvisualisierung & Finanzen"
-          },
-          "subinfo": "2026",
-          "highlights": [
-            {
-              "en": "Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
-              "de": "Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
-            },
-            {
-              "en": "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
-              "de": "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
-            }
-          ],
-          "tags": [
-            "FastAPI",
-            "SQLite",
-            "yfinance",
-            "Python",
-            "Vanilla JS"
-          ],
-          "info": {
-            "en": "<a href=\"https://github.com/kaufmann-dev/market-deck\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
-            "de": "<a href=\"https://github.com/kaufmann-dev/market-deck\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "CT2Mesh2Print",
-            "de": "CT2Mesh2Print"
-          },
-          "subheading": {
-            "en": "Medical Imaging & 3D Printing",
-            "de": "Medizinische Bildgebung & 3D-Druck"
-          },
-          "subinfo": "2025",
-          "highlights": [
-            {
-              "en": "Segmented CT scan data to isolate bone structures",
-              "de": "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
-            },
-            {
-              "en": "Converted segmented data into a printable 3D mesh and produced lifesize prints",
-              "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
-            }
-          ],
-          "info": {
-            "en": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Read Article</a>",
-            "de": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Artikel lesen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "Git Wrangler",
-            "de": "Git Wrangler"
-          },
-          "subheading": {
-            "en": "Shell Scripting & Git Automation",
-            "de": "Shell-Skripting & Git-Automatisierung"
-          },
-          "subinfo": "2024",
-          "highlights": [
-            {
-              "en": "Bash scripts for the bulk management and manipulation of Git repositories",
-              "de": "Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
-            },
-            {
-              "en": "Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
-              "de": "Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets"
-            }
-          ],
-          "tags": [
-            "Bash",
-            "Git",
-            "GitHub CLI",
-            "git-filter-repo"
-          ],
-          "info": {
-            "en": "<a href=\"https://github.com/kaufmann-dev/git-wrangler\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
-            "de": "<a href=\"https://github.com/kaufmann-dev/git-wrangler\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "Jung in Krems",
-            "de": "Jung in Krems"
-          },
-          "subheading": {
-            "en": "Full-Stack Web Development",
-            "de": "Full-Stack-Webentwicklung"
-          },
-          "subinfo": "2023",
-          "highlights": [
-            {
-              "en": "Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
-              "de": "Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
-            },
-            {
-              "en": "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
-              "de": "Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
-            }
-          ],
-          "tags": [
-            "MySQL 8",
-            "Laravel 9",
-            "Svelte 3",
-            "Eloquent",
-            "Inertia",
-            "REST",
-            "Laravel Sanctum",
-            "Tailwind"
-          ],
-          "info": {
-            "en": "<a href=\"https://github.com/kaufmann-dev/jung-in-krems\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
-            "de": "<a href=\"https://github.com/kaufmann-dev/jung-in-krems\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "Async Cinema",
-            "de": "Async Cinema"
-          },
-          "subheading": {
-            "en": "Asynchronous Programming",
-            "de": "Asynchrone Programmierung"
-          },
-          "subinfo": "2022",
-          "highlights": [
-            {
-              "en": "Full-stack .NET MVC app with REST API for managing a MySQL film database",
-              "de": "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
-            },
-            {
-              "en": "Asynchronous CRUD operations with Swagger documentation and Blazor UI",
-              "de": "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
-            }
-          ],
-          "tags": [
-            ".NET 7",
-            "C# 11",
-            "MySQL 8",
-            "Blazor",
-            "Entity Framework",
-            "Swagger"
-          ],
-          "info": {
-            "en": "<a href=\"https://github.com/kaufmann-dev/async-cinema\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
-            "de": "<a href=\"https://github.com/kaufmann-dev/async-cinema\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "Purus CSS",
-            "de": "Purus CSS"
-          },
-          "subheading": {
-            "en": "Frontend Development & CSS",
-            "de": "Frontend-Entwicklung & CSS"
-          },
-          "subinfo": "2021",
-          "highlights": [
-            {
-              "en": "Responsive CSS drop-in framework with no JavaScript dependencies",
-              "de": "Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
-            },
-            {
-              "en": "CSS variable customization and utility classes for layout, spacing, and typography",
-              "de": "CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
-            }
-          ],
-          "info": {
-            "en": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Visit Website</a>",
-            "de": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Website besuchen</a>"
-          }
-        }
-      ]
-    },
-    {
-      "id": "volunteer",
-      "title": {
-        "en": "Volunteer Work",
-        "de": "Ehrenamt"
-      },
-      "open": false,
-      "type": "entries",
-      "items": [
-        {
-          "heading": {
-            "en": "Austrian Association of Hospice and Palliative Care",
-            "de": "Dachverband HOSPIZ Österreich"
-          },
-          "subheading": {
-            "en": "Communication Volunteer",
-            "de": "Ehrenamtlicher in der Kommunikation"
-          },
-          "info": {
-            "en": "Vienna, Austria",
-            "de": "Wien, Österreich"
-          },
-          "subinfo": {
-            "en": "May 2024 – Present",
-            "de": "Mai 2024 – Heute"
-          },
-          "highlights": [
-            {
-              "en": "Creation of graphics, flyers, and invitations for internal communication and social media",
-              "de": "Erstellung von Grafiken, Flyern und Einladungen für interne Kommunikation und Social Media"
-            },
-            {
-              "en": "Support with IT problems and infrastructure management in the office",
-              "de": "Unterstützung bei IT-Problemen und Infrastrukturverwaltung im Büro"
-            }
-          ]
         }
       ]
     },
@@ -675,7 +650,24 @@
           "subinfo": {
             "en": "Mar 2026",
             "de": "März 2026"
-          }
+          },
+          "highlights": []
+        },
+        {
+          "heading": "Interpädagogica",
+          "subheading": {
+            "en": "",
+            "de": ""
+          },
+          "info": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "subinfo": {
+            "en": "Nov 2025",
+            "de": "Nov. 2025"
+          },
+          "highlights": []
         },
         {
           "heading": {
@@ -693,7 +685,8 @@
           "subinfo": {
             "en": "Nov 2024",
             "de": "Nov. 2024"
-          }
+          },
+          "highlights": []
         },
         {
           "heading": {
@@ -704,7 +697,8 @@
           "subinfo": {
             "en": "Aug 2020",
             "de": "Aug. 2020"
-          }
+          },
+          "highlights": []
         },
         {
           "heading": {
@@ -718,7 +712,8 @@
           "subinfo": {
             "en": "Apr 2019",
             "de": "Apr. 2019"
-          }
+          },
+          "highlights": []
         },
         {
           "heading": {
@@ -732,7 +727,8 @@
           "subinfo": {
             "en": "Jul 2018",
             "de": "Juli 2018"
-          }
+          },
+          "highlights": []
         },
         {
           "heading": {
@@ -750,7 +746,8 @@
           "subinfo": {
             "en": "Jul 2016",
             "de": "Juli 2016"
-          }
+          },
+          "highlights": []
         }
       ]
     },

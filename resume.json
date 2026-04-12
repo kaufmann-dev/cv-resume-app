@@ -11,26 +11,6 @@
       "rows": [
         {
           "label": {
-            "en": "Citizenship",
-            "de": "Citizenship"
-          },
-          "value": {
-            "en": "Austrian",
-            "de": "Austrian"
-          }
-        },
-        {
-          "label": {
-            "en": "Date of birth",
-            "de": "Geburtsdatum"
-          },
-          "value": {
-            "en": "28 Nov 2003",
-            "de": "28. November 2003"
-          }
-        },
-        {
-          "label": {
             "en": "Location",
             "de": "Wohnort"
           },
@@ -44,10 +24,7 @@
             "en": "Email",
             "de": "E-Mail"
           },
-          "value": {
-            "en": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>",
-            "de": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>"
-          }
+          "value": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>"
         },
         {
           "label": {
@@ -55,6 +32,10 @@
             "de": "Telefon"
           },
           "value": "<a href=\"tel:+436703585527\">+43 670 3585527</a>"
+        },
+        {
+          "label": "LinkedIn",
+          "value": "<a href=\"https://www.linkedin.com/in/kaufmann-dev/\" target=\"_blank\" rel=\"noopener\">linkedin.com/in/kaufmann-dev</a>"
         },
         {
           "label": {
@@ -66,76 +47,136 @@
       ]
     },
     {
+      "id": "education",
+      "title": {
+        "en": "Education",
+        "de": "Ausbildung"
+      },
+      "open": true,
+      "type": "entries",
+      "items": [
+        {
+          "heading": {
+            "en": "Vienna University of Economics and Business",
+            "de": "Wirtschaftsuniversität Wien"
+          },
+          "subheading": {
+            "en": "Bachelor of Science (CE) in Business Administration",
+            "de": "Bachelor of Science (CE) in Betriebswirtschaft"
+          },
+          "info": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "subinfo": {
+            "en": "Oct 2026 – Jun 2029 (expected)",
+            "de": "Okt. 2026 – Juni 2029 (erwartet)"
+          },
+          "highlights": [
+            {
+              "en": "Specialization: Future Business",
+              "de": "Spezialisierung: Future Business"
+            },
+            {
+              "en": "Accreditation: AACSB, EQUIS",
+              "de": "Akkreditierung: AACSB, EQUIS"
+            },
+            {
+              "en": "Part-Time",
+              "de": "Berufsbegleitend"
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Higher Federal Technical College Krems",
+            "de": "Höhere Technische Bundeslehranstalt Krems"
+          },
+          "subheading": {
+            "en": "Diploma in Information Technology",
+            "de": "Reife- und Diplomprüfung Informationstechnologie"
+          },
+          "info": {
+            "en": "Krems, Austria",
+            "de": "Krems, Österreich"
+          },
+          "subinfo": {
+            "en": "Sep 2018 – Jun 2023",
+            "de": "Sept. 2018 – Juni 2023"
+          },
+          "highlights": [
+            {
+              "en": "Specialization: Media Technology",
+              "de": "Spezialisierung: Medientechnik"
+            },
+            {
+              "en": "Final Exam Elective: Software Development",
+              "de": "Abschlussprüfung Wahlfach: Softwareentwicklung"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "work",
       "title": {
         "en": "Work Experience",
         "de": "Berufserfahrung"
       },
-      "open": false,
+      "open": true,
       "type": "entries",
       "items": [
         {
           "heading": {
             "en": "Board of Education Vienna",
-            "de": "Board of Education Vienna"
+            "de": "Bildungsdirektion für Wien"
           },
           "subheading": {
             "en": "IT Officer",
-            "de": "IT Officer"
+            "de": "IT-Referent"
           },
           "info": {
             "en": "Vienna, Austria",
-            "de": "Vienna, Austria"
+            "de": "Wien, Österreich"
           },
           "subinfo": {
             "en": "Apr 2024 – Present",
-            "de": "Apr 2024 – Present"
+            "de": "Apr. 2024 – Heute"
           },
           "highlights": [
             {
-              "en": "Administering time tracking and eGovernment document/business process management software",
-              "de": "Administration von Zeiterfassungs- und eGovernment-Software für Dokumenten- und Geschäftsprozessmanagement"
+              "en": "Administering eGovernment software and moderating workshops to standardize business processes",
+              "de": "Administration von eGovernment-Software und Moderation von Workshops zur Standardisierung von Geschäftsprozessen"
             },
             {
-              "en": "Organizing and moderating meetings for creation and revision of business processes",
-              "de": "Organisation und Moderation von Meetings zur Erstellung und Überarbeitung von Geschäftsprozessen"
+              "en": "Onboarding and training staff to accelerate system proficiency and reduce reliance on IT support",
+              "de": "Einarbeitung und Schulung von Mitarbeitern zur Steigerung der Systemkompetenz und Reduzierung von IT-Supportanfragen"
             },
             {
-              "en": "Onboarding new employees and delivering continuous training to existing staff",
-              "de": "Einarbeitung neuer sowie laufende Schulung bestehender Mitarbeiter"
-            },
-            {
-              "en": "Providing technical support to internal staff, schools, and prospective teachers",
-              "de": "Technischer Support für interne Mitarbeiter, Schulen und angehende Lehrkräfte"
-            },
-            {
-              "en": "Managing and assigning user permissions for internal staff and schools",
-              "de": "Verwaltung von Benutzerberechtigungen für interne Mitarbeiter und Schulen"
+              "en": "Managing user permissions for staff and schools to enforce access controls and maintain system security",
+              "de": "Verwaltung von Benutzerberechtigungen für Mitarbeiter und Schulen zur Durchsetzung von Zugriffskontrollen und Systemsicherheit"
             }
-          ],
-          "tags": [
-            "test",
-            "test",
-            "test"
           ]
         },
         {
           "heading": "Fabasoft",
           "subheading": "Cloud Systems Engineer",
-          "info": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>",
-          "subinfo": "<a href=\"mailto:david@kaufmann.dev\">david@kaufmann.dev</a>",
+          "info": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "subinfo": {
+            "en": "Dec 2023 – Mar 2024",
+            "de": "Dez. 2023 – März 2024"
+          },
           "highlights": [
             {
-              "en": "Developed Bash scripts to standardize and aggregate Syslog error messages for efficient error diagnosis",
-              "de": "Entwicklung von Bash-Skripten zur Standardisierung und Aggregation von Syslog-Fehlermeldungen für eine effiziente Fehlerdiagnose"
+              "en": "Automated Syslog error aggregation and upgraded hardware across 3 data centers to improve stability",
+              "de": "Automatisierte Syslog-Fehleraggregation und Hardware-Upgrades in 3 Rechenzentren zur Stabilitätsverbesserung"
             },
             {
-              "en": "Performed hardware upgrades and reconfigurations across 3 data centers to improve system stability",
-              "de": "Durchführung von Hardware-Upgrades und Rekonfigurationen in 3 Rechenzentren zur Verbesserung der Systemstabilität"
-            },
-            {
-              "en": "Implemented hotfixes and security patches on Fabasoft customer servers",
-              "de": "Implementierung von Hotfixes und Sicherheitspatches auf Fabasoft-Kundenservern"
+              "en": "Deployed hotfixes and security patches to maintain service reliability on customer servers",
+              "de": "Implementierung von Hotfixes und Sicherheitspatches zur Aufrechterhaltung der Servicezuverlässigkeit auf Kundenservern"
             }
           ]
         },
@@ -156,20 +197,7 @@
             "en": "Jul 2023",
             "de": "Juli 2023"
           },
-          "highlights": [
-            {
-              "en": "Reconciled software medication records with actual inventory",
-              "de": "Abgleich von Software-Medikamentendatensätzen mit dem tatsächlichen Bestand"
-            },
-            {
-              "en": "Collected prescriptions and delivered/returned medications via e-scooter",
-              "de": "Rezeptabholung sowie Auslieferung und Rückgabe von Medikamenten per E-Scooter"
-            },
-            {
-              "en": "Logged and organized incoming pharmacy inventory",
-              "de": "Erfassung und Organisation eingehender Apothekenware"
-            }
-          ]
+          "highlights": []
         },
         {
           "heading": {
@@ -186,26 +214,9 @@
           },
           "subinfo": {
             "en": "Aug 2022",
-            "de": "Aug 2022"
+            "de": "Aug. 2022"
           },
-          "highlights": [
-            {
-              "en": "Prototyped a web-based patient record, including design and system architecture",
-              "de": "Entwicklung eines Prototyps für eine webbasierte Patientenakte, einschließlich Design und Systemarchitektur"
-            },
-            {
-              "en": "Supported reception staff in patient care",
-              "de": "Unterstützung des Empfangspersonals bei der Patientenbetreuung"
-            },
-            {
-              "en": "Handled logistics, supplies, errands, and technical maintenance",
-              "de": "Logistik, Einkäufe, Besorgungen und technische Wartung"
-            },
-            {
-              "en": "",
-              "de": ""
-            }
-          ]
+          "highlights": []
         },
         {
           "heading": "Raiffeisen Software",
@@ -223,16 +234,12 @@
           },
           "highlights": [
             {
-              "en": "Expanded a C# deployment tool for managing MS SQL databases with schema versioning and rollback",
-              "de": "Erweiterung eines C#-Deployment-Tools für MS-SQL-Datenbanken mit Schema-Versionierung und Rollback"
+              "en": "Extended a C# deployment tool with schema versioning and rollback to reduce release risk",
+              "de": "Erweiterung eines C#-Deployment-Tools mit Schema-Versionierung und Rollback zur Reduzierung des Release-Risikos"
             },
             {
-              "en": "Created documentation for data marts and tenants across various development environments",
-              "de": "Dokumentation von Data Marts und Mandanten in verschiedenen Entwicklungsumgebungen"
-            },
-            {
-              "en": "Redesigned and restructured an internal sales controlling dashboard",
-              "de": "Neugestaltung und Restrukturierung eines internen Vertriebscontrolling-Dashboards"
+              "en": "Redesigned and restructured internal sales controlling dashboard to improve reporting efficiency",
+              "de": "Neugestaltung und Restrukturierung eines internen Vertriebscontrolling-Dashboards zur Verbesserung der Reporting-Effizienz"
             }
           ]
         },
@@ -255,51 +262,8 @@
           },
           "highlights": [
             {
-              "en": "Client lifecycle management, including configuring and deploying new client systems",
-              "de": "Client Lifecycle Management, einschließlich der Konfiguration und Bereitstellung neuer Client-Systeme"
-            },
-            {
-              "en": "Planned, built, and maintained network infrastructure",
-              "de": "Planung, Aufbau und Wartung von Netzwerkinfrastruktur"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "education",
-      "title": {
-        "en": "Education",
-        "de": "Education"
-      },
-      "open": false,
-      "type": "entries",
-      "items": [
-        {
-          "heading": {
-            "en": "Higher Federal Technical College Krems",
-            "de": "Höhere Technische Bundeslehranstalt Krems"
-          },
-          "subheading": {
-            "en": "Diploma in Information Technology + Matura",
-            "de": "Diplom in Informationstechnologie + Matura"
-          },
-          "info": {
-            "en": "Krems, Austria",
-            "de": "Krems, Österreich"
-          },
-          "subinfo": {
-            "en": "Sep 2018 – Jun 2023",
-            "de": "September 2018 – Juni 2023"
-          },
-          "highlights": [
-            {
-              "en": "Specialization: Media Technology",
-              "de": "Spezialisierung: Medientechnik"
-            },
-            {
-              "en": "Final Exam Elective: Software Development",
-              "de": "Abschlussprüfung Wahlfach: Softwareentwicklung"
+              "en": "Managed client lifecycle and system deployment; built and maintained network infrastructure",
+              "de": "Client Lifecycle Management und Systembereitstellung; Aufbau und Wartung von Netzwerkinfrastruktur"
             }
           ]
         }
@@ -319,14 +283,14 @@
             "en": "Digital Transformation (4 ECTS)",
             "de": "Digitale Transformation (4 ECTS)"
           },
-          "subheading": "Audencia Business School",
+          "subheading": "Audencia Business School — Winter School",
           "info": {
             "en": "Nantes, France",
             "de": "Nantes, Frankreich"
           },
           "subinfo": {
             "en": "Jan 2026",
-            "de": "Januar 2026"
+            "de": "Jan. 2026"
           },
           "highlights": []
         },
@@ -345,7 +309,7 @@
           },
           "subinfo": {
             "en": "Sep 2025",
-            "de": "September 2025"
+            "de": "Sept. 2025"
           },
           "highlights": []
         },
@@ -355,8 +319,8 @@
             "de": "Geschäftsprozessanalyse (3 ECTS)"
           },
           "subheading": {
-            "en": "Masaryk University",
-            "de": "Masaryk-Universität"
+            "en": "Masaryk University — Summer School",
+            "de": "Masaryk-Universität — Summer School"
           },
           "info": {
             "en": "Brno, Czechia",
@@ -383,7 +347,7 @@
           },
           "subinfo": {
             "en": "Jan 2025",
-            "de": "Januar 2025"
+            "de": "Jan. 2025"
           },
           "highlights": []
         },
@@ -393,7 +357,7 @@
             "de": "Europäische Trauerkonferenz"
           },
           "subheading": {
-            "en": "Attendance partially funded by Austrian Association of Hospice and Palliative Care for my volunteer work",
+            "en": "Attendance partially funded by DVHÖ for my volunteer work",
             "de": "Teilnahme vom DVHÖ aufgrund meiner ehrenamtlichen Tätigkeit teilfinanziert"
           },
           "info": {
@@ -402,7 +366,7 @@
           },
           "subinfo": {
             "en": "Nov 2024",
-            "de": "November 2024"
+            "de": "Nov. 2024"
           },
           "highlights": []
         },
@@ -415,233 +379,9 @@
           "info": "St. Julians, Malta",
           "subinfo": {
             "en": "Aug 2020",
-            "de": "August 2020"
+            "de": "Aug. 2020"
           },
           "highlights": []
-        }
-      ]
-    },
-    {
-      "id": "pubs",
-      "title": {
-        "en": "Publications",
-        "de": "Publications"
-      },
-      "open": true,
-      "type": "pub",
-      "items": [
-        {
-          "authors": [
-            {
-              "name": "Kaufmann, D.",
-              "bold": true
-            },
-            {
-              "name": "Spindelberger, J.",
-              "bold": false
-            }
-          ],
-          "year": "2023",
-          "title": {
-            "en": "Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind.",
-            "de": "Jugendliches Krems: Eine technologische Lösung zur Bereitstellung von Informationen über Bildungsanstalten und bevorstehende Veranstaltungen in Krems, die speziell auf Jugendliche ausgerichtet sind."
-          },
-          "institution": {
-            "en": "Höhere Technische Bundeslehranstalt Krems",
-            "de": "Höhere Technische Bundeslehranstalt Krems"
-          }
-        }
-      ]
-    },
-    {
-      "id": "projects",
-      "title": {
-        "en": "Projects",
-        "de": "Projekte"
-      },
-      "open": false,
-      "type": "entries",
-      "items": [
-        {
-          "heading": {
-            "en": "Market Deck",
-            "de": "Market Deck"
-          },
-          "subheading": {
-            "en": "Data Visualization & Finance",
-            "de": "Datenvisualisierung & Finanzen"
-          },
-          "subinfo": "2026",
-          "highlights": [
-            {
-              "en": "Financial dashboard for ranking financial assets by price momentum across configurable watchlists",
-              "de": "Finanzdashboard zur Bewertung von Finanzanlagen nach Kursmomentum über konfigurierbare Watchlists"
-            },
-            {
-              "en": "Live FX conversion, monthly return heatmaps, and real-time price data via Yahoo Finance",
-              "de": "Live-Währungsumrechnung, monatliche Rendite-Heatmaps und Echtzeit-Kursdaten via Yahoo Finance"
-            }
-          ],
-          "tags": [
-            "FastAPI",
-            "SQLite",
-            "yfinance",
-            "Python",
-            "Vanilla JS"
-          ],
-          "info": {
-            "en": "<a href=\"https://github.com/kaufmann-dev/market-deck\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
-            "de": "<a href=\"https://github.com/kaufmann-dev/market-deck\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "CT2Mesh2Print",
-            "de": "CT2Mesh2Print"
-          },
-          "subheading": {
-            "en": "Medical Imaging & 3D Printing",
-            "de": "Medizinische Bildgebung & 3D-Druck"
-          },
-          "subinfo": "2025",
-          "highlights": [
-            {
-              "en": "Segmented CT scan data to isolate bone structures",
-              "de": "Segmentierung von CT-Scandaten zur Isolierung von Knochenstrukturen"
-            },
-            {
-              "en": "Converted segmented data into a printable 3D mesh and produced lifesize prints",
-              "de": "Umwandlung segmentierter Daten in ein druckbares 3D-Mesh und Erstellung lebensgroßer Drucke"
-            }
-          ],
-          "info": {
-            "en": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Read Article</a>",
-            "de": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Artikel lesen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "Git Wrangler",
-            "de": "Git Wrangler"
-          },
-          "subheading": {
-            "en": "Shell Scripting & Git Automation",
-            "de": "Shell-Skripting & Git-Automatisierung"
-          },
-          "subinfo": "2024",
-          "highlights": [
-            {
-              "en": "Bash scripts for the bulk management and manipulation of Git repositories",
-              "de": "Bash-Skripte zur Massenverwaltung und -bearbeitung von Git-Repositories"
-            },
-            {
-              "en": "Automates tasks like cloning, pushing, rewriting authors and commits, purging secrets and more",
-              "de": "Automatisiert Aufgaben wie Klonen, Pushen, Umschreiben von Autoren und Commits, Bereinigen von Secrets"
-            }
-          ],
-          "tags": [
-            "Bash",
-            "Git",
-            "GitHub CLI",
-            "git-filter-repo"
-          ],
-          "info": {
-            "en": "<a href=\"https://github.com/kaufmann-dev/git-wrangler\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
-            "de": "<a href=\"https://github.com/kaufmann-dev/git-wrangler\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "Jung in Krems",
-            "de": "Jung in Krems"
-          },
-          "subheading": {
-            "en": "Full-Stack Web Development",
-            "de": "Full-Stack-Webentwicklung"
-          },
-          "subinfo": "2023",
-          "highlights": [
-            {
-              "en": "Laravel and Svelte web portal for exploring youth events and educational offerings in Krems",
-              "de": "Laravel- und Svelte-Webportal zur Entdeckung von Jugendveranstaltungen und Bildungsangeboten in Krems"
-            },
-            {
-              "en": "Practical part of my diploma thesis, commissioned by and in cooperation with the city of Krems",
-              "de": "Praktischer Teil meiner Diplomarbeit, beauftragt von und in Zusammenarbeit mit der Stadt Krems"
-            }
-          ],
-          "tags": [
-            "MySQL 8",
-            "Laravel 9",
-            "Svelte 3",
-            "Eloquent",
-            "Inertia",
-            "REST",
-            "Laravel Sanctum",
-            "Tailwind"
-          ],
-          "info": {
-            "en": "<a href=\"https://github.com/kaufmann-dev/jung-in-krems\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
-            "de": "<a href=\"https://github.com/kaufmann-dev/jung-in-krems\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "Async Cinema",
-            "de": "Async Cinema"
-          },
-          "subheading": {
-            "en": "Asynchronous Programming",
-            "de": "Asynchrone Programmierung"
-          },
-          "subinfo": "2022",
-          "highlights": [
-            {
-              "en": "Full-stack .NET MVC app with REST API for managing a MySQL film database",
-              "de": "Full-Stack-.NET-MVC-App mit REST-API zur Verwaltung einer MySQL-Filmdatenbank"
-            },
-            {
-              "en": "Asynchronous CRUD operations with Swagger documentation and Blazor UI",
-              "de": "Asynchrone CRUD-Operationen mit Swagger-Dokumentation und Blazor-UI"
-            }
-          ],
-          "tags": [
-            ".NET 7",
-            "C# 11",
-            "MySQL 8",
-            "Blazor",
-            "Entity Framework",
-            "Swagger"
-          ],
-          "info": {
-            "en": "<a href=\"https://github.com/kaufmann-dev/async-cinema\" target=\"_blank\" rel=\"noopener\">Open GitHub</a>",
-            "de": "<a href=\"https://github.com/kaufmann-dev/async-cinema\" target=\"_blank\" rel=\"noopener\">GitHub öffnen</a>"
-          }
-        },
-        {
-          "heading": {
-            "en": "Purus CSS",
-            "de": "Purus CSS"
-          },
-          "subheading": {
-            "en": "Frontend Development & CSS",
-            "de": "Frontend-Entwicklung & CSS"
-          },
-          "subinfo": "2021",
-          "highlights": [
-            {
-              "en": "Responsive CSS drop-in framework with no JavaScript dependencies",
-              "de": "Responsives CSS-Drop-in-Framework ohne JavaScript-Abhängigkeiten"
-            },
-            {
-              "en": "CSS variable customization and utility classes for layout, spacing, and typography",
-              "de": "CSS-Variablen-Anpassung und Utility-Klassen für Layout, Abstände und Typografie"
-            }
-          ],
-          "info": {
-            "en": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Visit Website</a>",
-            "de": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Website besuchen</a>"
-          }
         }
       ]
     },
@@ -656,8 +396,8 @@
       "items": [
         {
           "heading": {
-            "en": "Austrian Association of Hospice and Palliative Care",
-            "de": "Dachverband HOSPIZ Österreich"
+            "en": "Austrian Association of Hospice and Palliative Care (DVHÖ)",
+            "de": "Dachverband HOSPIZ Österreich (DVHÖ)"
           },
           "subheading": {
             "en": "Communication Volunteer",
@@ -675,12 +415,109 @@
             {
               "en": "Creation of graphics, flyers, and invitations for internal communication and social media",
               "de": "Erstellung von Grafiken, Flyern und Einladungen für interne Kommunikation und Social Media"
-            },
-            {
-              "en": "Support with IT problems and infrastructure management in the office",
-              "de": "Unterstützung bei IT-Problemen und Infrastrukturverwaltung im Büro"
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "title": {
+        "en": "Projects",
+        "de": "Projekte"
+      },
+      "open": false,
+      "type": "entries",
+      "items": [
+        {
+          "heading": "Market Deck",
+          "subheading": {
+            "en": "Real-time dashboard for tracking asset momentum across watchlists with return heatmaps",
+            "de": "Echtzeit-Dashboard zur Verfolgung des Kursmomentums über Watchlists mit Rendite-Heatmaps"
+          },
+          "info": "<a href=\"https://github.com/kaufmann-dev/market-deck\" target=\"_blank\" rel=\"noopener\">GitHub</a>",
+          "tags": [
+            "FastAPI",
+            "SQLite",
+            "yfinance",
+            "Python",
+            "Vanilla JS"
+          ],
+          "highlights": []
+        },
+        {
+          "heading": "CT2Mesh2Print",
+          "subheading": {
+            "en": "Imaging pipeline segmenting CT scan data to isolate bones and create 3D printable meshes",
+            "de": "Imaging-Pipeline zur Segmentierung von CT-Daten zur Isolierung von Knochen und Erstellung von 3D-Druckmodellen"
+          },
+          "info": {
+            "en": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Article</a>",
+            "de": "<a href=\"https://kaufmann.dev/article/ct2mesh2print\" target=\"_blank\" rel=\"noopener\">Artikel</a>"
+          },
+          "highlights": []
+        },
+        {
+          "heading": "Git Wrangler",
+          "subheading": {
+            "en": "Bash toolkit for bulk Git automation: cloning, author rewrites, secret purging, and more",
+            "de": "Bash-Toolkit zur Git-Automatisierung: Klonen, Umschreiben von Autoren, Bereinigen von Secrets etc."
+          },
+          "info": "<a href=\"https://github.com/kaufmann-dev/git-wrangler\" target=\"_blank\" rel=\"noopener\">GitHub</a>",
+          "tags": [
+            "Bash",
+            "Git",
+            "GitHub CLI",
+            "git-filter-repo"
+          ],
+          "highlights": []
+        },
+        {
+          "heading": "Jung in Krems",
+          "subheading": {
+            "en": "Web app for exploring educational offerings and events, commissioned by the city of Krems",
+            "de": "Web-App zur Entdeckung von Bildungsangeboten und Events, beauftragt von der Stadt Krems"
+          },
+          "info": "<a href=\"https://github.com/kaufmann-dev/jung-in-krems\" target=\"_blank\" rel=\"noopener\">GitHub</a>",
+          "tags": [
+            "MySQL",
+            "Laravel",
+            "Svelte",
+            "Eloquent",
+            "Inertia",
+            "REST",
+            "Tailwind"
+          ],
+          "highlights": []
+        },
+        {
+          "heading": "Async Cinema",
+          "subheading": {
+            "en": ".NET MVC app with a Blazor UI for asynchronously managing a film database via REST API",
+            "de": ".NET MVC-App mit Blazor-UI zur asynchronen Verwaltung einer Filmdatenbank via REST-API"
+          },
+          "info": "<a href=\"https://github.com/kaufmann-dev/async-cinema\" target=\"_blank\" rel=\"noopener\">GitHub</a>",
+          "tags": [
+            ".NET",
+            "C#",
+            "MySQL",
+            "Blazor",
+            "Entity Framework",
+            "Swagger"
+          ],
+          "highlights": []
+        },
+        {
+          "heading": "Purus CSS",
+          "subheading": {
+            "en": "JS-free responsive CSS drop in framework with variable-based theming and layout utilities",
+            "de": "JS-freies responsives CSS-Framework mit variablenbasiertem Theming und Layout-Utilities"
+          },
+          "info": {
+            "en": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Website</a>",
+            "de": "<a href=\"https://puruscss.kaufmann.dev\" target=\"_blank\" rel=\"noopener\">Webseite</a>"
+          },
+          "highlights": []
         }
       ]
     }

@@ -11,26 +11,6 @@
       "rows": [
         {
           "label": {
-            "en": "Citizenship",
-            "de": "Staatsbürgerschaft"
-          },
-          "value": {
-            "en": "Austrian",
-            "de": "Österreich"
-          }
-        },
-        {
-          "label": {
-            "en": "Date of birth",
-            "de": "Geburtsdatum"
-          },
-          "value": {
-            "en": "28 Nov 2003",
-            "de": "28. Nov. 2003"
-          }
-        },
-        {
-          "label": {
             "en": "Location",
             "de": "Wohnort"
           },
@@ -54,6 +34,10 @@
           "value": "<a href=\"tel:+436703585527\">+43 670 3585527</a>"
         },
         {
+          "label": "LinkedIn",
+          "value": "<a href=\"https://www.linkedin.com/in/kaufmann-dev/\" target=\"_blank\" rel=\"noopener\">linkedin.com/in/kaufmann-dev</a>"
+        },
+        {
           "label": {
             "en": "Website",
             "de": "Webseite"
@@ -68,17 +52,49 @@
         "en": "Education",
         "de": "Bildungsweg"
       },
-      "open": false,
+      "open": true,
       "type": "entries",
       "items": [
+        {
+          "heading": {
+            "en": "Vienna University of Economics and Business",
+            "de": "Wirtschaftsuniversität Wien"
+          },
+          "subheading": {
+            "en": "Bachelor of Science (CE) in Business Administration",
+            "de": "Bachelor of Science (CE) in Betriebswirtschaft"
+          },
+          "info": {
+            "en": "Vienna, Austria",
+            "de": "Wien, Österreich"
+          },
+          "subinfo": {
+            "en": "Oct 2026 – Jun 2029 (expected)",
+            "de": "Okt. 2026 – Juni 2029 (erwartet)"
+          },
+          "highlights": [
+            {
+              "en": "Specialization: Future Business",
+              "de": "Spezialisierung: Future Business"
+            },
+            {
+              "en": "Accreditation: AACSB, EQUIS",
+              "de": "Akkreditierung: AACSB, EQUIS"
+            },
+            {
+              "en": "Part-Time",
+              "de": "Berufsbegleitend"
+            }
+          ]
+        },
         {
           "heading": {
             "en": "Higher Federal Technical College Krems",
             "de": "Höhere Technische Bundeslehranstalt Krems"
           },
           "subheading": {
-            "en": "Diploma in Information Technology + Matura",
-            "de": "Diplom in Informationstechnologie + Matura"
+            "en": "Diploma in Information Technology",
+            "de": "Reife- und Diplomprüfung Informationstechnologie"
           },
           "info": {
             "en": "Krems, Austria",
@@ -122,7 +138,7 @@
         "en": "Work Experience",
         "de": "Berufserfahrung"
       },
-      "open": false,
+      "open": true,
       "type": "entries",
       "items": [
         {
@@ -144,24 +160,16 @@
           },
           "highlights": [
             {
-              "en": "Administering time tracking and eGovernment document/business process management software",
-              "de": "Administration von Zeiterfassungs- und eGovernment-Software für Dokumenten- und Geschäftsprozessmanagement"
+              "en": "Administering eGovernment software and moderating workshops to standardize business processes",
+              "de": "Administration von eGovernment-Software und Moderation von Workshops zur Standardisierung von Geschäftsprozessen"
             },
             {
-              "en": "Organizing and moderating meetings for creation and revision of business processes",
-              "de": "Organisation und Moderation von Meetings zur Erstellung und Überarbeitung von Geschäftsprozessen"
+              "en": "Onboarding and training staff to accelerate system proficiency and reduce reliance on IT support",
+              "de": "Einarbeitung und Schulung von Mitarbeitern zur Steigerung der Systemkompetenz und Reduzierung von IT-Supportanfragen"
             },
             {
-              "en": "Onboarding new employees and delivering continuous training to existing staff",
-              "de": "Einarbeitung neuer sowie laufende Schulung bestehender Mitarbeiter"
-            },
-            {
-              "en": "Providing technical support to internal staff, schools, and prospective teachers",
-              "de": "Technischer Support für interne Mitarbeiter, Schulen und angehende Lehrkräfte"
-            },
-            {
-              "en": "Managing and assigning user permissions for internal staff and schools",
-              "de": "Verwaltung von Benutzerberechtigungen für interne Mitarbeiter und Schulen"
+              "en": "Managing user permissions for staff and schools to enforce access controls and maintain system security",
+              "de": "Verwaltung von Benutzerberechtigungen für Mitarbeiter und Schulen zur Durchsetzung von Zugriffskontrollen und Systemsicherheit"
             }
           ]
         },
@@ -178,16 +186,12 @@
           },
           "highlights": [
             {
-              "en": "Developed Bash scripts to standardize and aggregate Syslog error messages for efficient error diagnosis",
-              "de": "Entwicklung von Bash-Skripten zur Standardisierung und Aggregation von Syslog-Fehlermeldungen für eine effiziente Fehlerdiagnose"
+              "en": "Automated Syslog error aggregation and upgraded hardware across 3 data centers to improve stability",
+              "de": "Automatisierte Syslog-Fehleraggregation und Hardware-Upgrades in 3 Rechenzentren zur Stabilitätsverbesserung"
             },
             {
-              "en": "Performed hardware upgrades and reconfigurations across 3 data centers to improve system stability",
-              "de": "Durchführung von Hardware-Upgrades und Rekonfigurationen in 3 Rechenzentren zur Verbesserung der Systemstabilität"
-            },
-            {
-              "en": "Implemented hotfixes and security patches on Fabasoft customer servers",
-              "de": "Implementierung von Hotfixes und Sicherheitspatches auf Fabasoft-Kundenservern"
+              "en": "Deployed hotfixes and security patches to maintain service reliability on customer servers",
+              "de": "Implementierung von Hotfixes und Sicherheitspatches zur Aufrechterhaltung der Servicezuverlässigkeit auf Kundenservern"
             }
           ]
         },
@@ -210,16 +214,12 @@
           },
           "highlights": [
             {
-              "en": "Reconciled software medication records with actual inventory",
-              "de": "Abgleich von Software-Medikamentendatensätzen mit dem tatsächlichen Bestand"
+              "en": "Reconciled medication inventory against software records, identifying and resolving discrepancies to ensure stock accuracy",
+              "de": "Abgleich des Medikamentenbestands mit dem Softwaresystem sowie Identifikation und Behebung von Diskrepanzen zur Sicherstellung der Bestandsgenauigkeit"
             },
             {
-              "en": "Collected prescriptions and delivered/returned medications via e-scooter",
-              "de": "Rezeptabholung sowie Auslieferung und Rückgabe von Medikamenten per E-Scooter"
-            },
-            {
-              "en": "Logged and organized incoming pharmacy inventory",
-              "de": "Erfassung und Organisation eingehender Apothekenware"
+              "en": "Managed prescription and medication logistics for patients and external facilities, ensuring timely delivery of time-sensitive medications",
+              "de": "Abwicklung der Rezept- und Medikamentenlogistik für Patienten und externe Einrichtungen zur zeitkritischen Versorgung und Entlastung der Patienten"
             }
           ]
         },
@@ -246,12 +246,8 @@
               "de": "Entwicklung eines Prototyps für eine webbasierte Patientenakte, einschließlich Design und Systemarchitektur"
             },
             {
-              "en": "Supported reception staff in patient care",
-              "de": "Unterstützung des Empfangspersonals bei der Patientenbetreuung"
-            },
-            {
-              "en": "Handled logistics, supplies, errands, and technical maintenance",
-              "de": "Logistik, Einkäufe, Besorgungen und technische Wartung"
+              "en": "Supported medical practice operations across patient care, logistics, and technical maintenance",
+              "de": "Unterstützung des Ordinationsbetriebs in den Bereichen Patientenversorgung, Logistik und technische Wartung"
             }
           ]
         },
@@ -271,16 +267,12 @@
           },
           "highlights": [
             {
-              "en": "Expanded a C# deployment tool for managing MS SQL databases with schema versioning and rollback",
-              "de": "Erweiterung eines C#-Deployment-Tools für MS-SQL-Datenbanken mit Schema-Versionierung und Rollback"
+              "en": "Extended a C# deployment tool with schema versioning and rollback to reduce release risk",
+              "de": "Erweiterung eines C#-Deployment-Tools mit Schema-Versionierung und Rollback zur Reduzierung des Release-Risikos"
             },
             {
-              "en": "Created documentation for data marts and tenants across various development environments",
-              "de": "Dokumentation von Data Marts und Mandanten in verschiedenen Entwicklungsumgebungen"
-            },
-            {
-              "en": "Redesigned and restructured an internal sales controlling dashboard",
-              "de": "Neugestaltung und Restrukturierung eines internen Vertriebscontrolling-Dashboards"
+              "en": "Redesigned and restructured internal sales controlling dashboard to improve reporting efficiency",
+              "de": "Neugestaltung und Restrukturierung eines internen Vertriebscontrolling-Dashboards zur Verbesserung der Reporting-Effizienz"
             }
           ]
         },
@@ -531,9 +523,9 @@
             }
           ],
           "tags": [
-            "MySQL 8",
-            "Laravel 9",
-            "Svelte 3",
+            "MySQL",
+            "Laravel",
+            "Svelte",
             "Eloquent",
             "Inertia",
             "REST",
@@ -560,9 +552,9 @@
             }
           ],
           "tags": [
-            ".NET 7",
-            "C# 11",
-            "MySQL 8",
+            ".NET",
+            "C#",
+            "MySQL",
             "Blazor",
             "Entity Framework",
             "Swagger"
@@ -770,19 +762,26 @@
             "de": "Mitorganisation des internationalen Debattierturniers VIV 2025 in Wien als Teil des Sponsoring-Teams"
           },
           "subinfo": {
+            "en": "",
+            "de": ""
+          },
+          "highlights": [],
+          "info": {
             "en": "Nov 2024 – Present",
             "de": "Nov. 2024 – Heute"
           }
         },
         {
           "heading": {
-            "en": "Flow Culture (Parkour and Freerunning Club)",
-            "de": "Flow Culture (Parkour- und Freerunning-Club)"
+            "en": "Flow Culture (Parkour and Freerunning)",
+            "de": "Flow Culture (Parkour und Freerunning)"
           },
           "subinfo": {
-            "en": "2017",
-            "de": "2017"
-          }
+            "en": "",
+            "de": ""
+          },
+          "highlights": [],
+          "info": "2017"
         },
         {
           "heading": {
@@ -790,9 +789,11 @@
             "de": "Fechtunion Volksbank Krems"
           },
           "subinfo": {
-            "en": "2014 – 2016",
-            "de": "2014 – 2016"
-          }
+            "en": "",
+            "de": ""
+          },
+          "highlights": [],
+          "info": "2014 – 2016"
         },
         {
           "heading": {
@@ -800,9 +801,11 @@
             "de": "Badmintonclub Krems"
           },
           "subinfo": {
-            "en": "2013",
-            "de": "2013"
-          }
+            "en": "",
+            "de": ""
+          },
+          "highlights": [],
+          "info": "2013"
         },
         {
           "heading": {
@@ -810,9 +813,11 @@
             "de": "Schwimmverein Krems"
           },
           "subinfo": {
-            "en": "2011 – 2012",
-            "de": "2011 – 2012"
-          }
+            "en": "",
+            "de": ""
+          },
+          "highlights": [],
+          "info": "2011 – 2012"
         }
       ]
     },

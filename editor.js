@@ -141,12 +141,14 @@ function renderInfoEditor(section, onDataChange) {
     const list = h('div', { className: 'ed-items-list' });
     rows.forEach((row, i) => list.appendChild(renderInfoCard(row, i, rows, onDataChange, rebuildList)));
     wrap.appendChild(list);
-    wrap.appendChild(h('button', { className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
-      rows.push({ label: { en: '', de: '' }, value: { en: '', de: '' } });
-      section.rows = rows;
-      onDataChange();
-      rebuildList();
-    } }, '+ Add Row'));
+    wrap.appendChild(h('button', {
+      className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
+        rows.push({ label: { en: '', de: '' }, value: { en: '', de: '' } });
+        section.rows = rows;
+        onDataChange();
+        rebuildList();
+      }
+    }, '+ Add Row'));
   }
 
   rebuildList();
@@ -175,11 +177,13 @@ function renderHighlights(highlights, onDataChange, rebuildParent) {
       row.appendChild(h('button', { className: 'ed-item-action-btn ed-item-action-btn--danger ed-highlight-remove', onClick: () => { highlights.splice(i, 1); onDataChange(); rebuildHL(); } }, '✕'));
       list.appendChild(row);
     });
-    list.appendChild(h('button', { className: 'ed-btn', style: 'margin-top:4px', onClick: () => {
-      highlights.push({ en: '', de: '' });
-      onDataChange();
-      rebuildHL();
-    } }, '+ Add Bullet'));
+    list.appendChild(h('button', {
+      className: 'ed-btn', style: 'margin-top:4px', onClick: () => {
+        highlights.push({ en: '', de: '' });
+        onDataChange();
+        rebuildHL();
+      }
+    }, '+ Add Bullet'));
   }
 
   rebuildHL();
@@ -239,12 +243,14 @@ function renderEntriesEditor(section, onDataChange) {
     const list = h('div', { className: 'ed-items-list' });
     items.forEach((item, i) => list.appendChild(renderEntryCard(item, i, items, onDataChange, rebuildList)));
     wrap.appendChild(list);
-    wrap.appendChild(h('button', { className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
-      items.push({ heading: { en: '', de: '' }, subheading: { en: '', de: '' }, info: { en: '', de: '' }, subinfo: { en: '', de: '' }, highlights: [] });
-      section.items = items;
-      onDataChange();
-      rebuildList();
-    } }, '+ Add Entry'));
+    wrap.appendChild(h('button', {
+      className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
+        items.push({ heading: { en: '', de: '' }, subheading: { en: '', de: '' }, info: { en: '', de: '' }, subinfo: { en: '', de: '' }, highlights: [] });
+        section.items = items;
+        onDataChange();
+        rebuildList();
+      }
+    }, '+ Add Entry'));
   }
 
   rebuildList();
@@ -320,12 +326,14 @@ function renderPubEditor(section, onDataChange) {
     const list = h('div', { className: 'ed-items-list' });
     items.forEach((pub, i) => list.appendChild(renderPubCard(pub, i, items, onDataChange, rebuildList)));
     wrap.appendChild(list);
-    wrap.appendChild(h('button', { className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
-      items.push({ authors: [{ name: '', bold: true }], year: '', title: { en: '', de: '' }, institution: { en: '', de: '' } });
-      section.items = items;
-      onDataChange();
-      rebuildList();
-    } }, '+ Add Publication'));
+    wrap.appendChild(h('button', {
+      className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
+        items.push({ authors: [{ name: '', bold: true }], year: '', title: { en: '', de: '' }, institution: { en: '', de: '' } });
+        section.items = items;
+        onDataChange();
+        rebuildList();
+      }
+    }, '+ Add Publication'));
   }
 
   rebuildList();
@@ -345,8 +353,9 @@ export function toggleEditor() {
   }
 }
 
-export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
+export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSave }) {
   let docs = { resume: JSON.parse(JSON.stringify(resumeData)), cv: JSON.parse(JSON.stringify(cvData)) };
+  let passcodes = JSON.parse(JSON.stringify(passcodesData || []));
   let activeDoc = 'resume';
   let selectedIdx = 0;
   let mobileShowDetail = false;
@@ -378,12 +387,144 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
 
   async function switchDoc(doc) {
     if (doc === activeDoc) return;
-    if (dirty && !window.confirm('You have unsaved changes. Switch anyway?')) return;
+    if (activeDoc !== 'passcodes' && dirty && !window.confirm('You have unsaved changes. Switch anyway?')) return;
     activeDoc = doc;
     selectedIdx = 0;
     mobileShowDetail = false;
     dirty = false;
     renderEditor();
+  }
+
+  // ── Passcode CRUD helpers ──
+
+  async function addPasscode(code, expires) {
+    try {
+      const res = await fetch(buildApiUrl('/api/passcodes'), {
+        method: 'POST', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, expires })
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+      passcodes = result.passcodes;
+      showToast('Passcode added');
+      renderEditor();
+    } catch (e) { showToast('Failed to add: ' + e.message, true); }
+  }
+
+  async function updatePasscode(index, code, expires) {
+    try {
+      const res = await fetch(buildApiUrl(`/api/passcodes/${index}`), {
+        method: 'PUT', credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, expires })
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+      passcodes = result.passcodes;
+      showToast('Passcode updated');
+    } catch (e) { showToast('Failed to update: ' + e.message, true); }
+  }
+
+  async function deletePasscode(index) {
+    try {
+      const res = await fetch(buildApiUrl(`/api/passcodes/${index}`), {
+        method: 'DELETE', credentials: 'include'
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error);
+      passcodes = result.passcodes;
+      showToast('Passcode deleted');
+      renderEditor();
+    } catch (e) { showToast('Failed to delete: ' + e.message, true); }
+  }
+
+  function renderPasscodeCard(entry, index) {
+    const card = h('div', { className: 'ed-item-card' });
+
+    const header = h('div', { className: 'ed-item-header' });
+    const isExpired = new Date() > new Date(entry.expires);
+    const statusBadge = h('span', {
+      className: 'ed-pc-status ' + (isExpired ? 'ed-pc-status--expired' : 'ed-pc-status--active')
+    }, isExpired ? 'Expired' : 'Active');
+    const titleWrap = h('div', { style: 'display:flex;align-items:center;gap:10px;flex:1;min-width:0' });
+    titleWrap.appendChild(h('span', { className: 'ed-item-title' }, entry.code || '(empty)'));
+    titleWrap.appendChild(statusBadge);
+    header.appendChild(titleWrap);
+
+    const actions = h('div', { className: 'ed-item-actions' });
+    const del = h('button', {
+      className: 'ed-item-action-btn ed-item-action-btn--danger', title: 'Delete', onClick: async e => {
+        e.stopPropagation();
+        if (await confirmDialog('Delete passcode "' + entry.code + '"?')) {
+          await deletePasscode(index);
+        }
+      }
+    }, '✕');
+    actions.appendChild(del);
+    header.appendChild(actions);
+
+    header.addEventListener('click', () => card.classList.toggle('open'));
+    card.appendChild(header);
+
+    const body = h('div', { className: 'ed-item-body' });
+
+    // Code field
+    const codeGroup = h('div', { className: 'ed-field-group' });
+    codeGroup.appendChild(h('span', { className: 'ed-field-label' }, 'Passcode'));
+    const codeInp = h('input', { className: 'ed-input', type: 'text', value: entry.code || '' });
+    let codeDebounce = null;
+    codeInp.addEventListener('input', () => {
+      entry.code = codeInp.value;
+      header.querySelector('.ed-item-title').textContent = entry.code || '(empty)';
+      clearTimeout(codeDebounce);
+      codeDebounce = setTimeout(() => {
+        if (entry.code && entry.expires) updatePasscode(index, entry.code, entry.expires);
+      }, 800);
+    });
+    codeGroup.appendChild(codeInp);
+    body.appendChild(codeGroup);
+
+    // Expires field
+    const expGroup = h('div', { className: 'ed-field-group' });
+    expGroup.appendChild(h('span', { className: 'ed-field-label' }, 'Expires'));
+    const expInp = h('input', { className: 'ed-input', type: 'date', value: entry.expires || '' });
+    expInp.addEventListener('change', () => {
+      entry.expires = expInp.value;
+      const nowExpired = new Date() > new Date(entry.expires);
+      statusBadge.className = 'ed-pc-status ' + (nowExpired ? 'ed-pc-status--expired' : 'ed-pc-status--active');
+      statusBadge.textContent = nowExpired ? 'Expired' : 'Active';
+      if (entry.code && entry.expires) updatePasscode(index, entry.code, entry.expires);
+    });
+    expGroup.appendChild(expInp);
+    body.appendChild(expGroup);
+
+    card.appendChild(body);
+    return card;
+  }
+
+  function renderPasscodesEditor() {
+    const wrap = h('div');
+
+    const heading = h('div', { className: 'ed-section-header' });
+    heading.appendChild(h('div', { className: 'ed-field-label', style: 'font-size:0.7rem;margin-bottom:4px' }, 'Manage Passcodes'));
+    heading.appendChild(h('div', { style: 'color:var(--t3);font-size:0.82rem;margin-bottom:24px' }, 'Changes are saved automatically to the server.'));
+    wrap.appendChild(heading);
+
+    const list = h('div', { className: 'ed-items-list' });
+    passcodes.forEach((entry, i) => list.appendChild(renderPasscodeCard(entry, i)));
+    wrap.appendChild(list);
+
+    wrap.appendChild(h('button', {
+      className: 'ed-btn', style: 'margin-top:16px', onClick: () => {
+        const tomorrow = new Date();
+        tomorrow.setFullYear(tomorrow.getFullYear() + 1);
+        const defaultExpiry = tomorrow.toISOString().split('T')[0];
+        addPasscode('NEW_CODE', defaultExpiry);
+      }
+    }, '+ Add Passcode'));
+
+    return wrap;
   }
 
   function renderEditor() {
@@ -394,47 +535,64 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
     // Top bar
     const topbar = h('div', { className: 'ed-topbar' });
     const left = h('div', { className: 'ed-topbar-left' });
-    ['resume', 'cv'].forEach(d => {
-      const tab = h('button', { className: 'ed-tab' + (d === activeDoc ? ' active' : ''), onClick: () => switchDoc(d) }, d.toUpperCase());
+    ['resume', 'cv', 'passcodes'].forEach(d => {
+      const label = d === 'passcodes' ? 'Passcodes' : d.toUpperCase();
+      const tab = h('button', { className: 'ed-tab' + (d === activeDoc ? ' active' : ''), onClick: () => switchDoc(d) }, label);
       left.appendChild(tab);
     });
     topbar.appendChild(left);
 
     const right = h('div', { className: 'ed-topbar-right' });
-    right.appendChild(h('button', { className: 'ed-btn ed-btn--save', onClick: save }, 'Save'));
-    right.appendChild(h('button', { className: 'ed-btn', onClick: () => {
-      if (dirty && !window.confirm('Unsaved changes will be lost. Close editor?')) return;
-      toggleEditor();
-    } }, 'Close'));
+    if (activeDoc !== 'passcodes') {
+      right.appendChild(h('button', { className: 'ed-btn ed-btn--save', onClick: save }, 'Save'));
+    }
+    right.appendChild(h('button', {
+      className: 'ed-btn', onClick: () => {
+        if (dirty && !window.confirm('Unsaved changes will be lost. Close editor?')) return;
+        toggleEditor();
+      }
+    }, 'Close'));
     topbar.appendChild(right);
     overlay.appendChild(topbar);
 
     // Layout
     const layout = h('div', { className: 'ed-layout' + (mobileShowDetail ? ' show-detail' : '') });
 
+    // Passcodes mode: no sidebar, just main content
+    if (activeDoc === 'passcodes') {
+      const main = h('div', { className: 'ed-main', style: 'transform:none;position:relative;' });
+      main.appendChild(renderPasscodesEditor());
+      layout.appendChild(main);
+      overlay.appendChild(layout);
+      container.appendChild(overlay);
+      return;
+    }
+
     // Sidebar
     const sidebar = h('div', { className: 'ed-sidebar' });
     const sideHeader = h('div', { className: 'ed-sidebar-header' });
     sideHeader.appendChild(h('span', { className: 'ed-sidebar-title' }, 'Sections'));
-    
+
     const addWrap = h('div', { style: 'display:flex; align-items:center; gap: 4px;' });
     const typeSel = h('select', { className: 'ed-select-add' });
     typeSel.appendChild(h('option', { value: 'entries' }, 'Entries'));
     typeSel.appendChild(h('option', { value: 'info' }, 'Info'));
     typeSel.appendChild(h('option', { value: 'pub' }, 'Pub'));
-    
+
     addWrap.appendChild(typeSel);
-    addWrap.appendChild(h('button', { className: 'ed-btn', onClick: () => {
-      const type = typeSel.value;
-      const newSec = { id: 'new_' + Date.now(), title: { en: 'New Section', de: 'Neuer Abschnitt' }, open: false, type };
-      if (type === 'info') newSec.rows = [];
-      else newSec.items = [];
-      sections().push(newSec);
-      selectedIdx = sections().length - 1;
-      mobileShowDetail = true;
-      markDirty();
-      renderEditor();
-    } }, '+'));
+    addWrap.appendChild(h('button', {
+      className: 'ed-btn', onClick: () => {
+        const type = typeSel.value;
+        const newSec = { id: 'new_' + Date.now(), title: { en: 'New Section', de: 'Neuer Abschnitt' }, open: false, type };
+        if (type === 'info') newSec.rows = [];
+        else newSec.items = [];
+        sections().push(newSec);
+        selectedIdx = sections().length - 1;
+        mobileShowDetail = true;
+        markDirty();
+        renderEditor();
+      }
+    }, '+'));
     sideHeader.appendChild(addWrap);
     sidebar.appendChild(sideHeader);
 
@@ -466,7 +624,7 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
 
       // Section header
       const secHeader = h('div', { className: 'ed-section-header' });
-      
+
       const backBtn = h('button', { className: 'ed-mobile-back-btn', onClick: () => { mobileShowDetail = false; renderEditor(); } });
       backBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back to Sections';
       secHeader.appendChild(backBtn);
@@ -491,14 +649,16 @@ export function initEditor({ resumeData, cvData, apiBaseUrl, onSave }) {
       headerTop.appendChild(meta);
 
       // Delete section button
-      headerTop.appendChild(h('button', { className: 'ed-btn ed-btn--danger', onClick: async () => {
-        if (await confirmDialog('Delete section "' + loc(sec.title, 'en') + '"?')) {
-          sections().splice(selectedIdx, 1);
-          selectedIdx = Math.min(selectedIdx, sections().length - 1);
-          markDirty();
-          renderEditor();
+      headerTop.appendChild(h('button', {
+        className: 'ed-btn ed-btn--danger', onClick: async () => {
+          if (await confirmDialog('Delete section "' + loc(sec.title, 'en') + '"?')) {
+            sections().splice(selectedIdx, 1);
+            selectedIdx = Math.min(selectedIdx, sections().length - 1);
+            markDirty();
+            renderEditor();
+          }
         }
-      } }, 'Delete Section'));
+      }, 'Delete Section'));
       secHeader.appendChild(headerTop);
 
       // Section title

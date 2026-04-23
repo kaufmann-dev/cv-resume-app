@@ -15,7 +15,8 @@ const UI_STRINGS = {
   themeLight: { en: 'Light', de: 'Hell' },
   themeDark: { en: 'Dark', de: 'Dunkel' },
   editBtn: { en: 'Edit', de: 'Bearbeiten' },
-  langSwitch: { en: 'DE', de: 'EN' }
+  langSwitch: { en: 'DE', de: 'EN' },
+  logoutBtn: { en: 'Logout', de: 'Abmelden' }
 };
 
 let lang = DEFAULT_LANG;
@@ -34,6 +35,7 @@ const contentContainer = document.getElementById('cv-container');
 const authError = document.getElementById('auth-error');
 const passcodeInput = document.getElementById('passcode-input');
 const downloadButton = document.getElementById('btn-dl');
+const logoutButton = document.getElementById('btn-logout');
 
 const openState = {};
 const expandedState = {};
@@ -265,6 +267,9 @@ function render() {
   
   const langLbl = document.getElementById('lang-lbl');
   if (langLbl) langLbl.textContent = localize(UI_STRINGS.langSwitch);
+
+  const logoutLbl = document.getElementById('logout-lbl');
+  if (logoutLbl) logoutLbl.textContent = localize(UI_STRINGS.logoutBtn);
   
   document.getElementById('cv-body').innerHTML = documentData.sections.map(mkSection).join('');
   renderVariantNote();
@@ -275,12 +280,15 @@ function render() {
 function showAuthenticatedView() {
   authContainer.style.display = 'none';
   contentContainer.style.display = 'block';
+  logoutButton.style.display = '';
 }
 
 function showAuthView(message = '') {
   contentContainer.style.display = 'none';
   authContainer.style.display = 'flex';
   authError.textContent = message;
+  logoutButton.style.display = 'none';
+  documentData = null;
 }
 
 async function authenticate(options = {}) {
@@ -329,6 +337,7 @@ async function authenticate(options = {}) {
         initEditor({
           resumeData: result.resumeData,
           cvData: result.cvData,
+          passcodesData: result.passcodesData,
           apiBaseUrl: API_BASE_URL,
           onSave: (variant, data) => {
             if (variant === activeVariant.id) {
@@ -421,6 +430,20 @@ document.getElementById('btn-theme').addEventListener('click', () => {
 });
 
 downloadButton.addEventListener('click', handleDownload);
+
+async function handleLogout() {
+  try {
+    await fetch(buildApiUrl('/api/logout'), {
+      method: 'POST',
+      credentials: 'include'
+    });
+  } catch (e) {
+    // ignore network errors, still clear local state
+  }
+  showAuthView();
+}
+
+logoutButton.addEventListener('click', handleLogout);
 
 window.addEventListener('beforeprint', () => {
   saveOpen();

@@ -30,15 +30,26 @@ function readJsonFile(fileName) {
   return JSON.parse(fs.readFileSync(path.join(__dirname, fileName), 'utf-8'));
 }
 
+function writeJsonFile(fileName, data) {
+  fs.writeFileSync(path.join(__dirname, fileName), JSON.stringify(data, null, 2), 'utf-8');
+}
+
 const ADMIN_PASSCODE = {
   code: 'jS7`u#M6&I68',
   expires: '2049-12-31',
   isAdmin: true
 };
 
+function getExternalPasscodes() {
+  return readJsonFile('passcodes.json');
+}
+
+function saveExternalPasscodes(passcodes) {
+  writeJsonFile('passcodes.json', passcodes);
+}
+
 function getPasscodes() {
-  const externalPasscodes = readJsonFile('passcodes.json');
-  return [ADMIN_PASSCODE, ...externalPasscodes];
+  return [ADMIN_PASSCODE, ...getExternalPasscodes()];
 }
 
 function parseCookies(cookieHeader = '') {
@@ -237,6 +248,7 @@ app.post('/api/auth', (req, res) => {
   if (isAdmin) {
     response.resumeData = getDocumentData('resume');
     response.cvData = getDocumentData('cv');
+    response.passcodesData = getExternalPasscodes();
   }
 
   return res.json(response);
@@ -295,6 +307,11 @@ function handleDownloadRequest(req, res) {
 
 app.get('/api/download', handleDownloadRequest);
 
+app.post('/api/logout', (req, res) => {
+  clearSessionCookie(res, req);
+  return res.json({ success: true });
+});
+
 function requireAdmin(req, res) {
   const { passcode, source } = resolvePasscodeFromRequest(req);
   const validation = validatePasscode(passcode);
@@ -350,6 +367,64 @@ app.post('/api/save', (req, res) => {
     console.error('Failed to save:', error);
     return res.status(500).json({ error: 'Failed to save file' });
   }
+});
+
+// ── Passcode Management (admin-only) ──
+
+app.get('/api/passcodes', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+  return res.json({ passcodes: getExternalPasscodes() });
+});
+
+app.post('/api/passcodes', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  const { code, expires } = req.body;
+
+  if (!code || !expires) {
+    return res.status(400).json({ error: 'Missing code or expires' });
+  }
+
+  const passcodes = getExternalPasscodes();
+  passcodes.push({ code, expires });
+  saveExternalPasscodes(passcodes);
+  return res.json({ success: true, passcodes });
+});
+
+app.put('/api/passcodes/:index', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  const index = parseInt(req.params.index, 10);
+  const passcodes = getExternalPasscodes();
+
+  if (isNaN(index) || index < 0 || index >= passcodes.length) {
+    return res.status(400).json({ error: 'Invalid index' });
+  }
+
+  const { code, expires } = req.body;
+
+  if (!code || !expires) {
+    return res.status(400).json({ error: 'Missing code or expires' });
+  }
+
+  passcodes[index] = { code, expires };
+  saveExternalPasscodes(passcodes);
+  return res.json({ success: true, passcodes });
+});
+
+app.delete('/api/passcodes/:index', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+
+  const index = parseInt(req.params.index, 10);
+  const passcodes = getExternalPasscodes();
+
+  if (isNaN(index) || index < 0 || index >= passcodes.length) {
+    return res.status(400).json({ error: 'Invalid index' });
+  }
+
+  passcodes.splice(index, 1);
+  saveExternalPasscodes(passcodes);
+  return res.json({ success: true, passcodes });
 });
 
 app.listen(PORT, () => {

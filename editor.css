@@ -899,6 +899,42 @@ select.ed-input {
   }
 }
 
+/* ── Passcode Status Badges ── */
+.ed-pc-status {
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.ed-pc-status--active {
+  color: #1a8a3f;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+[data-theme="dark"] .ed-pc-status--active {
+  color: #4ade80;
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.ed-pc-status--expired {
+  color: #c53030;
+  background: rgba(224, 85, 85, 0.1);
+  border: 1px solid rgba(224, 85, 85, 0.2);
+}
+
+[data-theme="dark"] .ed-pc-status--expired {
+  color: #fc8181;
+  background: rgba(224, 85, 85, 0.15);
+  border-color: rgba(224, 85, 85, 0.3);
+}
+
 /* ── Scrollbar styling ── */
 .ed-sidebar-list::-webkit-scrollbar,
 .ed-main::-webkit-scrollbar {

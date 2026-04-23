@@ -24,10 +24,14 @@ app.use(cors({
   origin: true,
   credentials: true
 }));
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 
 function readJsonFile(fileName) {
   return JSON.parse(fs.readFileSync(path.join(__dirname, fileName), 'utf-8'));
+}
+
+function writeJsonFile(fileName, data) {
+  fs.writeFileSync(path.join(__dirname, fileName), `${JSON.stringify(data, null, 2)}\n`, 'utf-8');
 }
 
 function getPasscodes() {
@@ -148,13 +152,28 @@ function resolvePasscodeFromRequest(req) {
   return { passcode: '', source: 'none' };
 }
 
+function matchPasscode(passcode) {
+  const passcodes = getPasscodes();
+  return passcodes.find((entry) => entry.code === passcode);
+}
+
+function capabilitiesFromMatch(match) {
+  const role = typeof match?.role === 'string' ? match.role : 'viewer';
+  const roles = Array.isArray(match?.roles) ? match.roles : [];
+  const canEdit = role === 'editor' || roles.includes('editor');
+
+  return {
+    role,
+    canEdit
+  };
+}
+
 function validatePasscode(passcode) {
   if (!passcode) {
     return { ok: false, status: 401, error: 'Not authenticated' };
   }
 
-  const passcodes = getPasscodes();
-  const match = passcodes.find((entry) => entry.code === passcode);
+  const match = matchPasscode(passcode);
 
   if (!match) {
     return { ok: false, status: 401, error: 'Invalid passcode' };
@@ -166,7 +185,29 @@ function validatePasscode(passcode) {
     return { ok: false, status: 403, error: 'Passcode has expired' };
   }
 
-  return { ok: true, match, expiresAt };
+  return {
+    ok: true,
+    match,
+    expiresAt,
+    capabilities: capabilitiesFromMatch(match)
+  };
+}
+
+function requireAuth(req, res) {
+  const { passcode, source } = resolvePasscodeFromRequest(req);
+  const validation = validatePasscode(passcode);
+
+  if (!validation.ok) {
+    if (source === 'cookie') {
+      clearSessionCookie(res, req);
+    }
+
+    res.status(validation.status).json({ error: validation.error });
+    return null;
+  }
+
+  setSessionCookie(res, req, passcode, validation.expiresAt);
+  return validation;
 }
 
 function resolveVariantIdFromRequest(req) {
@@ -203,19 +244,42 @@ function getDocumentData(variantId) {
   return readJsonFile(variant.dataFile);
 }
 
-app.post('/api/auth', (req, res) => {
-  const { passcode, source } = resolvePasscodeFromRequest(req);
-  const validation = validatePasscode(passcode);
-
-  if (!validation.ok) {
-    if (source === 'cookie') {
-      clearSessionCookie(res, req);
-    }
-
-    return res.status(validation.status).json({ error: validation.error });
+function assertEditor(validation, res) {
+  if (!validation.capabilities.canEdit) {
+    res.status(403).json({ error: 'Editor access required' });
+    return false;
   }
 
-  setSessionCookie(res, req, passcode, validation.expiresAt);
+  return true;
+}
+
+app.post('/api/auth', (req, res) => {
+  const validation = requireAuth(req, res);
+
+  if (!validation) {
+    return;
+  }
+
+  const variant = getVariantForRequest(req);
+
+  return res.json({
+    success: true,
+    variant: variant.id,
+    data: getDocumentData(variant.id),
+    capabilities: validation.capabilities
+  });
+});
+
+app.get('/api/document', (req, res) => {
+  const validation = requireAuth(req, res);
+
+  if (!validation) {
+    return;
+  }
+
+  if (!assertEditor(validation, res)) {
+    return;
+  }
 
   const variant = getVariantForRequest(req);
 
@@ -226,19 +290,43 @@ app.post('/api/auth', (req, res) => {
   });
 });
 
-function handleDownloadRequest(req, res) {
-  const { passcode, source } = resolvePasscodeFromRequest(req);
-  const validation = validatePasscode(passcode);
+app.post('/api/document', (req, res) => {
+  const validation = requireAuth(req, res);
 
-  if (!validation.ok) {
-    if (source === 'cookie') {
-      clearSessionCookie(res, req);
-    }
-
-    return res.status(validation.status).send(validation.error);
+  if (!validation) {
+    return;
   }
 
-  setSessionCookie(res, req, passcode, validation.expiresAt);
+  if (!assertEditor(validation, res)) {
+    return;
+  }
+
+  const variant = getVariantForRequest(req);
+  const submittedData = req.body?.data;
+
+  if (!submittedData || typeof submittedData !== 'object') {
+    return res.status(400).json({ error: 'Invalid payload' });
+  }
+
+  if (!Array.isArray(submittedData.sections)) {
+    return res.status(400).json({ error: 'Document must include sections array' });
+  }
+
+  writeJsonFile(variant.dataFile, submittedData);
+
+  return res.json({
+    success: true,
+    variant: variant.id,
+    data: getDocumentData(variant.id)
+  });
+});
+
+function handleDownloadRequest(req, res) {
+  const validation = requireAuth(req, res);
+
+  if (!validation) {
+    return;
+  }
 
   const variant = getVariantForRequest(req);
   const pdfFile = variant.pdfFile;

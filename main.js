@@ -10,14 +10,6 @@ const DEFAULT_LANG = 'en';
 const DEFAULT_THEME = 'light';
 const PREF_COOKIE_MAX_AGE = 31536000;
 
-const UI_STRINGS = {
-  downloadPdf: { en: 'PDF', de: 'PDF' },
-  themeLight: { en: 'Light', de: 'Hell' },
-  themeDark: { en: 'Dark', de: 'Dunkel' },
-  editBtn: { en: 'Edit', de: 'Bearbeiten' },
-  langSwitch: { en: 'DE', de: 'EN' },
-  logoutBtn: { en: 'Logout', de: 'Abmelden' }
-};
 
 let lang = DEFAULT_LANG;
 let theme = DEFAULT_THEME;
@@ -104,9 +96,6 @@ function localize(value) {
   return value[lang] ?? value.en ?? value.de ?? '';
 }
 
-function getMessage(value) {
-  return localize(value);
-}
 
 function getRequestedLocalVariantId() {
   if (!isLocalDevelopmentHostname(window.location.hostname)) {
@@ -249,28 +238,16 @@ function applyThemeIcons() {
   const darkMode = theme === 'dark';
   const sun = document.getElementById('ico-sun');
   const moon = document.getElementById('ico-moon');
-  const label = document.getElementById('theme-lbl');
 
   if (sun) sun.style.display = darkMode ? '' : 'none';
   if (moon) moon.style.display = darkMode ? 'none' : '';
-  if (label) label.textContent = darkMode ? localize(UI_STRINGS.themeLight) : localize(UI_STRINGS.themeDark);
 }
 
 function render() {
   if (!documentData) return;
 
   document.documentElement.lang = lang;
-  document.getElementById('dl-lbl').textContent = localize(UI_STRINGS.downloadPdf);
-  
-  const editLbl = document.getElementById('edit-lbl');
-  if (editLbl) editLbl.textContent = localize(UI_STRINGS.editBtn);
-  
-  const langLbl = document.getElementById('lang-lbl');
-  if (langLbl) langLbl.textContent = localize(UI_STRINGS.langSwitch);
 
-  const logoutLbl = document.getElementById('logout-lbl');
-  if (logoutLbl) logoutLbl.textContent = localize(UI_STRINGS.logoutBtn);
-  
   document.getElementById('cv-body').innerHTML = documentData.sections.map(mkSection).join('');
   renderVariantNote();
   applyVariantChrome();
@@ -369,7 +346,7 @@ async function handleLogin() {
   const passcode = passcodeInput.value.trim();
 
   if (!passcode) {
-    authError.textContent = getMessage({
+    authError.textContent = localize({
       en: 'Please enter a passcode',
       de: 'Bitte Passcode eingeben'
     });
@@ -385,7 +362,7 @@ async function handleLogin() {
 
 function handleDownload() {
   if (!documentData) {
-    showAuthView(getMessage({
+    showAuthView(localize({
       en: 'Your session has ended. Please sign in again.',
       de: 'Deine Sitzung ist beendet. Bitte erneut anmelden.'
     }));

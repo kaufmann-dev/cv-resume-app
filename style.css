@@ -229,25 +229,20 @@ header {
   display: flex;
   gap: 5px;
   flex-shrink: 0;
+  flex-wrap: nowrap;
 }
 
 .tbtn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
+  justify-content: center;
+  padding: 8px 10px;
   background: var(--tb-bg);
   border: none;
   border-radius: 8px;
   color: var(--t1);
-  font-family: inherit;
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
-  white-space: nowrap;
 }
 
 
@@ -262,8 +257,8 @@ header {
 
 
 .tbtn svg {
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
 }
 
 .body {
@@ -610,6 +605,8 @@ ul li::before {
   }
 }
 
+
+
 /* ── MOBILE ── */
 @media (max-width: 640px) {
   .cv {
@@ -627,7 +624,6 @@ ul li::before {
   }
 
   .toolbar {
-    flex-wrap: wrap;
     order: -1;
   }
 

@@ -164,28 +164,24 @@ function mkEntry(item) {
   const hasSubheading = Boolean(subheading);
   const hasInfo = Boolean(info);
   const hasSubinfo = Boolean(subinfo);
-  const promoteSubinfoToTopRow = hasSubheading && hasSubinfo && !hasInfo;
+
   const mobileMetaParts = [];
 
-  if (!promoteSubinfoToTopRow) {
-    if (hasInfo) {
-      mobileMetaParts.push(`<span class="entry-location">${info}</span>`);
-    }
+  if (hasInfo) {
+    mobileMetaParts.push(`<span class="entry-location">${info}</span>`);
+  }
 
-    if (hasInfo && hasSubinfo) {
-      mobileMetaParts.push('<span class="entry-meta-sep">&#183;</span>');
-    }
+  if (hasInfo && hasSubinfo) {
+    mobileMetaParts.push('<span class="entry-meta-sep">&#183;</span>');
+  }
 
-    if (hasSubinfo) {
-      mobileMetaParts.push(`<span class="entry-date">${subinfo}</span>`);
-    }
+  if (hasSubinfo) {
+    mobileMetaParts.push(`<span class="entry-date">${subinfo}</span>`);
   }
 
   const mobMeta = mobileMetaParts.join('');
   const useInlineMeta = hasHeading && !hasSubheading && (hasInfo || hasSubinfo);
-  const topRightMeta = hasInfo
-    ? `<span class="entry-location">${info}</span>`
-    : (promoteSubinfoToTopRow ? `<span class="entry-date">${subinfo}</span>` : '');
+  const topRightMeta = hasInfo ? `<span class="entry-location">${info}</span>` : '';
   const inlineMeta = useInlineMeta ? `
       <span class="entry-inline-meta entry-inline-meta--text">
         ${hasInfo ? `<span class="entry-location">${info}</span>` : ''}
@@ -193,15 +189,13 @@ function mkEntry(item) {
         ${hasSubinfo ? `<span class="entry-date">${subinfo}</span>` : ''}
       </span>
     ` : '';
-  const bottomRightMeta = !useInlineMeta && hasSubinfo && !promoteSubinfoToTopRow ? `<span class="entry-date">${subinfo}</span>` : '';
+  const bottomRightMeta = !useInlineMeta && hasSubinfo ? `<span class="entry-date">${subinfo}</span>` : '';
   const showSecondRow = hasSubheading || Boolean(bottomRightMeta);
-  const firstRowClass = promoteSubinfoToTopRow ? 'e-r1 e-r1--date-first' : 'e-r1';
-  const secondRowClass = hasSubheading ? 'e-r2' : 'e-r2 e-r2--meta-only';
 
   return `<div class="entry"><div class="e-line"></div><div class="e-body">
     ${mobMeta ? `<div class="e-mob">${mobMeta}</div>` : ''}
-    <div class="${firstRowClass}"><span class="entry-title">${heading}</span>${useInlineMeta ? inlineMeta : topRightMeta}</div>
-    ${showSecondRow ? `<div class="${secondRowClass}">${hasSubheading ? `<span class="entry-subtitle">${subheading}</span>` : ''}${bottomRightMeta}</div>` : ''}
+    <div class="e-r1"><span class="entry-title">${heading}</span>${useInlineMeta ? inlineMeta : topRightMeta}</div>
+    ${showSecondRow ? `<div class="e-r2">${hasSubheading ? `<span class="entry-subtitle">${subheading}</span>` : ''}${bottomRightMeta}</div>` : ''}
     ${highlights.length ? `<ul>${highlights.map((highlight) => `<li>${highlight}</li>`).join('')}</ul>` : ''}
     ${item.tags?.length ? `<div class="tags">${item.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
   </div></div>`;

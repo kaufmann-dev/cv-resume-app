@@ -16,7 +16,6 @@ dist-ssr/
 *.sw?
 
 # Project specific
-passcodes.json
 *.log
 
 # OS generated files

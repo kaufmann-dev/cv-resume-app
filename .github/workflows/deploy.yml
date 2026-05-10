@@ -1,0 +1,23 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 2a0d:f302:155:d09e::1
+          username: alwyzon
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            export CONFIRM_DEPLOY=y
+            cd /var/www/cv-resume-app && sudo ./deploy.sh

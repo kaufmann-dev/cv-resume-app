@@ -19,7 +19,7 @@ const SESSION_COOKIE_NAME = 'kaufmann_dev_session';
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 app.use(cors({
   origin: true,
   credentials: true
@@ -427,6 +427,14 @@ app.delete('/api/passcodes/:index', (req, res) => {
   return res.json({ success: true, passcodes });
 });
 
+// Serve built frontend static files
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// SPA fallback — always return index.html for non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

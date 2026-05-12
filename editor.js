@@ -358,6 +358,7 @@ export function toggleEditor() {
 }
 
 export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSave }) {
+  isEditorOpen = false;
   let docs = { resume: JSON.parse(JSON.stringify(resumeData)), cv: JSON.parse(JSON.stringify(cvData)) };
   let passcodes = JSON.parse(JSON.stringify(passcodesData || []));
   let activeDoc = 'resume';

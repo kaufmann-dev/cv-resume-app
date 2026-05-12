@@ -49,7 +49,7 @@ That mapping lives in `variant-config.js`.
 ## Passcodes & Data Persistence
 
 The application's data is stored in three JSON files:
-- `passcodes.json`: Authentication codes and expiry dates.
+- `passcodes.json`: Authentication codes and their expiry dates.
 - `resume.json`: Content for the resume variant.
 - `cv.json`: Content for the CV variant.
 
@@ -63,9 +63,17 @@ cp cv.json.example cv.json
 cp resume.json.example resume.json
 ```
 
+### Example `passcodes.json`
+```json
+[
+  { "code": "your-code", "expires": "2026-12-31" }
+]
+```
+
 Notes:
-- Successful logins are stored in an `HttpOnly` session cookie scoped to `.kaufmann.dev`.
-- Theme and language preferences are stored in shared cookies across subdomains.
+- **Admin Passcode**: The `ADMIN_PASSCODE` set via environment variable never expires.
+- **Normal Passcodes**: Passcodes in `passcodes.json` must have an `expires` date and will be checked on every login.
+- **Cookies**: Successful logins are stored in an `HttpOnly` session cookie scoped to `.kaufmann.dev`. Theme and language preferences are also shared across subdomains.
 
 ## Local Development
 
@@ -117,6 +125,7 @@ Since the JSON files are ignored by Git, you **must** use **File Mounts** in Coo
 
 ### 2. Environment Variables
 In the **Environment Variables** tab, add:
+- `ADMIN_PASSCODE`: Your secure admin passcode (Mandatory for admin/editor access).
 - `PORT`: `3001`
 - `NODE_ENV`: `production`
 

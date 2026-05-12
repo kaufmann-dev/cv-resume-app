@@ -27,18 +27,22 @@ app.use(cors({
 app.use(express.json());
 
 function readJsonFile(fileName) {
-  return JSON.parse(fs.readFileSync(path.join(__dirname, fileName), 'utf-8'));
+  const filePath = path.join(__dirname, fileName);
+  if (!fs.existsSync(filePath)) {
+    console.warn(`Warning: File ${fileName} not found. Returning empty default.`);
+    return fileName.includes('passcodes') ? [] : { sections: [] };
+  }
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch (error) {
+    console.error(`Error parsing ${fileName}:`, error);
+    return fileName.includes('passcodes') ? [] : { sections: [] };
+  }
 }
 
 function writeJsonFile(fileName, data) {
   fs.writeFileSync(path.join(__dirname, fileName), JSON.stringify(data, null, 2), 'utf-8');
 }
-
-const ADMIN_PASSCODE = {
-  code: 'jS7`u#M6&I68',
-  expires: '2049-12-31',
-  isAdmin: true
-};
 
 function getExternalPasscodes() {
   return readJsonFile('passcodes.json');
@@ -49,7 +53,14 @@ function saveExternalPasscodes(passcodes) {
 }
 
 function getPasscodes() {
-  return [ADMIN_PASSCODE, ...getExternalPasscodes()];
+  const external = getExternalPasscodes();
+  if (process.env.ADMIN_PASSCODE) {
+    return [
+      { code: process.env.ADMIN_PASSCODE, isAdmin: true },
+      ...external
+    ];
+  }
+  return external;
 }
 
 function parseCookies(cookieHeader = '') {
@@ -131,10 +142,15 @@ function getBaseSessionCookieOptions(req) {
 }
 
 function setSessionCookie(res, req, passcode, expiresAt) {
-  res.cookie(SESSION_COOKIE_NAME, passcode, {
-    ...getBaseSessionCookieOptions(req),
-    expires: expiresAt
-  });
+  const options = {
+    ...getBaseSessionCookieOptions(req)
+  };
+
+  if (expiresAt) {
+    options.expires = expiresAt;
+  }
+
+  res.cookie(SESSION_COOKIE_NAME, passcode, options);
 }
 
 function clearSessionCookie(res, req) {
@@ -178,13 +194,22 @@ function validatePasscode(passcode) {
     return { ok: false, status: 401, error: 'Invalid passcode' };
   }
 
-  const expiresAt = new Date(match.expires);
-
-  if (new Date() > expiresAt) {
-    return { ok: false, status: 403, error: 'Passcode has expired' };
+  // Admin passcodes from env var never expire
+  if (match.isAdmin) {
+    return { ok: true, match };
   }
 
-  return { ok: true, match, expiresAt };
+  // Normal passcodes must have an expiry and not be expired
+  if (match.expires) {
+    const expiresAt = new Date(match.expires);
+    if (!isNaN(expiresAt.getTime()) && new Date() > expiresAt) {
+      return { ok: false, status: 403, error: 'Passcode has expired' };
+    }
+    return { ok: true, match, expiresAt };
+  }
+
+  // If no expiry is set for a normal passcode, we treat it as a session cookie
+  return { ok: true, match };
 }
 
 function resolveVariantIdFromRequest(req) {

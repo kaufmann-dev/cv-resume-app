@@ -125,7 +125,7 @@ Since the JSON files are ignored by Git, you **must** use **File Mounts** in Coo
 
 ### 2. Environment Variables
 In the **Environment Variables** tab, add:
-- `ADMIN_PASSCODE`: Your secure admin passcode (Mandatory for admin/editor access).
+- `ADMIN_PASSCODE`: Your secure admin passcode (Mandatory for admin/editor access). **Runtime only**
 - `PORT`: `3001`
 - `NODE_ENV`: `production`
 

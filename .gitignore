@@ -17,6 +17,9 @@ dist-ssr/
 
 # Project specific
 *.log
+passcodes.json
+resume.json
+cv.json
 
 # OS generated files
 Thumbs.db

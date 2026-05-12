@@ -1,0 +1,36 @@
+{
+  "sections": [
+    {
+      "id": "personal",
+      "title": {
+        "en": "Personal Information",
+        "de": "Persönliche Daten"
+      },
+      "open": true,
+      "type": "info",
+      "rows": [
+        {
+          "label": { "en": "Location", "de": "Wohnort" },
+          "value": { "en": "City, Country", "de": "Stadt, Land" }
+        }
+      ]
+    },
+    {
+      "id": "education",
+      "title": { "en": "Education", "de": "Bildungsweg" },
+      "open": true,
+      "type": "entries",
+      "items": [
+        {
+          "heading": { "en": "University Name", "de": "Universität Name" },
+          "subheading": { "en": "Degree Name", "de": "Abschluss" },
+          "info": { "en": "Location", "de": "Ort" },
+          "subinfo": { "en": "2020 - 2024", "de": "2020 - 2024" },
+          "highlights": [
+            { "en": "Highlight 1", "de": "Highlight 1" }
+          ]
+        }
+      ]
+    }
+  ]
+}

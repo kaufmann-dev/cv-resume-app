@@ -46,70 +46,86 @@ resume-app-new/
 
 That mapping lives in `variant-config.js`.
 
-## Passcodes
+## Passcodes & Data Persistence
 
-Create a `passcodes.json` file in the project root:
+The application's data is stored in three JSON files:
+- `passcodes.json`: Authentication codes and expiry dates.
+- `resume.json`: Content for the resume variant.
+- `cv.json`: Content for the CV variant.
 
-```json
-[
-  { "code": "your-code", "expires": "2026-12-31" }
-]
+**IMPORTANT**: These files are excluded from Git (`.gitignore`) to prevent local development data from overwriting production data. 
+
+### Initializing Data
+When deploying for the first time, you should copy the provided example files to create your initial dataset:
+```bash
+cp passcodes.json.example passcodes.json
+cp cv.json.example cv.json
+cp resume.json.example resume.json
 ```
 
 Notes:
-
-- Successful logins are stored in an `HttpOnly` session cookie
-- On the real domains, that cookie is scoped to `.kaufmann.dev`
-- Logging in on one subdomain automatically logs you in on the other
-- On reload, the app automatically rechecks the shared session cookie
-- If the passcode is expired or invalid, the cookie is cleared and the user must log in again
-
-## Preferences
-
-Theme and language are stored in first-party cookies:
-
-- `kaufmann_dev_theme`
-- `kaufmann_dev_lang`
-
-On the production domains, those cookies are shared across `.kaufmann.dev`, so your theme and language follow you between `resume.kaufmann.dev` and `cv.kaufmann.dev`.
+- Successful logins are stored in an `HttpOnly` session cookie scoped to `.kaufmann.dev`.
+- Theme and language preferences are stored in shared cookies across subdomains.
 
 ## Local Development
 
 ### Prerequisites
-
 - Node.js 20 LTS or 22 LTS recommended
 - npm
 
 ### Install
-
 ```bash
 npm install
 ```
 
 ### Run the backend
-
 ```bash
 npm run server
 ```
-
 The backend runs at `http://localhost:3001`.
 
 ### Run the frontend
-
 ```bash
 npm run dev
 ```
-
 The frontend usually runs at `http://localhost:5173`.
 
 In local development:
+- The frontend talks to `http://localhost:3001`.
+- Unknown or local hostnames default to the resume variant.
+- Session cookies stay local to your localhost environment.
+- Theme and language preferences still persist through cookies.
 
-- the frontend talks to `http://localhost:3001`
-- unknown or local hostnames default to the resume variant
-- session cookies stay local to your localhost environment
-- theme and language preferences still persist through cookies
+## Deployment with Coolify
 
-## Production Deployment
+Coolify is the recommended way to deploy this app using Docker/Nixpacks.
+
+### 1. Persistent Storage (CRITICAL)
+Since the JSON files are ignored by Git, you **must** use **File Mounts** in Coolify. This ensures your data persists across deployments and can be edited through the app's dashboard.
+
+**Detailed Steps:**
+1. In the Coolify dashboard, select your **Service**.
+2. Go to the **Storage** tab.
+3. Add a new **File Mount** for each data file:
+   | Source Path (on Host) | Destination Path (in Container) |
+   | :--- | :--- |
+   | `/var/lib/docker/volumes/cv_data/_data/passcodes.json` | `/app/passcodes.json` |
+   | `/var/lib/docker/volumes/cv_data/_data/resume.json` | `/app/resume.json` |
+   | `/var/lib/docker/volumes/cv_data/_data/cv.json` | `/app/cv.json` |
+   *Note: The Source Path can be any persistent directory on your server. The Destination Path `/app/` is the default for Nixpacks builds.*
+4. **Initial Data**: If the app fails to start because files are missing, SSH into your server and manually create the source files using the `.example` templates provided in the repo.
+
+### 2. Environment Variables
+In the **Environment Variables** tab, add:
+- `PORT`: `3001`
+- `NODE_ENV`: `production`
+
+### 3. Domains & SSL
+In the **General** settings:
+- Add your domains: `https://resume.kaufmann.dev, https://cv.kaufmann.dev`
+- Coolify will automatically provision Let's Encrypt certificates and configure the reverse proxy.
+
+## Production Deployment (Standard VPS)
 
 ### Build the frontend
 

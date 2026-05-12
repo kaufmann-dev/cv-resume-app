@@ -347,9 +347,13 @@ export function toggleEditor() {
   isEditorOpen = !isEditorOpen;
   const container = document.getElementById('editor-container');
   const cvContainer = document.getElementById('cv-container');
+  const legalFooter = document.getElementById('legal-footer');
   if (container && cvContainer) {
     container.style.display = isEditorOpen ? 'block' : 'none';
     cvContainer.style.display = isEditorOpen ? 'none' : 'block';
+  }
+  if (legalFooter) {
+    legalFooter.style.display = isEditorOpen ? 'none' : 'flex';
   }
 }
 

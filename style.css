@@ -534,10 +534,6 @@ ul li::before {
 
 /* ── LEGAL FOOTER ── */
 #legal-footer {
-  position: fixed;
-  bottom: 20px;
-  left: 0;
-  right: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -545,9 +541,19 @@ ul li::before {
   font-size: 0.7rem;
   font-weight: 500;
   color: var(--t3);
+  padding: 40px 0 32px;
+  width: 100%;
+  transition: opacity 0.3s ease;
+}
+
+body.is-auth-view #legal-footer {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  padding: 0;
   z-index: 100;
   pointer-events: none;
-  transition: opacity 0.3s ease;
 }
 
 #legal-footer a {

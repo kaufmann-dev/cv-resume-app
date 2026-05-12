@@ -262,12 +262,14 @@ function render() {
 }
 
 function showAuthenticatedView() {
+  document.body.classList.remove('is-auth-view');
   authContainer.style.display = 'none';
   contentContainer.style.display = 'block';
   logoutButton.style.display = '';
 }
 
 function showAuthView(message = '') {
+  document.body.classList.add('is-auth-view');
   contentContainer.style.display = 'none';
   authContainer.style.display = 'flex';
   authError.textContent = message;

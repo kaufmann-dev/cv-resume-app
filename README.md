@@ -10,6 +10,7 @@ A small personal CV/resume app built with Vite on the frontend and Express on th
 - Shared login session across `resume.kaufmann.dev` and `cv.kaufmann.dev`
 - Shared theme and language preferences across both subdomains
 - PDF download through the authenticated backend
+- Built-in visual editor for real-time content updates
 - Local development fallback to the resume variant
 
 ## Tech Stack
@@ -27,15 +28,18 @@ resume-app-new/
 |-- variant-config.js   # Hostname -> variant -> file mapping
 |-- index.html          # Frontend entry point
 |-- main.js             # Frontend logic
+|-- editor.js           # Visual editor logic
 |-- style.css           # Styling
-|-- resume.json         # Resume dataset
-|-- cv.json             # CV dataset
+|-- resume.json         # Resume dataset (ignored by git)
+|-- cv.json             # CV dataset (ignored by git)
+|-- passcodes.json      # Local/private passcodes file (ignored by git)
+|-- resume.json.example # Template for resume data
+|-- cv.json.example     # Template for CV data
+|-- passcodes.json.example # Template for passcodes
 |-- resume.pdf          # Current PDF download file
-|-- deploy.sh           # Deployment helper for pull/build/restart
-|-- cv-resume-app.service # Example systemd service file
+|-- deploy.sh           # Deployment helper for VPS
 |-- package.json
 |-- package-lock.json
-`-- passcodes.json      # Local/private passcodes file
 ```
 
 ## Variant Routing
@@ -101,6 +105,7 @@ The frontend usually runs at `http://localhost:5173`.
 In local development:
 - The frontend talks to `http://localhost:3001`.
 - Unknown or local hostnames default to the resume variant.
+- **Admin Access**: To use the visual editor locally, you must provide the `ADMIN_PASSCODE` environment variable when starting the server (e.g., `$env:ADMIN_PASSCODE="secret"; npm run server`).
 - Session cookies stay local to your localhost environment.
 - Theme and language preferences still persist through cookies.
 
@@ -117,10 +122,10 @@ Since the JSON files are ignored by Git, you **must** use **File Mounts** in Coo
 3. Add a new **File Mount** for each data file:
    | Source Path (on Host) | Destination Path (in Container) |
    | :--- | :--- |
-   | `/var/lib/docker/volumes/cv_data/_data/passcodes.json` | `/app/passcodes.json` |
-   | `/var/lib/docker/volumes/cv_data/_data/resume.json` | `/app/resume.json` |
-   | `/var/lib/docker/volumes/cv_data/_data/cv.json` | `/app/cv.json` |
-   *Note: The Source Path can be any persistent directory on your server. The Destination Path `/app/` is the default for Nixpacks builds.*
+   | `/data/cv-resume/passcodes.json` | `/app/passcodes.json` |
+   | `/data/cv-resume/resume.json` | `/app/resume.json` |
+   | `/data/cv-resume/cv.json` | `/app/cv.json` |
+   *Note: The Source Path should match the directory you created on your server in Step 1. The Destination Path `/app/` is the standard for Nixpacks builds.*
 4. **Initial Data**: If the app fails to start because files are missing, SSH into your server and manually create the source files using the `.example` templates provided in the repo.
 
 ### 2. Environment Variables

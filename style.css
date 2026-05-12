@@ -532,6 +532,45 @@ ul li::before {
   display: none;
 }
 
+/* ── LEGAL FOOTER ── */
+#legal-footer {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--t3);
+  z-index: 100;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#legal-footer a {
+  color: var(--t3);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.25s ease;
+  pointer-events: auto;
+  letter-spacing: 0.02em;
+}
+
+#legal-footer a:hover {
+  color: var(--t1);
+  border-bottom-color: var(--border2);
+}
+
+#legal-footer .sep {
+  color: var(--border2);
+  font-size: 0.6rem;
+  opacity: 0.5;
+}
+
+
 /* ── PRINT ── */
 @media print {
   body {

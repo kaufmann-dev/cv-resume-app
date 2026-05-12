@@ -134,9 +134,22 @@ function getVariantNoteHref(note) {
   return localUrl.toString();
 }
 
+function applyLegalFooter() {
+  const imprintLink = document.getElementById('link-imprint');
+  const privacyLink = document.getElementById('link-privacy');
+
+  if (imprintLink) {
+    imprintLink.textContent = localize({ en: 'Imprint', de: 'Impressum' });
+  }
+  if (privacyLink) {
+    privacyLink.textContent = localize({ en: 'Privacy', de: 'Datenschutz' });
+  }
+}
+
 function applyVariantChrome() {
   document.title = localize(activeVariant.pageTitle);
   document.getElementById('login-btn').textContent = localize(activeVariant.authButtonLabel);
+  applyLegalFooter();
 }
 
 function renderVariantNote() {

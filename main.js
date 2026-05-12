@@ -28,6 +28,7 @@ const authError = document.getElementById('auth-error');
 const passcodeInput = document.getElementById('passcode-input');
 const downloadButton = document.getElementById('btn-dl');
 const logoutButton = document.getElementById('btn-logout');
+const editButton = document.getElementById('btn-edit');
 
 const openState = {};
 const expandedState = {};
@@ -274,6 +275,7 @@ function showAuthView(message = '') {
   authContainer.style.display = 'flex';
   authError.textContent = message;
   logoutButton.style.display = 'none';
+  editButton.style.display = 'none';
   documentData = null;
 }
 
@@ -316,7 +318,7 @@ async function authenticate(options = {}) {
 
     if (result.isAdmin) {
       try {
-        const { initEditor, toggleEditor } = await import('./editor.js');
+        const { initEditor } = await import('./editor.js');
         initEditor({
           resumeData: result.resumeData,
           cvData: result.cvData,
@@ -330,9 +332,7 @@ async function authenticate(options = {}) {
           }
         });
 
-        const editBtn = document.getElementById('btn-edit');
-        editBtn.style.display = '';
-        editBtn.addEventListener('click', () => toggleEditor());
+        editButton.style.display = '';
       } catch (e) {
         console.error('Failed to load editor:', e);
       }
@@ -427,6 +427,11 @@ async function handleLogout() {
 }
 
 logoutButton.addEventListener('click', handleLogout);
+
+editButton.addEventListener('click', async () => {
+  const { toggleEditor } = await import('./editor.js');
+  toggleEditor();
+});
 
 window.addEventListener('beforeprint', () => {
   saveOpen();

@@ -26,6 +26,7 @@ const authContainer = document.getElementById('auth-container');
 const contentContainer = document.getElementById('cv-container');
 const authError = document.getElementById('auth-error');
 const passcodeInput = document.getElementById('passcode-input');
+const adminLoginButton = document.getElementById('admin-login-btn');
 const downloadButton = document.getElementById('btn-dl');
 const logoutButton = document.getElementById('btn-logout');
 const editButton = document.getElementById('btn-edit');
@@ -288,18 +289,23 @@ async function authenticate(options = {}) {
   authError.textContent = '';
 
   try {
-    const payload = { variant: activeVariant.id };
+    const endpoint = passcode ? '/api/auth/passcode' : '/api/session';
+    const requestOptions = {
+      method: passcode ? 'POST' : 'GET',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' }
+    };
 
     if (passcode) {
-      payload.passcode = passcode;
+      requestOptions.body = JSON.stringify({
+        passcode,
+        variant: activeVariant.id
+      });
     }
 
-    const response = await fetch(buildApiUrl('/api/auth'), {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    const requestUrl = buildApiUrl(endpoint);
+    requestUrl.searchParams.set('variant', activeVariant.id);
+    const response = await fetch(requestUrl, requestOptions);
 
     const result = await response.json();
 
@@ -393,6 +399,11 @@ async function restoreStoredSession() {
 }
 
 document.getElementById('login-btn').addEventListener('click', handleLogin);
+adminLoginButton.addEventListener('click', () => {
+  const loginUrl = buildApiUrl('/auth/login');
+  loginUrl.searchParams.set('returnTo', window.location.href);
+  window.location.assign(loginUrl.toString());
+});
 passcodeInput.addEventListener('keypress', (event) => {
   if (event.key === 'Enter') handleLogin();
 });
@@ -414,16 +425,14 @@ document.getElementById('btn-theme').addEventListener('click', () => {
 
 downloadButton.addEventListener('click', handleDownload);
 
-async function handleLogout() {
-  try {
-    await fetch(buildApiUrl('/api/logout'), {
-      method: 'POST',
-      credentials: 'include'
-    });
-  } catch (e) {
-    // ignore network errors, still clear local state
-  }
-  showAuthView();
+function handleLogout() {
+  const logoutUrl = buildApiUrl('/auth/logout');
+  logoutUrl.searchParams.set('returnTo', window.location.href);
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = logoutUrl.toString();
+  document.body.appendChild(form);
+  form.submit();
 }
 
 logoutButton.addEventListener('click', handleLogout);

@@ -20,6 +20,7 @@ dist-ssr/
 passcodes.json
 resume.json
 cv.json
+.sessions/
 
 # OS generated files
 Thumbs.db

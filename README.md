@@ -6,7 +6,7 @@ A small personal CV/resume app built with Vite on the frontend and Express on th
 
 - One shared app for both the resume and CV variants
 - Hostname-based dataset selection via `variant-config.js`
-- Passcode-protected access
+- App-owned viewer passcodes with OIDC-protected admin/editor access
 - Shared login session across `resume.kaufmann.dev` and `cv.kaufmann.dev`
 - Shared theme and language preferences across both subdomains
 - PDF download through the authenticated backend
@@ -17,7 +17,7 @@ A small personal CV/resume app built with Vite on the frontend and Express on th
 
 - Frontend: Vite, plain HTML/CSS/JavaScript
 - Backend: Express
-- Runtime dependencies: `express`, `cors`
+- Runtime dependencies: `express`, `express-session`, `session-file-store`, `openid-client`, `cors`
 - No database and no SQLite dependency
 
 ## Project Structure
@@ -25,6 +25,7 @@ A small personal CV/resume app built with Vite on the frontend and Express on th
 ```text
 resume-app-new/
 |-- server.js           # Express backend server
+|-- auth.js             # OIDC and server-side session configuration
 |-- variant-config.js   # Hostname -> variant -> file mapping
 |-- index.html          # Frontend entry point
 |-- main.js             # Frontend logic
@@ -53,11 +54,12 @@ That mapping lives in `variant-config.js`.
 ## Passcodes & Data Persistence
 
 The application's data is stored in three JSON files:
+
 - `passcodes.json`: Authentication codes and their expiry dates.
 - `resume.json`: Content for the resume variant.
 - `cv.json`: Content for the CV variant.
 
-**IMPORTANT**: These files are excluded from Git (`.gitignore`) to prevent local development data from overwriting production data. 
+**IMPORTANT**: These files are excluded from Git (`.gitignore`) to prevent local development data from overwriting production data.
 
 ### Initializing Data
 When deploying for the first time, you should copy the provided example files to create your initial dataset:
@@ -75,14 +77,45 @@ cp resume.json.example resume.json
 ```
 
 Notes:
-- **Admin Passcode**: The `ADMIN_PASSCODE` set via environment variable never expires.
-- **Normal Passcodes**: Passcodes in `passcodes.json` must have an `expires` date and will be checked on every login.
-- **Cookies**: Successful logins are stored in an `HttpOnly` session cookie scoped to `.kaufmann.dev`. Theme and language preferences are also shared across subdomains.
+
+- **Viewer passcodes**: Passcodes in `passcodes.json` must have an `expires` date. The file is checked on every authenticated request, so expiry, edits, and deletion take effect immediately. Failed login attempts are limited to five per 15 minutes for each proxy-derived client IP; valid passcodes bypass the limiter.
+- **Admin access**: The OIDC provider's access policy is the only admin admission control. OIDC admins can manage viewer passcodes in the editor.
+- **Cookies**: Authentication uses an opaque `HttpOnly` server-side session cookie. Theme and language preferences remain separate and are also shared across subdomains.
+
+## Authentication Setup
+
+Viewer login verifies an app-owned code from `passcodes.json`; admin login uses a confidential OIDC Authorization Code flow with PKCE S256, state, and nonce. A successful OIDC callback regenerates an app-local server-side session, and admin logout destroys it before redirecting to the provider's required RP-Initiated Logout endpoint.
+
+**Public Client: Off**
+
+- Admin login path: `/auth/login`
+- Callback path: `/auth/callback`
+- Logout path: `/auth/logout`
+- Production callback URL: `https://resume.kaufmann.dev/auth/callback`
+- Production post-logout URL: `https://resume.kaufmann.dev/`
+
+| Environment variable    |  Required  | Purpose                                                                                    |
+| ----------------------- | :--------: | ------------------------------------------------------------------------------------------ |
+| `OIDC_ISSUER_URL`       |    Yes     | Provider issuer URL used for discovery; HTTPS is required except for loopback development. |
+| `OIDC_CLIENT_ID`        |    Yes     | Confidential client identifier.                                                            |
+| `OIDC_CLIENT_SECRET`    |    Yes     | Confidential client secret; keep it in runtime secret storage.                             |
+| `OIDC_CALLBACK_URL`     |    Yes     | Fixed `/auth/callback` URL; use `https://resume.kaufmann.dev/auth/callback` in production. |
+| `OIDC_POST_LOGOUT_URL`  |    Yes     | Origin-only registered URL; use `https://resume.kaufmann.dev/` in production.              |
+| `SESSION_SECRET`        |    Yes     | Random session signing/encryption secret of at least 32 characters.                        |
+| `SESSION_COOKIE_DOMAIN` | Production | Set to `.kaufmann.dev` in production; leave unset for localhost.                           |
+| `SESSION_STORE_PATH`    |     No     | Persistent session directory; defaults to `.sessions`.                                     |
+
+Register a confidential provider application with Authorization Code enabled, `Public Client` disabled, the exact callback and post-logout URLs above, and an access policy that admits only the single administrator. The discovery document must advertise `end_session_endpoint` and must not reject PKCE S256. No refresh-token or offline-access scope is requested.
+
+OIDC URLs must not contain credentials, query strings, fragments, or backslashes. The callback must use the exact `/auth/callback` path, and the post-logout URL must contain only an origin. HTTPS is required in every environment unless a URL targets `localhost`, an address in `127.0.0.0/8`, or `[::1]`; only an HTTP loopback issuer enables insecure transport in `openid-client`.
+
+Before deployment, create the provider application manually, set every required runtime variable without committing secret values, and provide a persistent writable `SESSION_STORE_PATH`. Changing `SESSION_SECRET` invalidates all sessions. The fixed callback on `resume.kaufmann.dev` sets the `Domain=.kaufmann.dev` cookie, so the regenerated session is immediately shared with `cv.kaufmann.dev`.
 
 ## Local Development
 
 ### Prerequisites
-- Node.js 20 LTS or 22 LTS recommended
+
+- Node.js 22.12 or newer
 - npm
 
 ### Install
@@ -103,9 +136,10 @@ npm run dev
 The frontend usually runs at `http://localhost:5173`.
 
 In local development:
+
 - The frontend talks to `http://localhost:3001`.
 - Unknown or local hostnames default to the resume variant.
-- **Admin Access**: To use the visual editor locally, you must provide the `ADMIN_PASSCODE` environment variable when starting the server (e.g., `$env:ADMIN_PASSCODE="secret"; npm run server`).
+- Admin access requires a provider client with localhost callback and post-logout URLs plus the required Authentication Setup variables. Leave `SESSION_COOKIE_DOMAIN` unset.
 - Session cookies stay local to your localhost environment.
 - Theme and language preferences still persist through cookies.
 
@@ -114,23 +148,23 @@ In local development:
 Coolify is the recommended way to deploy this app using Docker/Nixpacks.
 
 ### 1. Persistent Storage (CRITICAL)
-Since the JSON files are ignored by Git, you **must** use **File Mounts** in Coolify. This ensures your data persists across deployments and can be edited through the app's dashboard.
+Since the JSON files and sessions are ignored by Git, you **must** use persistent mounts in Coolify. This keeps data, edits, viewer passcodes, and active server-side sessions across deployments.
 
-**Detailed Steps:**
-1. In the Coolify dashboard, select your **Service**.
-2. Go to the **Storage** tab.
-3. Add a new **File Mount** for each data file:
-   | Source Path (on Host) | Destination Path (in Container) |
-   | :--- | :--- |
-   | `/data/cv-resume/passcodes.json` | `/app/passcodes.json` |
-   | `/data/cv-resume/resume.json` | `/app/resume.json` |
-   | `/data/cv-resume/cv.json` | `/app/cv.json` |
-   *Note: The Source Path should match the directory you created on your server in Step 1. The Destination Path `/app/` is the standard for Nixpacks builds.*
-4. **Initial Data**: If the app fails to start because files are missing, SSH into your server and manually create the source files using the `.example` templates provided in the repo.
+In the Coolify dashboard, select the service, open **Storage**, and add one file mount for each data file plus a directory mount for sessions:
+
+| Source Path (on Host)            | Destination Path (in Container) |
+| -------------------------------- | ------------------------------- |
+| `/data/cv-resume/passcodes.json` | `/app/passcodes.json`           |
+| `/data/cv-resume/resume.json`    | `/app/resume.json`              |
+| `/data/cv-resume/cv.json`        | `/app/cv.json`                  |
+| `/data/cv-resume/sessions`       | `/app/.sessions`                |
+
+The source paths must exist on the host. Before the first start, initialize the three JSON source files from the repository's `.example` templates.
 
 ### 2. Environment Variables
 In the **Environment Variables** tab, add:
-- `ADMIN_PASSCODE`: Your secure admin passcode (Mandatory for admin/editor access). **Runtime only**
+
+- Every production variable listed in Authentication Setup, with `SESSION_STORE_PATH=/app/.sessions`
 - `PORT`: `3001`
 - `NODE_ENV`: `production`
 
@@ -159,7 +193,7 @@ This repo already includes a reusable service file:
 
 - `cv-resume-app.service`
 
-Install it on the server like this:
+Create `/etc/cv-resume-app.env` with the production Authentication Setup variables, keep it root-owned with mode `600`, then install the service:
 
 ```bash
 sudo cp ./cv-resume-app.service /etc/systemd/system/cv-resume-app.service
@@ -184,6 +218,7 @@ Notes:
 - `www-data` is safer than running the app as `root`
 - If `npm` is installed somewhere else, check it with `which npm` and adjust `ExecStart`
 - If you deploy to another path, update `WorkingDirectory` in `cv-resume-app.service`
+- The service creates `/var/lib/cv-resume-app/sessions` for encrypted server-side sessions
 
 ### Ownership
 
@@ -200,8 +235,8 @@ sudo chown -R root:root /var/www/cv-resume-app
 sudo find /var/www/cv-resume-app -type d -exec chmod 755 {} \;
 sudo find /var/www/cv-resume-app -type f -exec chmod 644 {} \;
 sudo chmod 755 /var/www/cv-resume-app/deploy.sh
-sudo chown root:www-data /var/www/cv-resume-app/passcodes.json
-sudo chmod 640 /var/www/cv-resume-app/passcodes.json
+sudo chown www-data:www-data /var/www/cv-resume-app/passcodes.json
+sudo chmod 600 /var/www/cv-resume-app/passcodes.json
 ```
 
 If you already changed ownership to `www-data` and Git now refuses to run, reset it back to your deploy user or `root` and the warning should go away.
@@ -236,7 +271,7 @@ SERVICE_NAME=your-service-name ./deploy.sh
 Nginx should:
 
 - serve the static files from `dist/`
-- proxy `/api/` requests to the Node server
+- proxy `/api/` and `/auth/` requests to the Node server
 
 Example shape:
 
@@ -251,7 +286,7 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
-    location /api/ {
+    location ~ ^/(api|auth)/ {
         proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
@@ -268,7 +303,8 @@ The PDF download is served by the backend, not directly by nginx static hosting.
 
 The current implementation:
 
-- validates the passcode before download
+- validates the current admin or viewer session before download
+- re-checks viewer passcode revocation and expiry
 - reuses the shared session cookie when available
 - serves the file through the Express download endpoint
 - triggers the browser download from the frontend with a normal navigation to `/api/download`
@@ -280,7 +316,9 @@ Authentication is intentionally shared between:
 - `resume.kaufmann.dev`
 - `cv.kaufmann.dev`
 
-That works because the backend sets the login cookie for `.kaufmann.dev`.
+That works because `SESSION_COOKIE_DOMAIN=.kaufmann.dev` scopes the opaque session cookie to both hosts. The cookie is `HttpOnly`, `SameSite=Lax`, and `Secure` on HTTPS; authentication sessions have a 24-hour sliding idle limit and a seven-day absolute limit.
+
+Credentialed browser requests are accepted only from `https://resume.kaufmann.dev`, `https://cv.kaufmann.dev`, and localhost development origins.
 
 In production, make sure nginx forwards these headers to the Node app:
 
@@ -295,5 +333,6 @@ Without those forwarded headers, hostname-based variant selection and secure coo
 
 - `npm run dev` starts the Vite dev server
 - `npm run build` creates the production frontend build
+- `npm test` runs focused authentication and session tests
 - `npm run preview` previews the Vite build locally
 - `npm run server` starts the Express backend

@@ -145,6 +145,32 @@ body {
   transform: translateY(0);
 }
 
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: var(--t3);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.auth-card .auth-admin-button {
+  margin-top: 0;
+  background: transparent;
+  color: var(--t1);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
 
 #auth-error {
   color: #ff4d4d;

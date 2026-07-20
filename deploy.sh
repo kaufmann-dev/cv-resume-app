@@ -38,6 +38,7 @@ git pull --ff-only
 npm ci
 npm run build
 ${SUDO} chown www-data:www-data cv.json resume.json passcodes.json
-${SUDO} chmod 664 cv.json resume.json passcodes.json
+${SUDO} chmod 664 cv.json resume.json
+${SUDO} chmod 600 passcodes.json
 ${SUDO} systemctl restart "${SERVICE_NAME}"
 ${SUDO} systemctl status "${SERVICE_NAME}" --no-pager --lines=20

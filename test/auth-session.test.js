@@ -98,8 +98,11 @@ function createOidcClientStub() {
   const allowInsecureRequests = () => {};
   const client = {
     allowInsecureRequests,
+    ClientSecretPost(clientSecret) {
+      return { method: 'post', clientSecret };
+    },
     ClientSecretBasic(clientSecret) {
-      return { clientSecret };
+      return { method: 'basic', clientSecret };
     },
     async discovery(...args) {
       discoveryCalls.push(args);
@@ -417,7 +420,10 @@ test('OIDC discovery permits insecure requests only for validated loopback issue
     clientId: 'client-id',
     clientSecret: 'client-secret'
   }, secureStub.client);
-  assert.equal(secureStub.discoveryCalls[0][4], undefined);
+  assert.deepEqual(
+    secureStub.discoveryCalls[0][3],
+    { method: 'post', clientSecret: 'client-secret' }
+  );
 
   const loopbackStub = createOidcClientStub();
   await createOidcService({
@@ -425,6 +431,10 @@ test('OIDC discovery permits insecure requests only for validated loopback issue
     clientId: 'client-id',
     clientSecret: 'client-secret'
   }, loopbackStub.client);
+  assert.deepEqual(
+    loopbackStub.discoveryCalls[0][3],
+    { method: 'post', clientSecret: 'client-secret' }
+  );
   assert.deepEqual(
     loopbackStub.discoveryCalls[0][4],
     { execute: [loopbackStub.client.allowInsecureRequests] }

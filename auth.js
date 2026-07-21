@@ -144,7 +144,7 @@ export async function createOidcService(config, oidcClient = oidc) {
     issuerUrl,
     config.clientId,
     undefined,
-    oidcClient.ClientSecretBasic(config.clientSecret),
+    oidcClient.ClientSecretPost(config.clientSecret),
     discoveryOptions
   );
   const metadata = clientConfig.serverMetadata();

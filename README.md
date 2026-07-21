@@ -88,9 +88,9 @@ Viewer login uses app-owned passcodes from `passcodes.json`; admin login uses co
 
 **Public Client: Off** (confidential client credentials are required)
 
-**Callback URL:** `OIDC_CALLBACK_URL` (production: `https://resume.kaufmann.dev/auth/callback`)
+**Callback URL:** `OIDC_CALLBACK_URL` (production: `/auth/callback`)
 
-**Logout Callback URL:** `OIDC_POST_LOGOUT_URL` (production: `https://resume.kaufmann.dev/`)
+**Logout Callback URL:** `OIDC_POST_LOGOUT_URL` (production: `/`)
 
 Token exchange uses `client_secret_post` for token endpoint authentication (`client_id` and `client_secret` as form parameters).
 

@@ -84,32 +84,26 @@ Notes:
 
 ## Authentication Setup
 
-Viewer login verifies an app-owned code from `passcodes.json`; admin login uses a confidential OIDC Authorization Code flow with PKCE S256, state, and nonce. A successful OIDC callback regenerates an app-local server-side session, and admin logout destroys it before redirecting to the provider's required RP-Initiated Logout endpoint.
+Viewer login uses app-owned passcodes from `passcodes.json`; admin login uses confidential OIDC Authorization Code with PKCE S256, state, and nonce, and user-initiated admin logout uses provider logout redirection.
 
-**Public Client: Off**
+**Public Client: Off** (confidential client credentials are required)
 
-- Admin login path: `/auth/login`
-- Callback path: `/auth/callback`
-- Logout path: `/auth/logout`
-- Production callback URL: `https://resume.kaufmann.dev/auth/callback`
-- Production post-logout URL: `https://resume.kaufmann.dev/`
+**Callback URL:** `OIDC_CALLBACK_URL` (production: `https://resume.kaufmann.dev/auth/callback`)
 
-| Environment variable    |  Required  | Purpose                                                                                    |
-| ----------------------- | :--------: | ------------------------------------------------------------------------------------------ |
-| `OIDC_ISSUER_URL`       |    Yes     | Provider issuer URL used for discovery; HTTPS is required except for loopback development. |
-| `OIDC_CLIENT_ID`        |    Yes     | Confidential client identifier.                                                            |
-| `OIDC_CLIENT_SECRET`    |    Yes     | Confidential client secret; keep it in runtime secret storage.                             |
-| `OIDC_CALLBACK_URL`     |    Yes     | Fixed `/auth/callback` URL; use `https://resume.kaufmann.dev/auth/callback` in production. |
-| `OIDC_POST_LOGOUT_URL`  |    Yes     | Origin-only registered URL; use `https://resume.kaufmann.dev/` in production.              |
-| `SESSION_SECRET`        |    Yes     | Random session signing/encryption secret of at least 32 characters.                        |
-| `SESSION_COOKIE_DOMAIN` | Production | Set to `.kaufmann.dev` in production; leave unset for localhost.                           |
-| `SESSION_STORE_PATH`    |     No     | Persistent session directory; defaults to `.sessions`.                                     |
+**Logout Callback URL:** `OIDC_POST_LOGOUT_URL` (production: `https://resume.kaufmann.dev/`)
 
-Register a confidential provider application with Authorization Code enabled, `Public Client` disabled, the exact callback and post-logout URLs above, and an access policy that admits only the single administrator. The discovery document must advertise `end_session_endpoint` and must not reject PKCE S256. No refresh-token or offline-access scope is requested.
+Token exchange uses `client_secret_post` for token endpoint authentication (`client_id` and `client_secret` as form parameters).
 
-OIDC URLs must not contain credentials, query strings, fragments, or backslashes. The callback must use the exact `/auth/callback` path, and the post-logout URL must contain only an origin. HTTPS is required in every environment unless a URL targets `localhost`, an address in `127.0.0.0/8`, or `[::1]`; only an HTTP loopback issuer enables insecure transport in `openid-client`.
-
-Before deployment, create the provider application manually, set every required runtime variable without committing secret values, and provide a persistent writable `SESSION_STORE_PATH`. Changing `SESSION_SECRET` invalidates all sessions. The fixed callback on `resume.kaufmann.dev` sets the `Domain=.kaufmann.dev` cookie, so the regenerated session is immediately shared with `cv.kaufmann.dev`.
+| Environment variable    |            Required            | Purpose                                                                                 |
+| ----------------------- | :---------------------------: | --------------------------------------------------------------------------------------- |
+| `OIDC_ISSUER_URL`       |              Yes              | Provider issuer URL used for discovery.                                                  |
+| `OIDC_CLIENT_ID`        |              Yes              | Confidential client identifier.                                                           |
+| `OIDC_CLIENT_SECRET`    |              Yes              | Confidential client secret used at token exchange.                                         |
+| `OIDC_CALLBACK_URL`     |              Yes              | Exact callback URL; must end in `/auth/callback`.                                        |
+| `OIDC_POST_LOGOUT_URL`  |              Yes              | Post-logout redirect URL; must be an origin.                                             |
+| `SESSION_SECRET`        |              Yes              | Session signing/encryption secret (at least 32 characters).                               |
+| `SESSION_COOKIE_DOMAIN` | Production only (optional dev) | Production required value `.kaufmann.dev`; omit for local development.                    |
+| `SESSION_STORE_PATH`    |              No               | Persistent session directory; defaults to `.sessions`.                                    |
 
 ## Local Development
 

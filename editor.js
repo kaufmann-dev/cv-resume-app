@@ -119,6 +119,13 @@ function sectionCaption(section) {
 
 function visibilityLabel(value) { return { cv: 'CV', resume: 'Resume', both: 'Both' }[value] || 'Both'; }
 
+function formatBytes(bytes) {
+  if (typeof bytes !== 'number' || !Number.isFinite(bytes)) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
 function visibilityControl(node, onChange, field) {
   const label = h('label', { className: 'ed-visibility' }, 'Show in ');
   const select = h('select', { className: 'ed-input', 'aria-label': field ? `${field} visibility` : 'Visibility' });
@@ -641,6 +648,55 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     return wrap;
   }
 
+  function renderPdf() {
+    const wrap = h('div', { className: 'ed-settings-page' });
+    wrap.appendChild(h('header', { className: 'ed-page-heading' }, h('h1', {}, 'PDF Download'),
+      h('p', {}, 'Replace the PDF that viewers download from the toolbar.')));
+    const current = h('section', { className: 'ed-panel' }, h('h2', {}, 'Current file'));
+    const status = h('p', { className: 'ed-help' }, 'Loading…');
+    const download = h('a', { href: String(buildApiUrl('/api/download')) }, 'Download current PDF');
+    current.append(status, h('p', { className: 'ed-help' }, download));
+    async function refresh() {
+      try {
+        const response = await fetch(buildApiUrl('/api/pdf'), { credentials: 'include' });
+        const info = await response.json();
+        if (!response.ok) throw new Error(info.error);
+        status.textContent = info.exists
+          ? `${info.file} · ${formatBytes(info.size)} · updated ${new Date(info.updatedAt).toLocaleString()}`
+          : 'No PDF uploaded yet.';
+      } catch (error) { status.textContent = error.message; }
+    }
+    refresh();
+    wrap.appendChild(current);
+    const panel = h('section', { className: 'ed-panel' }, h('h2', {}, 'Upload a newer version'),
+      h('p', { className: 'ed-help' }, 'PDF only, up to 10 MB. The current file is replaced immediately.'));
+    const input = h('input', { type: 'file', accept: 'application/pdf,.pdf', 'aria-label': 'PDF file' });
+    const upload = h('button', { className: 'ed-btn ed-btn--save', type: 'button' }, 'Upload PDF');
+    upload.addEventListener('click', async () => {
+      const file = input.files[0];
+      if (!file) { showToast('Choose a PDF file first', true); return; }
+      if (file.size > 10 * 1024 * 1024) { showToast('PDF exceeds the 10 MB limit', true); return; }
+      upload.disabled = true;
+      upload.textContent = 'Uploading…';
+      try {
+        const response = await fetch(buildApiUrl('/api/pdf'), {
+          method: 'POST', credentials: 'include',
+          headers: { 'Content-Type': 'application/pdf' },
+          body: file
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error);
+        input.value = '';
+        showToast('PDF updated');
+        refresh();
+      } catch (error) { showToast(error.message, true); }
+      finally { upload.disabled = false; upload.textContent = 'Upload PDF'; }
+    });
+    panel.append(h('div', { className: 'ed-key-form-row' }, input, upload));
+    wrap.appendChild(panel);
+    return wrap;
+  }
+
   function copyField(label, value) {
     const input = h('input', { className: 'ed-input ed-code', readonly: '', value, 'aria-label': label });
     input.addEventListener('click', () => input.select());
@@ -659,8 +715,8 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     // Top bar
     const topbar = h('div', { className: 'ed-topbar' });
     const left = h('div', { className: 'ed-topbar-left' });
-    ['content', 'passcodes', 'api-keys'].forEach(d => {
-      const label = { content: 'Content', passcodes: 'Passcodes', 'api-keys': 'API Keys' }[d];
+    ['content', 'passcodes', 'api-keys', 'pdf'].forEach(d => {
+      const label = { content: 'Content', passcodes: 'Passcodes', 'api-keys': 'API Keys', pdf: 'PDF' }[d];
       const tab = h('button', { className: 'ed-tab' + (d === activeDoc ? ' active' : ''), onClick: () => switchDoc(d) }, label);
       left.appendChild(tab);
     });
@@ -694,10 +750,10 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     // Layout
     const layout = h('div', { className: 'ed-layout' + (mobileShowDetail ? ' show-detail' : '') });
 
-    // Passcodes mode: no sidebar, just main content
-    if (activeDoc === 'passcodes' || activeDoc === 'api-keys') {
+    // Settings modes: no sidebar, just main content
+    if (activeDoc === 'passcodes' || activeDoc === 'api-keys' || activeDoc === 'pdf') {
       const main = h('div', { className: 'ed-main', style: 'transform:none;position:relative;' });
-      main.appendChild(activeDoc === 'api-keys' ? renderApiKeys() : renderPasscodesEditor());
+      main.appendChild(activeDoc === 'api-keys' ? renderApiKeys() : activeDoc === 'pdf' ? renderPdf() : renderPasscodesEditor());
       layout.appendChild(main);
       overlay.appendChild(layout);
       container.appendChild(overlay);

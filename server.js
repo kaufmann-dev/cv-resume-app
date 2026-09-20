@@ -81,6 +81,14 @@ function writeJsonFile(dataDirectory, fileName, data) {
   );
 }
 
+const PDF_LIMIT_BYTES = 10 * 1024 * 1024;
+
+function atomicWriteBinary(filePath, buffer) {
+  const temporary = `${filePath}.tmp`;
+  fs.writeFileSync(temporary, buffer, { mode: 0o600 });
+  fs.renameSync(temporary, filePath);
+}
+
 function validateViewerPasscode(passcodes, passcode, now) {
   if (!passcode) {
     return { ok: false, status: 401, error: 'Not authenticated' };
@@ -461,6 +469,36 @@ export function createApp({
     });
   });
 
+  app.get('/api/pdf', (request, response) => {
+    if (!requireAdmin(request, response)) return;
+    const variant = getVariantConfigById(resolveVariantIdFromRequest(request));
+    const pdfPath = path.join(dataDirectory, variant.pdfFile);
+    if (!fs.existsSync(pdfPath)) return response.json({ file: variant.pdfFile, exists: false });
+    const stat = fs.statSync(pdfPath);
+    return response.json({ file: variant.pdfFile, exists: true, size: stat.size, updatedAt: stat.mtime.toISOString() });
+  });
+
+  app.post('/api/pdf',
+    (request, response, next) => { if (requireAdmin(request, response)) next(); },
+    express.raw({ type: 'application/pdf', limit: PDF_LIMIT_BYTES }),
+    (request, response) => {
+      if (!Buffer.isBuffer(request.body) || !request.body.length) {
+        return response.status(400).json({ error: 'Upload a PDF file with Content-Type: application/pdf' });
+      }
+      if (request.body.subarray(0, 5).toString('latin1') !== '%PDF-') {
+        return response.status(400).json({ error: 'Uploaded file is not a valid PDF' });
+      }
+      const variant = getVariantConfigById(resolveVariantIdFromRequest(request));
+      const pdfPath = path.join(dataDirectory, variant.pdfFile);
+      try {
+        atomicWriteBinary(pdfPath, request.body);
+      } catch {
+        return response.status(500).json({ error: 'Failed to store PDF' });
+      }
+      const stat = fs.statSync(pdfPath);
+      return response.json({ success: true, file: variant.pdfFile, size: stat.size, updatedAt: stat.mtime.toISOString() });
+    });
+
   app.get('/api/data', (request, response) => {
     if (requireAdmin(request, response)) response.json(store.read());
   });
@@ -530,6 +568,11 @@ export function createApp({
     passcodes.splice(index, 1);
     writeJsonFile(dataDirectory, 'passcodes.json', passcodes);
     return response.json({ success: true, passcodes });
+  });
+
+  app.use((error, request, response, next) => {
+    if (error?.type === 'entity.too.large') return response.status(413).json({ error: 'PDF exceeds the 10 MB limit' });
+    return next(error);
   });
 
   app.use(express.static(staticDirectory));

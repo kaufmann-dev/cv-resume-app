@@ -10,6 +10,7 @@ A small personal CV/resume app built with Vite on the frontend and Express on th
 - Shared login session across `resume.kaufmann.dev` and `cv.kaufmann.dev`
 - Shared theme and language preferences across both subdomains
 - PDF download through the authenticated backend
+- PDF replacement upload from the admin editor
 - Shared content editor with visibility controls for sections, items, fields, bullets, tags, and authors
 - Hosted MCP endpoint with API keys managed in admin API Keys
 - Local development fallback to the resume variant
@@ -35,6 +36,7 @@ resume-app-new/
 |-- document.json       # Shared document (ignored by git)
 |-- document-store.js   # Validation, migration, persistence
 |-- document-model.js   # Visibility projection
+|-- document-patch.js   # RFC 6902 patch and diff for granular edits
 |-- mcp.js              # MCP tools and key management
 |-- api-keys.json       # API-key hashes (ignored by git)
 |-- passcodes.json      # Local/private passcodes file (ignored by git)
@@ -94,11 +96,20 @@ Create a named key in admin **API Keys** and copy it when displayed; only its ha
 
 Connect with Streamable HTTP at `https://resume.kaufmann.dev/api/mcp` (or the CV hostname) and the header `Authorization: Bearer YOUR_API_KEY`. Requests are stateless POSTs; GET and DELETE return 405. Available tools:
 
-- `get_document`: read shared data and its revision.
+- `list_sections`: read section summaries (id, type, title, visibility, count) and the revision.
+- `get_section`: read one section by id, optionally filtered for a variant.
+- `get_document`: read all shared data and its revision.
 - `preview_document`: read the filtered CV or resume.
-- `replace_document`: create, update, delete, or reorder content by saving the full document with the revision from `get_document`. Stale revisions are rejected.
+- `put_section`: create or replace one whole section, with optional positioning.
+- `delete_section`: delete one section by id.
+- `put_item`: append or replace one row/item inside a section.
+- `delete_item`: delete one row/item by index.
+- `patch_document`: apply granular RFC 6902 edits with a per-operation diff; `dryRun` previews without saving.
+- `replace_document`: save the full document (bulk edits and migration only).
 
-Every section, entry, row, author, bullet, and tag has `visibility: "cv" | "resume" | "both"`. Bullets and tags use `{ "text": "Content", "visibility": "both" }`; text may also be localized as `{ "en": "…", "de": "…" }`. Optional `fieldVisibility` controls individual fields, e.g. `{ "info": "cv" }`; unspecified fields are visible in Both. The MCP tool schema describes the full document structure.
+Every write tool needs the revision from any read; stale revisions are rejected with the current revision. Patch paths are JSON Pointers below the document root, e.g. `/sections/0/title/en` or `/sections/1/items/0/highlights/-` to append a bullet. Use `test` operations or `dryRun` to verify before committing.
+
+Every section, entry, row, author, bullet, and tag has `visibility: "cv" | "resume" | "both"`, defaulting to `"both"` when omitted. Bullets and tags use `{ "text": "Content", "visibility": "both" }`; text may also be localized as `{ "en": "…", "de": "…" }`. Optional `fieldVisibility` controls individual fields, e.g. `{ "info": "cv" }`; unspecified fields are visible in Both. The MCP tool schema describes the full document structure.
 
 ### Example `passcodes.json`
 ```json
@@ -312,9 +323,9 @@ server {
 }
 ```
 
-## PDF Download
+## PDF Download and Upload
 
-The PDF download is served by the backend, not directly by nginx static hosting.
+The PDF download is served by the backend, not directly by nginx static hosting. Admins replace it from the editor **PDF** tab, which shows the current file size and date. It uploads with `POST /api/pdf` (`Content-Type: application/pdf`, up to 10 MB); the file is validated as a PDF and swapped atomically. `GET /api/pdf` reports the current file metadata. Both endpoints require admin access.
 
 The current implementation:
 
@@ -348,6 +359,6 @@ Without those forwarded headers, hostname-based variant selection and secure coo
 
 - `npm run dev` starts the Vite dev server
 - `npm run build` creates the production frontend build
-- `npm test` runs authentication, migration, visibility, persistence, and MCP tests
+- `npm test` runs authentication, migration, visibility, persistence, MCP, and PDF upload tests
 - `npm run preview` previews the Vite build locally
 - `npm run server` starts the Express backend

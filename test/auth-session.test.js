@@ -502,7 +502,7 @@ test('shared editor data and MCP writes require the correct credentials and revi
   const initialized = await rpc('initialize', { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'test', version: '1' } }).expect(200);
   assert.equal(initialized.body.result.serverInfo.name, 'cv-resume');
   const tools = await rpc('tools/list').expect(200);
-  assert.equal(tools.body.result.tools.length, 3);
+  assert.equal(tools.body.result.tools.length, 10);
   const read = await rpc('tools/call', { name: 'get_document', arguments: {} }).expect(200);
   const document = JSON.parse(read.body.result.content[0].text);
   const updated = await rpc('tools/call', { name: 'replace_document', arguments: { data: { sections: [] }, revision: document.revision } }).expect(200);

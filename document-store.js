@@ -3,21 +3,24 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 
-const visibility = z.enum(['cv', 'resume', 'both']);
-const localized = z.union([z.string(), z.object({ en: z.string().optional(), de: z.string().optional() }).strict()]);
+export const visibilitySchema = z.enum(['cv', 'resume', 'both']);
+export const localizedSchema = z.union([z.string(), z.object({ en: z.string().optional(), de: z.string().optional() }).strict()]);
 const fieldName = z.enum(['title', 'heading', 'subheading', 'info', 'subinfo', 'label', 'value', 'name', 'bold', 'year', 'institution']);
-const meta = { visibility, fieldVisibility: z.record(fieldName, visibility).optional() };
-const text = z.object({ text: localized, visibility }).strict();
-const author = z.object({ ...meta, name: z.string(), bold: z.boolean().optional() }).strict();
-const entry = z.object({ ...meta, heading: localized.optional(), subheading: localized.optional(), info: localized.optional(), subinfo: localized.optional(), highlights: z.array(text).optional(), tags: z.array(text).optional() }).strict();
-const row = z.object({ ...meta, label: localized, value: localized }).strict();
-const pub = z.object({ ...meta, authors: z.array(author), year: z.union([z.string(), z.number()]), title: localized, institution: localized.optional() }).strict();
-const base = { ...meta, id: z.string().min(1), title: localized, open: z.boolean().optional() };
-export const documentSchema = z.object({ sections: z.array(z.discriminatedUnion('type', [
-  z.object({ ...base, type: z.literal('info'), rows: z.array(row) }).strict(),
-  z.object({ ...base, type: z.literal('entries'), items: z.array(entry) }).strict(),
-  z.object({ ...base, type: z.literal('pub'), items: z.array(pub) }).strict()
-])) }).strict().refine(d => new Set(d.sections.map(s => s.id)).size === d.sections.length, 'Section IDs must be unique');
+// Omitted visibility defaults to 'both', matching the editor's treatment of new content.
+const defaultVisibility = visibilitySchema.default('both');
+const meta = { visibility: defaultVisibility, fieldVisibility: z.record(fieldName, visibilitySchema).optional() };
+export const textSchema = z.object({ text: localizedSchema, visibility: defaultVisibility }).strict();
+export const authorSchema = z.object({ ...meta, name: z.string(), bold: z.boolean().optional() }).strict();
+export const entrySchema = z.object({ ...meta, heading: localizedSchema.optional(), subheading: localizedSchema.optional(), info: localizedSchema.optional(), subinfo: localizedSchema.optional(), highlights: z.array(textSchema).optional(), tags: z.array(textSchema).optional() }).strict();
+export const rowSchema = z.object({ ...meta, label: localizedSchema, value: localizedSchema }).strict();
+export const pubSchema = z.object({ ...meta, authors: z.array(authorSchema), year: z.union([z.string(), z.number()]), title: localizedSchema, institution: localizedSchema.optional() }).strict();
+export const itemSchema = z.union([rowSchema, entrySchema, pubSchema]);
+const base = { ...meta, id: z.string().min(1), title: localizedSchema, open: z.boolean().optional() };
+export const infoSectionSchema = z.object({ ...base, type: z.literal('info'), rows: z.array(rowSchema) }).strict();
+export const entriesSectionSchema = z.object({ ...base, type: z.literal('entries'), items: z.array(entrySchema) }).strict();
+export const pubSectionSchema = z.object({ ...base, type: z.literal('pub'), items: z.array(pubSchema) }).strict();
+export const sectionSchema = z.discriminatedUnion('type', [infoSectionSchema, entriesSectionSchema, pubSectionSchema]);
+export const documentSchema = z.object({ sections: z.array(sectionSchema) }).strict().refine(d => new Set(d.sections.map(s => s.id)).size === d.sections.length, 'Section IDs must be unique');
 
 export function atomicWrite(file, data) {
   const temporary = `${file}.tmp`;

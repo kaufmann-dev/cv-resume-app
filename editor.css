@@ -963,6 +963,7 @@ select.ed-input {
 
 /* Admin workspace: readable forms and consistent grouping. */
 .editor-overlay { --ed-transition: none; --ed-shadow: none; --ed-hover-shadow: none; animation: none; }
+.editor-overlay [hidden] { display: none !important; }
 .editor-overlay h1 { font-size: 1.65rem; line-height: 1.25; letter-spacing: -0.035em; margin: 0 0 10px; }
 .editor-overlay h2 { font-size: 1rem; line-height: 1.4; margin: 0; }
 .editor-overlay h3 { font-size: 0.95rem; margin: 0 0 6px; }

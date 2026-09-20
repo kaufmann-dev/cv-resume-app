@@ -653,14 +653,15 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       h('p', {}, 'Replace the PDF that viewers download from the toolbar.')));
     const current = h('section', { className: 'ed-panel' }, h('h2', {}, 'Current file'));
     const status = h('p', { className: 'ed-help' }, 'Loading…');
-    const downloadRow = h('p', { className: 'ed-help' }, h('a', { href: String(buildApiUrl('/api/download')) }, 'Download current PDF'));
+    const downloadRow = h('p', { className: 'ed-help' }, h('a', { className: 'ed-btn', href: String(buildApiUrl('/api/download')) }, 'Download current PDF'));
     downloadRow.hidden = true;
     const retry = h('button', { className: 'ed-btn', type: 'button' }, 'Retry');
-    retry.hidden = true;
+    const retryRow = h('p', { className: 'ed-help' }, retry);
+    retryRow.hidden = true;
     retry.addEventListener('click', () => refresh());
-    current.append(status, downloadRow, retry);
+    current.append(status, downloadRow, retryRow);
     async function refresh() {
-      retry.hidden = true;
+      retryRow.hidden = true;
       try {
         const response = await fetch(buildApiUrl('/api/pdf'), { credentials: 'include' });
         const info = await response.json();
@@ -669,7 +670,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
           ? `${info.file} · ${formatBytes(info.size)} · updated ${new Date(info.updatedAt).toLocaleString()}`
           : 'No PDF uploaded yet.';
         downloadRow.hidden = !info.exists;
-      } catch (error) { status.textContent = `Could not load PDF info: ${error.message}`; retry.hidden = false; }
+      } catch (error) { status.textContent = `Could not load PDF info: ${error.message}`; retryRow.hidden = false; }
     }
     refresh();
     wrap.appendChild(current);

@@ -13,9 +13,7 @@ Restart=always
 RestartSec=5
 Environment=NODE_ENV=production
 Environment=PORT=3001
-Environment=SESSION_STORE_PATH=/var/lib/cv-resume-app/sessions
 EnvironmentFile=/etc/cv-resume-app.env
-StateDirectory=cv-resume-app
 User=www-data
 Group=www-data
 

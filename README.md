@@ -56,26 +56,33 @@ That mapping lives in `variant-config.js`.
 
 ## Passcodes & Data Persistence
 
-JSON data is stored in `DATA_DIRECTORY` (defaults to the project directory):
+All persistent state lives in `/data`. Mount one persistent volume at that path:
 
 - `passcodes.json`: Authentication codes and their expiry dates.
 - `document.json`: Shared content with visibility settings.
 - `api-keys.json`: API-key hashes and metadata, created when a key is issued.
+- `resume.pdf`: The authenticated PDF download.
+- `sessions/`: Encrypted server-side login sessions.
+- `.storage-migrated`: Records completion of the one-time storage migration.
 
 **IMPORTANT**: These files are excluded from Git (`.gitignore`) to prevent local development data from overwriting production data.
 
 ### Initializing Data
 When deploying for the first time, you should copy the provided example files to create your initial dataset:
 ```bash
-cp passcodes.json.example passcodes.json
-cp document.json.example document.json
+mkdir -p /data
+cp passcodes.json.example /data/passcodes.json
+cp document.json.example /data/document.json
+cp resume.pdf /data/resume.pdf
 ```
 
 ### Migration and shared content
 
-When `document.json` is absent, startup merges `cv.json` and `resume.json` from `DATA_DIRECTORY`. Do not copy the example document when migrating existing content. Back up both sources before deployment. Matching parent fields are merged recursively with their child lists; identical content becomes visible in both variants. Differing fields remain separate entries with their original visibility. Matching is exact, including translations. CV order is retained, with resume-only content appended. Conflicting section IDs receive numeric suffixes.
+Startup first migrates existing storage into `/data`. Before the migration marker exists, missing destination files are copied from the old `DATA_DIRECTORY` (if set), then the project’s `data/` directory, then its root. Existing destination files always win. Sessions are copied from the old `SESSION_STORE_PATH` (if set), then `.sessions/` or `sessions/` under those source directories. Source files remain untouched so existing file mounts can stay attached during migration. The app then reads and writes only `/data`, with sessions in `/data/sessions`; the old environment variables are migration inputs only. Missing source files cannot be recovered by migration.
 
-Both source files are parsed and the result is validated before writing. Malformed data stops startup. Original files remain untouched for recovery and are never read again once `document.json` exists. With neither source present, startup creates an empty document. Run only one server process per data directory.
+When `/data/document.json` is absent, startup merges the migrated `cv.json` and `resume.json` there. Do not copy the example document when migrating existing content. Back up both sources before deployment. Matching parent fields are merged recursively with their child lists; identical content becomes visible in both variants. Differing fields remain separate entries with their original visibility. Matching is exact, including translations. CV order is retained, with resume-only content appended. Conflicting section IDs receive numeric suffixes.
+
+Both source files are parsed and the result is validated before writing. Malformed data stops startup. Original files remain untouched for recovery and are never read again once `document.json` exists. With neither source present, startup creates an empty document. The migration marker is written only after copying and document validation succeed; a failed migration is retried on restart. After completion, removed keys and sessions are never re-imported from old storage. Run only one server process per data directory.
 
 The admin **Content** tab edits one shared list. The sidebar shows visibility and item counts; entry headings expand using the keyboard or pointer. Field visibility sits beside each field label, and bullets use multiline inputs. Choose CV, Resume, or Both for sections, items, rows, authors, bullets, tags, and individual content fields. New content defaults to Both. Hiding a parent hides its descendants, regardless of their visibility. Language selection remains independent of visibility.
 
@@ -127,7 +134,6 @@ Token exchange uses `client_secret_post` for token endpoint authentication (`cli
 | `OIDC_POST_LOGOUT_URL`  |              Yes               | Post-logout redirect URL; must be an origin.                           |
 | `SESSION_SECRET`        |              Yes               | Session signing/encryption secret (at least 32 characters).            |
 | `SESSION_COOKIE_DOMAIN` | Production only (optional dev) | Production required value `.kaufmann.dev`; omit for local development. |
-| `SESSION_STORE_PATH`    |               No               | Persistent session directory; defaults to `.sessions`.                 |
 
 ## Local Development
 
@@ -145,7 +151,7 @@ npm install
 ```bash
 npm run server
 ```
-The backend runs at `http://localhost:3001`.
+The backend runs at `http://localhost:3001`. Provision `/data` with write access for your local user before starting; local development uses the same storage layout.
 
 ### Run the frontend
 ```bash
@@ -161,34 +167,23 @@ In local development:
 - Session cookies stay local to your localhost environment.
 - Theme and language preferences still persist through cookies.
 
-## Deployment with Coolify
+## Coolify Deployment
 
-Coolify is the recommended way to deploy this app using Docker/Nixpacks.
+- **Build Pack:** Nixpacks; `nixpacks.toml` starts `node server.js`.
+- **Base Directory:** `/`. This is a server application, not a static site.
+- **Persistent Storage:** one writable volume with destination `/data`. No individual persistent file mounts or separate session volume are needed after migration.
+- **Required environment:** all production authentication variables in Authentication Setup (`OIDC_ISSUER_URL`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_CALLBACK_URL`, `OIDC_POST_LOGOUT_URL`, `SESSION_SECRET`, `SESSION_COOKIE_DOMAIN`), plus `NODE_ENV=production`.
+- **Optional environment:** `PORT` defaults to `3001`.
+- **Domains:** `https://resume.kaufmann.dev, https://cv.kaufmann.dev`.
 
-### 1. Persistent Storage (CRITICAL)
-Since the JSON files and sessions are ignored by Git, you **must** use persistent mounts in Coolify. This keeps data, edits, viewer passcodes, and active server-side sessions across deployments.
+### Migrating the existing deployment
 
-In the Coolify dashboard, select the service, open **Storage**, and mount a writable data directory and the session directory:
+1. Keep the existing file/session mounts attached and add the volume at `/data`. Keep any old `DATA_DIRECTORY` and `SESSION_STORE_PATH` values for this first deployment; they identify migration sources. Ensure the latest `document.json` and `api-keys.json` are available in those sources before replacing an old container: unmounted files in a discarded container cannot be recovered.
+2. Deploy this release. Startup copies available content, passcodes, API keys, PDF, and sessions into `/data` without overwriting files already there. It leaves originals intact. No pre/post deployment command is required.
+3. Check the logs for `Storage migration complete. All persistent data is now in /data`, then verify your content and API keys in the admin UI. Keep `SESSION_SECRET` unchanged to preserve existing sessions.
+4. Remove the old individual file mounts and separate session mount. Remove `DATA_DIRECTORY` and `SESSION_STORE_PATH`; `/data` is now the fixed storage location. Redeploy with only the `/data` volume.
 
-| Source Path (on Host)      | Destination Path (in Container) |
-| -------------------------- | ------------------------------- |
-| `/data/cv-resume/content`  | `/app/data`                     |
-| `/data/cv-resume/sessions` | `/app/.sessions`                |
-
-Set `DATA_DIRECTORY=/app/data`. Put `passcodes.json`, `resume.pdf`, and either `document.json` or both legacy JSON files into this directory. New installations can copy the `.example` document and passcodes. Existing installations must copy their actual data before starting the new release, then replace the old individual file mounts. Persist the whole directory: atomic document/key replacement requires a writable parent and is incompatible with individual file mounts for those files.
-
-### 2. Environment Variables
-In the **Environment Variables** tab, add:
-
-- Every production variable listed in Authentication Setup, with `SESSION_STORE_PATH=/app/.sessions`
-- `DATA_DIRECTORY`: `/app/data`
-- `PORT`: `3001`
-- `NODE_ENV`: `production`
-
-### 3. Domains & SSL
-In the **General** settings:
-- Add your domains: `https://resume.kaufmann.dev, https://cv.kaufmann.dev`
-- Coolify will automatically provision Let's Encrypt certificates and configure the reverse proxy.
+Back up the entire `/data` volume. Do not remove `.storage-migrated` during normal operation: it prevents old revoked keys and deleted sessions from being imported again. A key already lost before migration must be recreated in **API Keys**.
 
 ## Production Deployment (Standard VPS)
 
@@ -235,7 +230,7 @@ Notes:
 - `www-data` is safer than running the app as `root`
 - If `npm` is installed somewhere else, check it with `which npm` and adjust `ExecStart`
 - If you deploy to another path, update `WorkingDirectory` in `cv-resume-app.service`
-- The service creates `/var/lib/cv-resume-app/sessions` for encrypted server-side sessions
+- Provision `/data` as a writable directory for `www-data`; sessions are stored in `/data/sessions`
 
 ### Ownership
 
@@ -252,12 +247,12 @@ sudo chown -R root:root /var/www/cv-resume-app
 sudo find /var/www/cv-resume-app -type d -exec chmod 755 {} \;
 sudo find /var/www/cv-resume-app -type f -exec chmod 644 {} \;
 sudo chmod 755 /var/www/cv-resume-app/deploy.sh
-sudo mkdir -p /var/lib/cv-resume-app/data
-sudo chown www-data:www-data /var/lib/cv-resume-app/data
-sudo chmod 700 /var/lib/cv-resume-app/data
+sudo mkdir -p /data
+sudo chown www-data:www-data /data
+sudo chmod 700 /data
 ```
 
-Set `DATA_DIRECTORY=/var/lib/cv-resume-app/data` in the service environment and copy the actual data files and `resume.pdf` there, owned by `www-data`. The directory must be writable for atomic content/key replacement.
+The service reads and writes `/data`. For the first migration, retain any old `DATA_DIRECTORY` or `SESSION_STORE_PATH` values in the environment so startup can copy that data, then remove them after migration completes. The directory must be writable for atomic content/key replacement.
 
 If you already changed ownership to `www-data` and Git now refuses to run, reset it back to your deploy user or `root` and the warning should go away.
 

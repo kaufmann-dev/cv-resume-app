@@ -1,3 +1,4 @@
+import { DATA_DIRECTORY, initializeStorage } from './storage.js';
 import { createDocumentStore } from './document-store.js';
 import { projectDocument } from './document-model.js';
 import { mountMcp } from './mcp.js';
@@ -182,7 +183,7 @@ export function createApp({
   authConfig,
   oidcService,
   sessionStore,
-  dataDirectory = __dirname,
+  dataDirectory = DATA_DIRECTORY,
   staticDirectory = path.join(__dirname, 'dist'),
   now = () => Date.now()
 }) {
@@ -541,10 +542,9 @@ export function createApp({
 
 export async function startServer() {
   const authConfig = loadAuthConfig();
+  const dataDirectory = initializeStorage({ baseDirectory: __dirname });
   const oidcService = await createOidcService(authConfig);
-  const sessionStore = createFileSessionStore(authConfig, __dirname);
-  const dataDirectory = process.env.DATA_DIRECTORY ? path.resolve(process.env.DATA_DIRECTORY) : __dirname;
-  fs.mkdirSync(dataDirectory, { recursive: true });
+  const sessionStore = createFileSessionStore(authConfig, dataDirectory);
   const app = createApp({ authConfig, oidcService, sessionStore, dataDirectory });
   const port = Number(process.env.PORT) || 3001;
 

@@ -28,8 +28,8 @@ function createFixture(authConfigOverrides = {}) {
     { code: 'viewer-code', expires: '2099-12-31T23:59:59.999Z' },
     { code: 'expired-code', expires: '2000-01-01T00:00:00.000Z' }
   ]);
-  writeJson(dataDirectory, 'resume.json', { sections: [{ id: 'resume' }] });
-  writeJson(dataDirectory, 'cv.json', { sections: [{ id: 'cv' }] });
+  writeJson(dataDirectory, 'resume.json', { sections: [{ id: 'resume', title: 'Resume', type: 'entries', items: [] }] });
+  writeJson(dataDirectory, 'cv.json', { sections: [{ id: 'cv', title: 'CV', type: 'entries', items: [] }] });
   fs.writeFileSync(path.join(dataDirectory, 'resume.pdf'), 'test pdf', 'utf8');
 
   let currentTime = Date.parse('2026-01-01T00:00:00.000Z');
@@ -475,4 +475,48 @@ test('browser requests are limited to the two production sites and local develop
     .send({ passcode: 'viewer-code' })
     .expect(200)
     .expect('Access-Control-Allow-Origin', 'http://localhost:5173');
+});
+
+test('shared editor data and MCP writes require the correct credentials and revision', async t => {
+  const fixture = createFixture();
+  t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
+  const admin = request.agent(fixture.app);
+  const viewer = request.agent(fixture.app);
+  await viewer.post('/api/auth/passcode').send({ passcode: 'viewer-code' }).expect(200);
+  await viewer.get('/api/data').expect(403);
+  await viewer.get('/api/keys').expect(403);
+  await viewer.post('/api/keys').send({ name: 'Denied' }).expect(403);
+  await viewer.post('/api/save').send({}).expect(403);
+  await request(fixture.app).post('/api/mcp').send({}).expect(401);
+  await admin.get('/auth/login').expect(303);
+  await admin.get('/auth/callback?code=test&state=state-value').expect(303);
+  const created = await admin.post('/api/keys').send({ name: 'Test MCP' }).expect(201);
+  const { key, keys } = created.body;
+  assert.equal(keys[0].hash, undefined);
+  assert.ok(!fs.readFileSync(path.join(fixture.dataDirectory, 'api-keys.json'), 'utf8').includes(key));
+  const listed = await admin.get('/api/keys').expect(200);
+  assert.equal(listed.body.key, undefined);
+  const rpc = (method, params = {}) => request(fixture.app).post('/api/mcp')
+    .set('Authorization', `Bearer ${key}`).set('Accept', 'application/json, text/event-stream')
+    .send({ jsonrpc: '2.0', id: 1, method, params });
+  const initialized = await rpc('initialize', { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'test', version: '1' } }).expect(200);
+  assert.equal(initialized.body.result.serverInfo.name, 'cv-resume');
+  const tools = await rpc('tools/list').expect(200);
+  assert.equal(tools.body.result.tools.length, 3);
+  const read = await rpc('tools/call', { name: 'get_document', arguments: {} }).expect(200);
+  const document = JSON.parse(read.body.result.content[0].text);
+  const updated = await rpc('tools/call', { name: 'replace_document', arguments: { data: { sections: [] }, revision: document.revision } }).expect(200);
+  assert.ok(!updated.body.result.isError);
+  await admin.post('/api/save').send(document).expect(409);
+  const current = await admin.get('/api/data').expect(200);
+  assert.deepEqual(current.body.data, { sections: [] });
+  await admin.post('/api/save').send({ data: document.data, revision: current.body.revision }).expect(200);
+  const preview = await rpc('tools/call', { name: 'preview_document', arguments: { variant: 'cv' } }).expect(200);
+  assert.equal(JSON.parse(preview.body.result.content[0].text).sections[0].id, 'cv');
+  const viewerData = await viewer.get('/api/session?variant=resume').expect(200);
+  assert.equal(viewerData.body.document, undefined);
+  assert.deepEqual(viewerData.body.data.sections.map(s => s.id), ['resume']);
+  await admin.post('/api/save').send({ data: { sections: 'wrong' }, revision: document.revision }).expect(400);
+  await admin.delete(`/api/keys/${keys[0].id}`).expect(200);
+  await rpc('tools/list').expect(401);
 });

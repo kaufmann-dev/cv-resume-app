@@ -34,7 +34,8 @@ function confirmDialog(msg) {
   return new Promise(resolve => {
     const ov = document.createElement('div');
     ov.className = 'ed-confirm-overlay';
-    ov.innerHTML = `<div class="ed-confirm-box"><div class="ed-confirm-msg">${msg}</div><div class="ed-confirm-actions"><button class="ed-btn" data-r="0">Cancel</button><button class="ed-btn ed-btn--danger" data-r="1">Delete</button></div></div>`;
+    ov.innerHTML = `<div class="ed-confirm-box"><div class="ed-confirm-msg"></div><div class="ed-confirm-actions"><button class="ed-btn" data-r="0">Cancel</button><button class="ed-btn ed-btn--danger" data-r="1">Delete</button></div></div>`;
+    ov.querySelector('.ed-confirm-msg').textContent = msg;
     document.body.appendChild(ov);
     ov.addEventListener('click', e => {
       const r = e.target.dataset.r;
@@ -104,6 +105,28 @@ function bilingualField(labelText, value, onChange) {
   return group;
 }
 
+function visibilityControl(node, onChange, field) {
+  const label = h('label', { className: 'ed-visibility' }, field ? `${field} visible in ` : 'Visible in ');
+  const select = h('select', { className: 'ed-input', 'aria-label': field ? `${field} visibility` : 'Visibility' });
+  for (const [value, title] of [['both', 'Both'], ['cv', 'CV'], ['resume', 'Resume']]) {
+    select.appendChild(h('option', { value }, title));
+  }
+  select.value = (field ? node.fieldVisibility?.[field] : node.visibility) || 'both';
+  select.addEventListener('change', () => {
+    if (field) { node.fieldVisibility ||= {}; node.fieldVisibility[field] = select.value; }
+    else node.visibility = select.value;
+    onChange();
+  });
+  label.appendChild(select);
+  return label;
+}
+
+function contentField(label, node, key, onChange) {
+  const group = bilingualField(label, node[key], value => { node[key] = value; onChange(value); });
+  group.appendChild(visibilityControl(node, () => onChange(node[key]), key));
+  return group;
+}
+
 // ── Editors for each section type ──
 
 function renderInfoCard(row, index, rows, onDataChange, rebuildList) {
@@ -125,8 +148,9 @@ function renderInfoCard(row, index, rows, onDataChange, rebuildList) {
   card.appendChild(header);
 
   const body = h('div', { className: 'ed-item-body' });
-  body.appendChild(bilingualField('Label', row.label, v => { row.label = v; onDataChange(); header.querySelector('.ed-item-title').textContent = loc(v, 'en') || '(untitled)'; }));
-  body.appendChild(bilingualField('Value', row.value, v => { row.value = v; onDataChange(); }));
+  body.appendChild(visibilityControl(row, onDataChange));
+  body.appendChild(contentField('Label', row, 'label', v => { onDataChange(); header.querySelector('.ed-item-title').textContent = loc(v, 'en') || '(untitled)'; }));
+  body.appendChild(contentField('Value', row, 'value', v => { onDataChange(); }));
 
   card.appendChild(body);
   return card;
@@ -143,7 +167,7 @@ function renderInfoEditor(section, onDataChange) {
     wrap.appendChild(list);
     wrap.appendChild(h('button', {
       className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
-        rows.push({ label: { en: '', de: '' }, value: { en: '', de: '' } });
+        rows.push({ visibility: 'both', label: { en: '', de: '' }, value: { en: '', de: '' } });
         section.rows = rows;
         onDataChange();
         rebuildList();
@@ -155,39 +179,20 @@ function renderInfoEditor(section, onDataChange) {
   return wrap;
 }
 
-function renderHighlights(highlights, onDataChange, rebuildParent) {
+function renderHighlights(highlights, onDataChange, label = 'Highlights / Bullet Points') {
   const wrap = h('div', { className: 'ed-field-group' });
-  wrap.appendChild(h('span', { className: 'ed-field-label' }, 'Highlights / Bullet Points'));
-  const list = h('div', { className: 'ed-highlights-list' });
-
-  function rebuildHL() {
-    list.innerHTML = '';
-    highlights.forEach((hl, i) => {
-      const row = h('div', { className: 'ed-highlight-row' });
-      const inputs = h('div', { className: 'ed-highlight-inputs' });
-      const shared = !isLocalized(hl);
-
-      if (shared) {
-        inputs.appendChild(inputField('', typeof hl === 'string' ? hl : '', v => { highlights[i] = v; onDataChange(); }));
-      } else {
-        inputs.appendChild(inputField('EN', hl.en || '', v => { highlights[i].en = v; onDataChange(); }));
-        inputs.appendChild(inputField('DE', hl.de || '', v => { highlights[i].de = v; onDataChange(); }));
-      }
-      row.appendChild(inputs);
-      row.appendChild(h('button', { className: 'ed-item-action-btn ed-item-action-btn--danger ed-highlight-remove', onClick: () => { highlights.splice(i, 1); onDataChange(); rebuildHL(); } }, '✕'));
-      list.appendChild(row);
+  function rebuild() {
+    wrap.replaceChildren(h('span', { className: 'ed-field-label' }, label));
+    highlights.forEach((item, index) => {
+      const row = h('div', { className: 'ed-field-group' });
+      row.appendChild(bilingualField(label === 'Tags' ? 'Tag' : 'Bullet', item.text, value => { item.text = value; onDataChange(); }));
+      row.appendChild(visibilityControl(item, onDataChange));
+      row.appendChild(h('button', { className: 'ed-btn ed-btn--danger', onClick: () => { highlights.splice(index, 1); onDataChange(); rebuild(); } }, 'Remove'));
+      wrap.appendChild(row);
     });
-    list.appendChild(h('button', {
-      className: 'ed-btn', style: 'margin-top:4px', onClick: () => {
-        highlights.push({ en: '', de: '' });
-        onDataChange();
-        rebuildHL();
-      }
-    }, '+ Add Bullet'));
+    wrap.appendChild(h('button', { className: 'ed-btn', onClick: () => { highlights.push({ text: { en: '', de: '' }, visibility: 'both' }); onDataChange(); rebuild(); } }, label === 'Tags' ? '+ Add Tag' : '+ Add Bullet'));
   }
-
-  rebuildHL();
-  wrap.appendChild(list);
+  rebuild();
   return wrap;
 }
 
@@ -210,25 +215,17 @@ function renderEntryCard(item, index, items, onDataChange, rebuildList) {
   card.appendChild(header);
 
   const body = h('div', { className: 'ed-item-body' });
-  body.appendChild(bilingualField('Heading', item.heading, v => { item.heading = v; onDataChange(); header.querySelector('.ed-item-title').textContent = loc(v, 'en') || '(untitled)'; }));
-  body.appendChild(bilingualField('Subheading', item.subheading, v => { item.subheading = v; onDataChange(); }));
-  body.appendChild(bilingualField('Info', item.info, v => { item.info = v; onDataChange(); }));
-  body.appendChild(bilingualField('Subinfo', item.subinfo, v => { item.subinfo = v; onDataChange(); }));
+  body.appendChild(visibilityControl(item, onDataChange));
+  body.appendChild(contentField('Heading', item, 'heading', v => { onDataChange(); header.querySelector('.ed-item-title').textContent = loc(v, 'en') || '(untitled)'; }));
+  body.appendChild(contentField('Subheading', item, 'subheading', v => { onDataChange(); }));
+  body.appendChild(contentField('Info', item, 'info', v => { onDataChange(); }));
+  body.appendChild(contentField('Subinfo', item, 'subinfo', v => { onDataChange(); }));
 
   if (!item.highlights) item.highlights = [];
   body.appendChild(renderHighlights(item.highlights, onDataChange));
 
-  // Tags
-  const tagsGroup = h('div', { className: 'ed-field-group' });
-  tagsGroup.appendChild(h('span', { className: 'ed-field-label' }, 'Tags'));
-  const tagsInp = h('input', { className: 'ed-tags-input', type: 'text', value: (item.tags || []).join(', '), placeholder: 'Comma-separated tags...' });
-  tagsInp.addEventListener('input', () => {
-    const val = tagsInp.value.trim();
-    item.tags = val ? val.split(',').map(t => t.trim()).filter(Boolean) : [];
-    onDataChange();
-  });
-  tagsGroup.appendChild(tagsInp);
-  body.appendChild(tagsGroup);
+  item.tags ||= [];
+  body.appendChild(renderHighlights(item.tags, onDataChange, 'Tags'));
 
   card.appendChild(body);
   return card;
@@ -245,7 +242,7 @@ function renderEntriesEditor(section, onDataChange) {
     wrap.appendChild(list);
     wrap.appendChild(h('button', {
       className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
-        items.push({ heading: { en: '', de: '' }, subheading: { en: '', de: '' }, info: { en: '', de: '' }, subinfo: { en: '', de: '' }, highlights: [] });
+        items.push({ visibility: 'both', heading: { en: '', de: '' }, subheading: { en: '', de: '' }, info: { en: '', de: '' }, subinfo: { en: '', de: '' }, highlights: [] });
         section.items = items;
         onDataChange();
         rebuildList();
@@ -275,6 +272,7 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
   card.appendChild(header);
 
   const body = h('div', { className: 'ed-item-body' });
+  body.appendChild(visibilityControl(pub, onDataChange));
 
   // Authors
   const authGroup = h('div', { className: 'ed-field-group' });
@@ -289,6 +287,7 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
       const nameInp = h('input', { className: 'ed-input', type: 'text', value: a.name || '', placeholder: 'Author name...' });
       nameInp.addEventListener('input', () => { a.name = nameInp.value; onDataChange(); });
       row.appendChild(nameInp);
+      row.appendChild(visibilityControl(a, onDataChange));
       const boldCb = h('input', { type: 'checkbox' });
       boldCb.checked = !!a.bold;
       boldCb.addEventListener('change', () => { a.bold = boldCb.checked; onDataChange(); });
@@ -296,7 +295,7 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
       row.appendChild(h('button', { className: 'ed-item-action-btn ed-item-action-btn--danger', onClick: () => { pub.authors.splice(ai, 1); onDataChange(); rebuildAuthors(); } }, '✕'));
       authList.appendChild(row);
     });
-    authList.appendChild(h('button', { className: 'ed-btn', onClick: () => { pub.authors.push({ name: '', bold: false }); onDataChange(); rebuildAuthors(); } }, '+ Author'));
+    authList.appendChild(h('button', { className: 'ed-btn', onClick: () => { pub.authors.push({ name: '', bold: false, visibility: 'both' }); onDataChange(); rebuildAuthors(); } }, '+ Author'));
   }
   rebuildAuthors();
   authGroup.appendChild(authList);
@@ -308,10 +307,11 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
   const yearInp = h('input', { className: 'ed-input', type: 'text', value: pub.year || '' });
   yearInp.addEventListener('input', () => { pub.year = yearInp.value; onDataChange(); });
   yearGroup.appendChild(yearInp);
+  yearGroup.appendChild(visibilityControl(pub, onDataChange, 'year'));
   body.appendChild(yearGroup);
 
-  body.appendChild(bilingualField('Title', pub.title, v => { pub.title = v; onDataChange(); }));
-  body.appendChild(bilingualField('Institution', pub.institution, v => { pub.institution = v; onDataChange(); }));
+  body.appendChild(contentField('Title', pub, 'title', v => { onDataChange(); }));
+  body.appendChild(contentField('Institution', pub, 'institution', v => { onDataChange(); }));
 
   card.appendChild(body);
   return card;
@@ -328,7 +328,7 @@ function renderPubEditor(section, onDataChange) {
     wrap.appendChild(list);
     wrap.appendChild(h('button', {
       className: 'ed-btn', style: 'margin-top:10px', onClick: () => {
-        items.push({ authors: [{ name: '', bold: true }], year: '', title: { en: '', de: '' }, institution: { en: '', de: '' } });
+        items.push({ visibility: 'both', authors: [{ name: '', bold: true, visibility: 'both' }], year: '', title: { en: '', de: '' }, institution: { en: '', de: '' } });
         section.items = items;
         onDataChange();
         rebuildList();
@@ -357,46 +357,54 @@ export function toggleEditor() {
   }
 }
 
-export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSave }) {
+export function initEditor({ document: initialDocument, passcodesData, apiBaseUrl, onSave }) {
   isEditorOpen = false;
-  let docs = { resume: JSON.parse(JSON.stringify(resumeData)), cv: JSON.parse(JSON.stringify(cvData)) };
+  let data = structuredClone(initialDocument.data);
+  let revision = initialDocument.revision;
+  let keys = [];
+  let keysLoaded = false;
   let passcodes = JSON.parse(JSON.stringify(passcodesData || []));
-  let activeDoc = 'resume';
+  let activeDoc = 'content';
   let selectedIdx = 0;
   let mobileShowDetail = false;
   let dirty = false;
+  let editVersion = 0;
+  let saving = false;
 
   const container = document.getElementById('editor-container');
   const cvContainer = document.getElementById('cv-container');
 
-  function sections() { return docs[activeDoc].sections; }
+  function sections() { return data.sections; }
 
-  function markDirty() { dirty = true; }
+  function markDirty() { dirty = true; editVersion++; }
 
   function buildApiUrl(path) { return new URL(path, apiBaseUrl || window.location.origin); }
 
   async function save() {
+    if (saving) return;
+    saving = true;
+    const savedVersion = editVersion;
     try {
       const res = await fetch(buildApiUrl('/api/save'), {
         method: 'POST', credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ variant: activeDoc, data: docs[activeDoc] })
+        body: JSON.stringify({ data, revision })
       });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error);
-      dirty = false;
+      revision = result.revision;
+      dirty = savedVersion !== editVersion;
       showToast('Saved successfully');
-      if (onSave) onSave(activeDoc, docs[activeDoc]);
+      if (onSave) onSave(result.data);
     } catch (e) { showToast('Save failed: ' + e.message, true); }
+    finally { saving = false; }
   }
 
   async function switchDoc(doc) {
     if (doc === activeDoc) return;
-    if (activeDoc !== 'passcodes' && dirty && !window.confirm('You have unsaved changes. Switch anyway?')) return;
     activeDoc = doc;
     selectedIdx = 0;
     mobileShowDetail = false;
-    dirty = false;
     renderEditor();
   }
 
@@ -532,6 +540,58 @@ export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSa
     return wrap;
   }
 
+  async function keyRequest(method = 'GET', id = '', name) {
+    const response = await fetch(buildApiUrl('/api/keys' + (id ? `/${id}` : '')), {
+      method, credentials: 'include', headers: { 'Content-Type': 'application/json' },
+      ...(method === 'POST' ? { body: JSON.stringify({ name }) } : {})
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error);
+    keys = result.keys;
+    keysLoaded = true;
+    return result;
+  }
+
+  function renderSettings() {
+    const wrap = h('div');
+    wrap.appendChild(h('h2', {}, 'MCP API keys'));
+    wrap.appendChild(h('p', {}, 'API keys grant read and write access to all CV and resume content. Revoking a key takes effect immediately.'));
+    wrap.appendChild(h('p', {}, `Streamable HTTP endpoint: ${buildApiUrl('/api/mcp')}`));
+    wrap.appendChild(h('p', {}, 'Connect using the Authorization header: Bearer YOUR_API_KEY'));
+    const list = h('div');
+    function renderKeys() {
+      list.replaceChildren();
+      keys.forEach(key => list.appendChild(h('div', { className: 'ed-field-group' },
+        h('span', {}, key.name + ' · ' + new Date(key.createdAt).toLocaleDateString()),
+        h('button', { className: 'ed-btn ed-btn--danger', onClick: async () => {
+          if (!await confirmDialog('Revoke this API key?')) return;
+          try { await keyRequest('DELETE', key.id); renderKeys(); }
+          catch (error) { showToast(error.message, true); }
+        } }, 'Revoke'))));
+    }
+    wrap.appendChild(list);
+    if (!keysLoaded) keyRequest().then(renderKeys).catch(error => {
+      list.replaceChildren(h('p', {}, error.message), h('button', { className: 'ed-btn', onClick: () => renderEditor() }, 'Retry'));
+    });
+    else renderKeys();
+    const name = h('input', { className: 'ed-input', placeholder: 'Key name', 'aria-label': 'API key name', maxlength: '100' });
+    const secret = h('div', { role: 'status' });
+    const create = h('button', { className: 'ed-btn', onClick: async () => {
+      create.disabled = true;
+      try {
+        const result = await keyRequest('POST', '', name.value);
+        name.value = '';
+        const input = h('input', { className: 'ed-input', readonly: '', value: result.key, 'aria-label': 'New API key' });
+        input.addEventListener('click', () => input.select());
+        secret.replaceChildren(h('p', {}, 'Copy this key now. It will not be shown again.'), input);
+        renderKeys();
+      } catch (error) { showToast(error.message, true); }
+      finally { create.disabled = false; }
+    } }, 'Create API key');
+    wrap.append(name, create, secret);
+    return wrap;
+  }
+
   function renderEditor() {
     container.innerHTML = '';
 
@@ -540,20 +600,32 @@ export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSa
     // Top bar
     const topbar = h('div', { className: 'ed-topbar' });
     const left = h('div', { className: 'ed-topbar-left' });
-    ['resume', 'cv', 'passcodes'].forEach(d => {
-      const label = d === 'passcodes' ? 'Passcodes' : d.toUpperCase();
+    ['content', 'passcodes', 'settings'].forEach(d => {
+      const label = { content: 'Content', passcodes: 'Passcodes', settings: 'Settings' }[d];
       const tab = h('button', { className: 'ed-tab' + (d === activeDoc ? ' active' : ''), onClick: () => switchDoc(d) }, label);
       left.appendChild(tab);
     });
     topbar.appendChild(left);
 
     const right = h('div', { className: 'ed-topbar-right' });
-    if (activeDoc !== 'passcodes') {
-      right.appendChild(h('button', { className: 'ed-btn ed-btn--save', onClick: save }, 'Save'));
+    if (activeDoc === 'content') {
+      right.appendChild(h('button', { className: 'ed-btn ed-btn--save', onClick: save }, dirty ? 'Save changes' : 'Save'));
+      right.appendChild(h('button', { className: 'ed-btn', onClick: async () => {
+        if (saving || (dirty && !window.confirm('Discard unsaved changes and reload?'))) return;
+        try {
+          const response = await fetch(buildApiUrl('/api/data'), { credentials: 'include' });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.error);
+          data = result.data; revision = result.revision; dirty = false; selectedIdx = 0;
+          renderEditor();
+          if (onSave) onSave(structuredClone(data));
+        } catch (error) { showToast(error.message, true); }
+      } }, 'Reload'));
+
     }
     right.appendChild(h('button', {
       className: 'ed-btn', onClick: () => {
-        if (dirty && !window.confirm('Unsaved changes will be lost. Close editor?')) return;
+        if (dirty && !window.confirm('Close with unsaved changes? Your edits remain until the page is reloaded.')) return;
         toggleEditor();
       }
     }, 'Close'));
@@ -564,9 +636,9 @@ export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSa
     const layout = h('div', { className: 'ed-layout' + (mobileShowDetail ? ' show-detail' : '') });
 
     // Passcodes mode: no sidebar, just main content
-    if (activeDoc === 'passcodes') {
+    if (activeDoc === 'passcodes' || activeDoc === 'settings') {
       const main = h('div', { className: 'ed-main', style: 'transform:none;position:relative;' });
-      main.appendChild(renderPasscodesEditor());
+      main.appendChild(activeDoc === 'settings' ? renderSettings() : renderPasscodesEditor());
       layout.appendChild(main);
       overlay.appendChild(layout);
       container.appendChild(overlay);
@@ -588,7 +660,7 @@ export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSa
     addWrap.appendChild(h('button', {
       className: 'ed-btn', onClick: () => {
         const type = typeSel.value;
-        const newSec = { id: 'new_' + Date.now(), title: { en: 'New Section', de: 'Neuer Abschnitt' }, open: false, type };
+        const newSec = { visibility: 'both', id: 'new_' + Date.now(), title: { en: 'New Section', de: 'Neuer Abschnitt' }, open: false, type };
         if (type === 'info') newSec.rows = [];
         else newSec.items = [];
         sections().push(newSec);
@@ -600,6 +672,7 @@ export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSa
     }, '+'));
     sideHeader.appendChild(addWrap);
     sidebar.appendChild(sideHeader);
+    sidebar.appendChild(h('p', { style: 'padding:0 16px;font-size:0.8rem' }, 'A hidden parent hides all its children.'));
 
     const sideList = h('div', { className: 'ed-sidebar-list' });
     sections().forEach((sec, i) => {
@@ -644,6 +717,7 @@ export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSa
       idInp.addEventListener('input', () => { sec.id = idInp.value; markDirty(); });
       idWrap.appendChild(idInp);
       meta.appendChild(idWrap);
+      meta.appendChild(visibilityControl(sec, markDirty));
 
       // Open default toggle
       const openCb = h('input', { type: 'checkbox' });
@@ -667,7 +741,7 @@ export function initEditor({ resumeData, cvData, passcodesData, apiBaseUrl, onSa
       secHeader.appendChild(headerTop);
 
       // Section title
-      secHeader.appendChild(bilingualField('Section Title', sec.title, v => { sec.title = v; markDirty(); sideList.children[selectedIdx]?.querySelector('.ed-sec-item-label')?.replaceWith(h('span', { className: 'ed-sec-item-label' }, loc(v, 'en'))); }));
+      secHeader.appendChild(contentField('Section Title', sec, 'title', v => { markDirty(); sideList.children[selectedIdx]?.querySelector('.ed-sec-item-label')?.replaceWith(h('span', { className: 'ed-sec-item-label' }, loc(v, 'en'))); }));
 
       main.appendChild(secHeader);
 

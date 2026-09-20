@@ -1,3 +1,4 @@
+import { projectDocument } from './document-model.js';
 import {
   getVariantConfig,
   getVariantConfigById,
@@ -212,7 +213,7 @@ function mkEntry(item) {
     <div class="e-r1"><span class="entry-title">${heading}</span>${useInlineMeta ? inlineMeta : topRightMeta}</div>
     ${showSecondRow ? `<div class="e-r2">${hasSubheading ? `<span class="entry-subtitle">${subheading}</span>` : ''}${bottomRightMeta}</div>` : ''}
     ${highlights.length ? `<ul>${highlights.map((highlight) => `<li>${highlight}</li>`).join('')}</ul>` : ''}
-    ${item.tags?.length ? `<div class="tags">${item.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
+    ${item.tags?.length ? `<div class="tags">${item.tags.map((tag) => `<span class="tag">${localize(tag)}</span>`).join('')}</div>` : ''}
   </div></div>`;
 }
 
@@ -230,13 +231,12 @@ function mkSection(section) {
   } else if (section.type === 'pub') {
     if (section.items) {
       body = section.items.map(pub => {
-        const authors = pub.authors.map(a => a.bold ? `<strong>${a.name}</strong>` : a.name).join(' &amp; ');
+        const authors = (pub.authors || []).filter(a => a.name).map(a => a.bold ? `<strong>${a.name}</strong>` : a.name).join(' &amp; ');
         const title = localize(pub.title);
         const institution = localize(pub.institution);
-        return `<div class="pub">${authors} (${pub.year}). <em>${title}</em> ${institution}.</div>`;
+        return `<div class="pub">${authors}${pub.year ? ` (${pub.year})` : ''}${authors || pub.year ? '. ' : ''}${title ? `<em>${title}</em>` : ''}${institution ? ` ${institution}.` : ''}</div>`;
       }).join('');
-    } else if (section.content) {
-      body = `<div class="pub">${localize(section.content)}</div>`;
+
     }
   }
 
@@ -326,15 +326,12 @@ async function authenticate(options = {}) {
       try {
         const { initEditor } = await import('./editor.js');
         initEditor({
-          resumeData: result.resumeData,
-          cvData: result.cvData,
+          document: result.document,
           passcodesData: result.passcodesData,
           apiBaseUrl: API_BASE_URL,
-          onSave: (variant, data) => {
-            if (variant === activeVariant.id) {
-              documentData = data;
-              render();
-            }
+          onSave: (data) => {
+            documentData = projectDocument(data, activeVariant.id);
+            render();
           }
         });
 

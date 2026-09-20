@@ -539,7 +539,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     // Expires field
     const expGroup = h('div', { className: 'ed-field-group' });
     expGroup.appendChild(h('span', { className: 'ed-field-label' }, 'Expires'));
-    const expInp = h('input', { className: 'ed-input', type: 'date', value: entry.expires || '' });
+    const expInp = h('input', { className: 'ed-input', type: 'date', value: (entry.expires || '').slice(0, 10) });
     expInp.addEventListener('change', () => {
       entry.expires = expInp.value;
       const nowExpired = new Date() > new Date(entry.expires);
@@ -557,12 +557,11 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
   function renderPasscodesEditor() {
     const wrap = h('div', { className: 'ed-settings-page' });
 
-    const heading = h('div', { className: 'ed-section-header' });
-    heading.appendChild(h('h1', {}, 'Passcodes'));
-    heading.appendChild(h('div', { style: 'color:var(--t3);font-size:0.82rem;margin-bottom:24px' }, 'Changes are saved automatically to the server.'));
-    wrap.appendChild(heading);
+    wrap.appendChild(h('header', { className: 'ed-page-heading' }, h('h1', {}, 'Passcodes'),
+      h('p', {}, 'Changes are saved automatically to the server.')));
 
     const list = h('div', { className: 'ed-items-list' });
+    if (!passcodes.length) list.appendChild(h('p', { className: 'ed-help' }, 'No passcodes yet. Add one so viewers can sign in.'));
     passcodes.forEach((entry, i) => list.appendChild(renderPasscodeCard(entry, i)));
     wrap.appendChild(list);
 
@@ -654,9 +653,14 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       h('p', {}, 'Replace the PDF that viewers download from the toolbar.')));
     const current = h('section', { className: 'ed-panel' }, h('h2', {}, 'Current file'));
     const status = h('p', { className: 'ed-help' }, 'Loading…');
-    const download = h('a', { href: String(buildApiUrl('/api/download')) }, 'Download current PDF');
-    current.append(status, h('p', { className: 'ed-help' }, download));
+    const downloadRow = h('p', { className: 'ed-help' }, h('a', { href: String(buildApiUrl('/api/download')) }, 'Download current PDF'));
+    downloadRow.hidden = true;
+    const retry = h('button', { className: 'ed-btn', type: 'button' }, 'Retry');
+    retry.hidden = true;
+    retry.addEventListener('click', () => refresh());
+    current.append(status, downloadRow, retry);
     async function refresh() {
+      retry.hidden = true;
       try {
         const response = await fetch(buildApiUrl('/api/pdf'), { credentials: 'include' });
         const info = await response.json();
@@ -664,13 +668,14 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
         status.textContent = info.exists
           ? `${info.file} · ${formatBytes(info.size)} · updated ${new Date(info.updatedAt).toLocaleString()}`
           : 'No PDF uploaded yet.';
-      } catch (error) { status.textContent = error.message; }
+        downloadRow.hidden = !info.exists;
+      } catch (error) { status.textContent = `Could not load PDF info: ${error.message}`; retry.hidden = false; }
     }
     refresh();
     wrap.appendChild(current);
     const panel = h('section', { className: 'ed-panel' }, h('h2', {}, 'Upload a newer version'),
       h('p', { className: 'ed-help' }, 'PDF only, up to 10 MB. The current file is replaced immediately.'));
-    const input = h('input', { type: 'file', accept: 'application/pdf,.pdf', 'aria-label': 'PDF file' });
+    const input = h('input', { id: 'ed-pdf-file', type: 'file', accept: 'application/pdf,.pdf' });
     const upload = h('button', { className: 'ed-btn ed-btn--save', type: 'button' }, 'Upload PDF');
     upload.addEventListener('click', async () => {
       const file = input.files[0];
@@ -692,7 +697,8 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       } catch (error) { showToast(error.message, true); }
       finally { upload.disabled = false; upload.textContent = 'Upload PDF'; }
     });
-    panel.append(h('div', { className: 'ed-key-form-row' }, input, upload));
+    panel.append(h('div', { className: 'ed-file-form' },
+      h('label', { className: 'ed-field-label', htmlFor: 'ed-pdf-file' }, 'PDF file'), input, upload));
     wrap.appendChild(panel);
     return wrap;
   }

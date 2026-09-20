@@ -978,6 +978,9 @@ select.ed-input {
 .ed-panel { border: 1px solid var(--border); border-radius: var(--ed-card-radius); padding: 24px; background: var(--bg); min-width: 0; }
 .ed-panel-heading { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .ed-key-form { margin-top: 22px; }
+.ed-file-form { display: grid; gap: 12px; justify-items: start; margin-top: 16px; }
+.ed-file-form .ed-field-label { margin: 0; }
+.ed-file-form input { max-width: 100%; }
 .ed-key-form-row, .ed-copy-field { display: flex; align-items: center; gap: 12px; }
 .ed-key-form-row .ed-input, .ed-copy-field .ed-input { flex: 1; min-width: 0; }
 .ed-key-form-row button, .ed-copy-field button { flex-shrink: 0; }

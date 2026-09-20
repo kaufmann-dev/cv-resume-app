@@ -1,3 +1,6 @@
+import { createDocumentStore } from './document-store.js';
+import { projectDocument } from './document-model.js';
+import { mountMcp } from './mcp.js';
 import express from 'express';
 import cors from 'cors';
 import { rateLimit } from 'express-rate-limit';
@@ -185,10 +188,8 @@ export function createApp({
 }) {
   const app = express();
   const getPasscodes = () => readJsonFile(dataDirectory, 'passcodes.json');
-  const getDocumentData = (variantId) => {
-    const variant = getVariantConfigById(variantId);
-    return readJsonFile(dataDirectory, variant.dataFile);
-  };
+  const store = createDocumentStore(dataDirectory);
+  const getDocumentData = variantId => projectDocument(store.read().data, variantId);
   const getViewerPasscodeAttempt = (request) => {
     const passcode = typeof request.body?.passcode === 'string'
       ? request.body.passcode.trim()
@@ -216,7 +217,8 @@ export function createApp({
     },
     credentials: true
   }));
-  app.use(express.json());
+  app.use(express.json({ limit: '2mb' }));
+  app.use('/api', (request, response, next) => { response.set('Cache-Control', 'no-store'); next(); });
   app.use(createSessionMiddleware(authConfig, sessionStore));
 
   const passcodeRateLimiter = rateLimit({
@@ -310,8 +312,7 @@ export function createApp({
     };
 
     if (response.isAdmin) {
-      response.resumeData = getDocumentData('resume');
-      response.cvData = getDocumentData('cv');
+      response.document = store.read();
       response.passcodesData = getPasscodes();
     }
 
@@ -459,39 +460,20 @@ export function createApp({
     });
   });
 
-  app.get('/api/data/:variant', (request, response) => {
-    if (!requireAdmin(request, response)) return;
-
-    const variantId = request.params.variant;
-
-    if (!DOCUMENT_VARIANT_IDS.has(variantId)) {
-      return response.status(400).json({ error: 'Unknown variant' });
-    }
-
-    return response.json({ data: getDocumentData(variantId) });
+  app.get('/api/data', (request, response) => {
+    if (requireAdmin(request, response)) response.json(store.read());
   });
 
   app.post('/api/save', (request, response) => {
     if (!requireAdmin(request, response)) return;
-
-    const { variant, data } = request.body;
-
-    if (!variant || !data) {
-      return response.status(400).json({ error: 'Missing variant or data' });
-    }
-
-    if (!DOCUMENT_VARIANT_IDS.has(variant)) {
-      return response.status(400).json({ error: 'Unknown variant' });
-    }
-
     try {
-      writeJsonFile(dataDirectory, getVariantConfigById(variant).dataFile, data);
-      return response.json({ success: true });
+      response.json({ success: true, ...store.write(request.body.data, request.body.revision) });
     } catch (error) {
-      console.error('Failed to save:', error);
-      return response.status(500).json({ error: 'Failed to save file' });
+      response.status(error.status || (error.name === 'ZodError' ? 400 : 500)).json({ error: error.message });
     }
   });
+
+  mountMcp(app, { dataDirectory, store, requireAdmin });
 
   app.get('/api/passcodes', (request, response) => {
     if (!requireAdmin(request, response)) return;
@@ -561,7 +543,9 @@ export async function startServer() {
   const authConfig = loadAuthConfig();
   const oidcService = await createOidcService(authConfig);
   const sessionStore = createFileSessionStore(authConfig, __dirname);
-  const app = createApp({ authConfig, oidcService, sessionStore });
+  const dataDirectory = process.env.DATA_DIRECTORY ? path.resolve(process.env.DATA_DIRECTORY) : __dirname;
+  fs.mkdirSync(dataDirectory, { recursive: true });
+  const app = createApp({ authConfig, oidcService, sessionStore, dataDirectory });
   const port = Number(process.env.PORT) || 3001;
 
   app.listen(port, () => {

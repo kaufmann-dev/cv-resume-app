@@ -27,3 +27,9 @@ Thumbs.db
 ehthumbs.db
 desktop.ini
 .DS_Store
+
+# Shared content and MCP credentials
+document.json
+api-keys.json
+*.json.tmp
+data/

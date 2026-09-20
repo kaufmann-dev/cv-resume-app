@@ -7,7 +7,6 @@ export const VARIANT_CONFIGS = {
   resume: {
     id: 'resume',
     hostnames: ['resume.kaufmann.dev'],
-    dataFile: 'resume.json',
     pdfFile: 'resume.pdf',
     pdfDownloadName: 'David_Kaufmann_Resume.pdf',
     pageTitle: {
@@ -34,7 +33,6 @@ export const VARIANT_CONFIGS = {
   cv: {
     id: 'cv',
     hostnames: ['cv.kaufmann.dev'],
-    dataFile: 'cv.json',
     pdfFile: 'resume.pdf',
     pdfDownloadName: 'David_Kaufmann_Resume.pdf',
     pageTitle: {

@@ -1,0 +1,107 @@
+{
+  "sections": [
+    {
+      "visibility": "cv",
+      "id": "personal",
+      "title": {
+        "en": "Personal Information",
+        "de": "Persönliche Daten"
+      },
+      "open": true,
+      "type": "info",
+      "rows": [
+        {
+          "visibility": "cv",
+          "label": {
+            "en": "Location",
+            "de": "Wohnort"
+          },
+          "value": {
+            "en": "City, Country",
+            "de": "Stadt, Land"
+          }
+        }
+      ]
+    },
+    {
+      "visibility": "cv",
+      "id": "education",
+      "title": {
+        "en": "Education",
+        "de": "Bildungsweg"
+      },
+      "open": true,
+      "type": "entries",
+      "items": [
+        {
+          "visibility": "cv",
+          "heading": {
+            "en": "University Name",
+            "de": "Universität Name"
+          },
+          "subheading": {
+            "en": "Degree Name",
+            "de": "Abschluss"
+          },
+          "info": {
+            "en": "Location",
+            "de": "Ort"
+          },
+          "subinfo": {
+            "en": "2020 - 2024",
+            "de": "2020 - 2024"
+          },
+          "highlights": [
+            {
+              "text": {
+                "en": "Highlight 1",
+                "de": "Highlight 1"
+              },
+              "visibility": "cv"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "visibility": "resume",
+      "id": "experience",
+      "title": {
+        "en": "Experience",
+        "de": "Erfahrung"
+      },
+      "open": true,
+      "type": "entries",
+      "items": [
+        {
+          "visibility": "resume",
+          "heading": {
+            "en": "Company Name",
+            "de": "Firmenname"
+          },
+          "subheading": {
+            "en": "Job Title",
+            "de": "Berufsbezeichnung"
+          },
+          "info": {
+            "en": "Location",
+            "de": "Ort"
+          },
+          "subinfo": {
+            "en": "Jan 2024 - Present",
+            "de": "Jan 2024 - Heute"
+          },
+          "highlights": [
+            {
+              "text": {
+                "en": "Key achievement",
+                "de": "Wichtiger Erfolg"
+              },
+              "visibility": "resume"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

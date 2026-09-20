@@ -951,3 +951,12 @@ select.ed-input {
 .ed-main::-webkit-scrollbar-track {
   background: transparent;
 }
+.ed-visibility {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+  font-size: 0.8rem;
+}
+.ed-visibility select { width: auto; min-width: 100px; }

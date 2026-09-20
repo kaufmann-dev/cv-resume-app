@@ -131,7 +131,7 @@ export function loadAuthConfig(environment = process.env) {
     postLogoutUrl,
     sessionSecret,
     cookieDomain,
-    sessionStorePath: environment.SESSION_STORE_PATH?.trim() || '.sessions'
+    sessionStorePath: 'sessions'
   };
 }
 

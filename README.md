@@ -11,7 +11,7 @@ A small personal CV/resume app built with Vite on the frontend and Express on th
 - Shared theme and language preferences across both subdomains
 - PDF download through the authenticated backend
 - Shared content editor with visibility controls for sections, items, fields, bullets, tags, and authors
-- Hosted MCP endpoint with API keys managed in admin Settings
+- Hosted MCP endpoint with API keys managed in admin API Keys
 - Local development fallback to the resume variant
 
 ## Tech Stack
@@ -77,13 +77,13 @@ When `document.json` is absent, startup merges `cv.json` and `resume.json` from 
 
 Both source files are parsed and the result is validated before writing. Malformed data stops startup. Original files remain untouched for recovery and are never read again once `document.json` exists. With neither source present, startup creates an empty document. Run only one server process per data directory.
 
-The admin **Content** tab edits one shared list. Choose CV, Resume, or Both for sections, items, rows, authors, bullets, tags, and individual content fields. New content defaults to Both. Hiding a parent hides its descendants, regardless of their visibility. Language selection remains independent of visibility.
+The admin **Content** tab edits one shared list. The sidebar shows visibility and item counts; entry headings expand using the keyboard or pointer. Field visibility sits beside each field label, and bullets use multiline inputs. Choose CV, Resume, or Both for sections, items, rows, authors, bullets, tags, and individual content fields. New content defaults to Both. Hiding a parent hides its descendants, regardless of their visibility. Language selection remains independent of visibility.
 
 Click **Save** to persist content. Switching tabs retains edits. Saves reject stale revisions from another editor or MCP client. **Reload** fetches the latest content, discarding local edits. Passcodes and API-key changes save immediately.
 
 ### MCP access
 
-Create a named key in admin **Settings** and copy it when displayed; only its hash is stored. Revoke keys in the same tab for immediate effect. Keys grant read/write access to all document content, but cannot manage passcodes or keys. Viewer passcodes and browser sessions cannot authenticate MCP requests.
+Create a named key in admin **API Keys** and copy it when displayed; only its hash is stored. Use the Copy button to copy a newly created key or the connection URL. The page lists named keys with creation dates; revoke keys there for immediate effect. Keys grant read/write access to all document content, but cannot manage passcodes or keys. Viewer passcodes and browser sessions cannot authenticate MCP requests.
 
 Connect with Streamable HTTP at `https://resume.kaufmann.dev/api/mcp` (or the CV hostname) and the header `Authorization: Bearer YOUR_API_KEY`. Requests are stateless POSTs; GET and DELETE return 405. Available tools:
 

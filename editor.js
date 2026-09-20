@@ -30,16 +30,20 @@ function showToast(msg, isError) {
   setTimeout(() => t.classList.remove('visible'), 2500);
 }
 
-function confirmDialog(msg) {
+function confirmDialog(msg, action = 'Delete') {
   return new Promise(resolve => {
-    const ov = document.createElement('div');
+    const ov = document.createElement('dialog');
     ov.className = 'ed-confirm-overlay';
+    ov.setAttribute('aria-label', action);
     ov.innerHTML = `<div class="ed-confirm-box"><div class="ed-confirm-msg"></div><div class="ed-confirm-actions"><button class="ed-btn" data-r="0">Cancel</button><button class="ed-btn ed-btn--danger" data-r="1">Delete</button></div></div>`;
     ov.querySelector('.ed-confirm-msg').textContent = msg;
+    ov.querySelector('[data-r="1"]').textContent = action;
     document.body.appendChild(ov);
+    ov.showModal();
+    ov.addEventListener('cancel', event => { event.preventDefault(); ov.close(); ov.remove(); resolve(false); });
     ov.addEventListener('click', e => {
       const r = e.target.dataset.r;
-      if (r != null) { ov.remove(); resolve(r === '1'); }
+      if (r != null) { ov.close(); ov.remove(); resolve(r === '1'); }
     });
   });
 }
@@ -56,8 +60,9 @@ function h(tag, attrs, ...children) {
   return el;
 }
 
-function inputField(label, value, onChange, placeholder) {
-  const inp = h('input', { className: 'ed-input', type: 'text', value: value || '', placeholder: placeholder || '' });
+function inputField(label, value, onChange, placeholder, multiline = false) {
+  const inp = h(multiline ? 'textarea' : 'input', { className: multiline ? 'ed-textarea' : 'ed-input', ...(multiline ? { rows: '3' } : { type: 'text' }), placeholder: placeholder || '' });
+  inp.value = value || '';
   inp.addEventListener('input', () => onChange(inp.value));
   const wrap = h('div', { className: 'ed-field-col' });
   const lbl = h('div', { className: 'ed-field-col-label' });
@@ -67,7 +72,7 @@ function inputField(label, value, onChange, placeholder) {
   return wrap;
 }
 
-function bilingualField(labelText, value, onChange) {
+function bilingualField(labelText, value, onChange, control, multiline = false) {
   const shared = !isLocalized(value);
   const group = h('div', { className: 'ed-field-group' });
 
@@ -75,7 +80,7 @@ function bilingualField(labelText, value, onChange) {
     group.innerHTML = '';
     const isShared = !isLocalized(currentVal);
 
-    const labelRow = h('div', { style: 'display:flex;align-items:center' });
+    const labelRow = h('div', { className: 'ed-field-heading' });
     labelRow.appendChild(h('span', { className: 'ed-field-label', style: 'margin-bottom:0' }, labelText));
     const cb = h('input', { type: 'checkbox' });
     cb.checked = isShared;
@@ -85,19 +90,21 @@ function bilingualField(labelText, value, onChange) {
       onChange(currentVal);
       rebuild();
     });
-    labelRow.appendChild(h('label', { className: 'ed-shared-toggle' }, cb, 'Same'));
+    labelRow.appendChild(h('label', { className: 'ed-shared-toggle', title: 'Use the same text for English and German' }, cb, 'Same text'));
+    if (control) labelRow.appendChild(control);
     group.appendChild(labelRow);
 
     if (isShared) {
       const row = h('div', { className: 'ed-field-row' });
-      row.appendChild(inputField('', typeof currentVal === 'string' ? currentVal : '', v => { currentVal = v; onChange(currentVal); }));
+      row.appendChild(inputField('', typeof currentVal === 'string' ? currentVal : '', v => { currentVal = v; onChange(currentVal); }, undefined, multiline));
       group.appendChild(row);
     } else {
       const row = h('div', { className: 'ed-field-row' });
-      row.appendChild(inputField('EN', currentVal.en || '', v => { currentVal.en = v; onChange(currentVal); }));
-      row.appendChild(inputField('DE', currentVal.de || '', v => { currentVal.de = v; onChange(currentVal); }));
+      row.appendChild(inputField('EN', currentVal.en || '', v => { currentVal.en = v; onChange(currentVal); }, undefined, multiline));
+      row.appendChild(inputField('DE', currentVal.de || '', v => { currentVal.de = v; onChange(currentVal); }, undefined, multiline));
       group.appendChild(row);
     }
+    group.querySelectorAll('input.ed-input, textarea.ed-textarea').forEach((input, index) => input.setAttribute('aria-label', isShared ? labelText : `${labelText} (${index === 0 ? 'English' : 'German'})`));
   }
 
   let currentVal = value == null ? { en: '', de: '' } : (typeof value === 'string' ? value : { en: value.en || '', de: value.de || '' });
@@ -105,8 +112,15 @@ function bilingualField(labelText, value, onChange) {
   return group;
 }
 
+function sectionCaption(section) {
+  const count = (section.items || section.rows || []).length;
+  return `${visibilityLabel(section.visibility)} · ${count} ${section.type === 'info' ? (count === 1 ? 'row' : 'rows') : (count === 1 ? 'entry' : 'entries')}`;
+}
+
+function visibilityLabel(value) { return { cv: 'CV', resume: 'Resume', both: 'Both' }[value] || 'Both'; }
+
 function visibilityControl(node, onChange, field) {
-  const label = h('label', { className: 'ed-visibility' }, field ? `${field} visible in ` : 'Visible in ');
+  const label = h('label', { className: 'ed-visibility' }, 'Show in ');
   const select = h('select', { className: 'ed-input', 'aria-label': field ? `${field} visibility` : 'Visibility' });
   for (const [value, title] of [['both', 'Both'], ['cv', 'CV'], ['resume', 'Resume']]) {
     select.appendChild(h('option', { value }, title));
@@ -122,8 +136,7 @@ function visibilityControl(node, onChange, field) {
 }
 
 function contentField(label, node, key, onChange) {
-  const group = bilingualField(label, node[key], value => { node[key] = value; onChange(value); });
-  group.appendChild(visibilityControl(node, () => onChange(node[key]), key));
+  const group = bilingualField(label, node[key], value => { node[key] = value; onChange(value); }, visibilityControl(node, () => onChange(node[key]), key));
   return group;
 }
 
@@ -133,8 +146,10 @@ function renderInfoCard(row, index, rows, onDataChange, rebuildList) {
   const card = h('div', { className: 'ed-item-card' });
 
   const header = h('div', { className: 'ed-item-header' });
-  header.appendChild(h('span', { className: 'ed-item-title' }, loc(row.label, 'en') || '(untitled)'));
+  header.appendChild(h('button', { className: 'ed-item-title', type: 'button', 'aria-expanded': 'false' }, loc(row.label, 'en') || '(untitled)'));
 
+  const badge = h('span', { className: 'ed-visibility-badge' }, visibilityLabel(row.visibility));
+  header.appendChild(badge);
   const actions = h('div', { className: 'ed-item-actions' });
   const up = h('button', { className: 'ed-item-action-btn', title: 'Move up', onClick: e => { e.stopPropagation(); if (index > 0) { rows.splice(index - 1, 0, rows.splice(index, 1)[0]); onDataChange(); rebuildList(); } } }, ARROW_UP);
   const dn = h('button', { className: 'ed-item-action-btn', title: 'Move down', onClick: e => { e.stopPropagation(); if (index < rows.length - 1) { rows.splice(index + 1, 0, rows.splice(index, 1)[0]); onDataChange(); rebuildList(); } } }, ARROW_DN);
@@ -144,11 +159,14 @@ function renderInfoCard(row, index, rows, onDataChange, rebuildList) {
   actions.append(up, dn, del);
   header.appendChild(actions);
 
-  header.addEventListener('click', () => card.classList.toggle('open'));
+  header.querySelector('.ed-item-title').addEventListener('click', event => {
+    const open = card.classList.toggle('open');
+    event.currentTarget.setAttribute('aria-expanded', String(open));
+  });
   card.appendChild(header);
 
   const body = h('div', { className: 'ed-item-body' });
-  body.appendChild(visibilityControl(row, onDataChange));
+  body.appendChild(visibilityControl(row, () => { badge.textContent = visibilityLabel(row.visibility); onDataChange(); }));
   body.appendChild(contentField('Label', row, 'label', v => { onDataChange(); header.querySelector('.ed-item-title').textContent = loc(v, 'en') || '(untitled)'; }));
   body.appendChild(contentField('Value', row, 'value', v => { onDataChange(); }));
 
@@ -185,8 +203,8 @@ function renderHighlights(highlights, onDataChange, label = 'Highlights / Bullet
     wrap.replaceChildren(h('span', { className: 'ed-field-label' }, label));
     highlights.forEach((item, index) => {
       const row = h('div', { className: 'ed-field-group' });
-      row.appendChild(bilingualField(label === 'Tags' ? 'Tag' : 'Bullet', item.text, value => { item.text = value; onDataChange(); }));
-      row.appendChild(visibilityControl(item, onDataChange));
+      row.classList.add('ed-bullet');
+      row.appendChild(bilingualField(label === 'Tags' ? 'Tag' : `Bullet ${index + 1}`, item.text, value => { item.text = value; onDataChange(); }, visibilityControl(item, onDataChange), label !== 'Tags'));
       row.appendChild(h('button', { className: 'ed-btn ed-btn--danger', onClick: () => { highlights.splice(index, 1); onDataChange(); rebuild(); } }, 'Remove'));
       wrap.appendChild(row);
     });
@@ -200,8 +218,10 @@ function renderEntryCard(item, index, items, onDataChange, rebuildList) {
   const card = h('div', { className: 'ed-item-card' });
 
   const header = h('div', { className: 'ed-item-header' });
-  header.appendChild(h('span', { className: 'ed-item-title' }, loc(item.heading, 'en') || '(untitled)'));
+  header.appendChild(h('button', { className: 'ed-item-title', type: 'button', 'aria-expanded': 'false' }, loc(item.heading, 'en') || '(untitled)'));
 
+  const badge = h('span', { className: 'ed-visibility-badge' }, visibilityLabel(item.visibility));
+  header.appendChild(badge);
   const actions = h('div', { className: 'ed-item-actions' });
   const up = h('button', { className: 'ed-item-action-btn', title: 'Move up', onClick: e => { e.stopPropagation(); if (index > 0) { items.splice(index - 1, 0, items.splice(index, 1)[0]); onDataChange(); rebuildList(); } } }, ARROW_UP);
   const dn = h('button', { className: 'ed-item-action-btn', title: 'Move down', onClick: e => { e.stopPropagation(); if (index < items.length - 1) { items.splice(index + 1, 0, items.splice(index, 1)[0]); onDataChange(); rebuildList(); } } }, ARROW_DN);
@@ -211,11 +231,14 @@ function renderEntryCard(item, index, items, onDataChange, rebuildList) {
   actions.append(up, dn, del);
   header.appendChild(actions);
 
-  header.addEventListener('click', () => card.classList.toggle('open'));
+  header.querySelector('.ed-item-title').addEventListener('click', event => {
+    const open = card.classList.toggle('open');
+    event.currentTarget.setAttribute('aria-expanded', String(open));
+  });
   card.appendChild(header);
 
   const body = h('div', { className: 'ed-item-body' });
-  body.appendChild(visibilityControl(item, onDataChange));
+  body.appendChild(visibilityControl(item, () => { badge.textContent = visibilityLabel(item.visibility); onDataChange(); }));
   body.appendChild(contentField('Heading', item, 'heading', v => { onDataChange(); header.querySelector('.ed-item-title').textContent = loc(v, 'en') || '(untitled)'; }));
   body.appendChild(contentField('Subheading', item, 'subheading', v => { onDataChange(); }));
   body.appendChild(contentField('Info', item, 'info', v => { onDataChange(); }));
@@ -258,8 +281,10 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
   const card = h('div', { className: 'ed-item-card' });
   const authorStr = (pub.authors || []).map(a => a.name).join(' & ');
   const header = h('div', { className: 'ed-item-header' });
-  header.appendChild(h('span', { className: 'ed-item-title' }, authorStr + ' (' + (pub.year || '') + ')'));
+  header.appendChild(h('button', { className: 'ed-item-title', type: 'button', 'aria-expanded': 'false' }, authorStr + ' (' + (pub.year || '') + ')'));
 
+  const badge = h('span', { className: 'ed-visibility-badge' }, visibilityLabel(pub.visibility));
+  header.appendChild(badge);
   const actions = h('div', { className: 'ed-item-actions' });
   const up = h('button', { className: 'ed-item-action-btn', title: 'Move up', onClick: e => { e.stopPropagation(); if (index > 0) { items.splice(index - 1, 0, items.splice(index, 1)[0]); onDataChange(); rebuildList(); } } }, ARROW_UP);
   const dn = h('button', { className: 'ed-item-action-btn', title: 'Move down', onClick: e => { e.stopPropagation(); if (index < items.length - 1) { items.splice(index + 1, 0, items.splice(index, 1)[0]); onDataChange(); rebuildList(); } } }, ARROW_DN);
@@ -268,11 +293,14 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
   if (index === items.length - 1) dn.disabled = true;
   actions.append(up, dn, del);
   header.appendChild(actions);
-  header.addEventListener('click', () => card.classList.toggle('open'));
+  header.querySelector('.ed-item-title').addEventListener('click', event => {
+    const open = card.classList.toggle('open');
+    event.currentTarget.setAttribute('aria-expanded', String(open));
+  });
   card.appendChild(header);
 
   const body = h('div', { className: 'ed-item-body' });
-  body.appendChild(visibilityControl(pub, onDataChange));
+  body.appendChild(visibilityControl(pub, () => { badge.textContent = visibilityLabel(pub.visibility); onDataChange(); }));
 
   // Authors
   const authGroup = h('div', { className: 'ed-field-group' });
@@ -376,7 +404,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
 
   function sections() { return data.sections; }
 
-  function markDirty() { dirty = true; editVersion++; }
+  function markDirty() { dirty = true; editVersion++; const button = container.querySelector('.ed-btn--save'); if (activeDoc === 'content' && button) button.textContent = 'Save changes'; }
 
   function buildApiUrl(path) { return new URL(path, apiBaseUrl || window.location.origin); }
 
@@ -397,7 +425,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       showToast('Saved successfully');
       if (onSave) onSave(result.data);
     } catch (e) { showToast('Save failed: ' + e.message, true); }
-    finally { saving = false; }
+    finally { saving = false; const button = container.querySelector('.ed-btn--save'); if (activeDoc === 'content' && button) button.textContent = dirty ? 'Save changes' : 'Saved'; }
   }
 
   async function switchDoc(doc) {
@@ -461,7 +489,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       className: 'ed-pc-status ' + (isExpired ? 'ed-pc-status--expired' : 'ed-pc-status--active')
     }, isExpired ? 'Expired' : 'Active');
     const titleWrap = h('div', { style: 'display:flex;align-items:center;gap:10px;flex:1;min-width:0' });
-    titleWrap.appendChild(h('span', { className: 'ed-item-title' }, entry.code || '(empty)'));
+    titleWrap.appendChild(h('button', { className: 'ed-item-title', type: 'button', 'aria-expanded': 'false' }, entry.code || '(empty)'));
     titleWrap.appendChild(statusBadge);
     header.appendChild(titleWrap);
 
@@ -477,7 +505,10 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     actions.appendChild(del);
     header.appendChild(actions);
 
-    header.addEventListener('click', () => card.classList.toggle('open'));
+    header.querySelector('.ed-item-title').addEventListener('click', event => {
+    const open = card.classList.toggle('open');
+    event.currentTarget.setAttribute('aria-expanded', String(open));
+  });
     card.appendChild(header);
 
     const body = h('div', { className: 'ed-item-body' });
@@ -517,10 +548,10 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
   }
 
   function renderPasscodesEditor() {
-    const wrap = h('div');
+    const wrap = h('div', { className: 'ed-settings-page' });
 
     const heading = h('div', { className: 'ed-section-header' });
-    heading.appendChild(h('div', { className: 'ed-field-label', style: 'font-size:0.7rem;margin-bottom:4px' }, 'Manage Passcodes'));
+    heading.appendChild(h('h1', {}, 'Passcodes'));
     heading.appendChild(h('div', { style: 'color:var(--t3);font-size:0.82rem;margin-bottom:24px' }, 'Changes are saved automatically to the server.'));
     wrap.appendChild(heading);
 
@@ -552,44 +583,72 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     return result;
   }
 
-  function renderSettings() {
-    const wrap = h('div');
-    wrap.appendChild(h('h2', {}, 'MCP API keys'));
-    wrap.appendChild(h('p', {}, 'API keys grant read and write access to all CV and resume content. Revoking a key takes effect immediately.'));
-    wrap.appendChild(h('p', {}, `Streamable HTTP endpoint: ${buildApiUrl('/api/mcp')}`));
-    wrap.appendChild(h('p', {}, 'Connect using the Authorization header: Bearer YOUR_API_KEY'));
-    const list = h('div');
-    function renderKeys() {
-      list.replaceChildren();
-      keys.forEach(key => list.appendChild(h('div', { className: 'ed-field-group' },
-        h('span', {}, key.name + ' · ' + new Date(key.createdAt).toLocaleDateString()),
-        h('button', { className: 'ed-btn ed-btn--danger', onClick: async () => {
-          if (!await confirmDialog('Revoke this API key?')) return;
-          try { await keyRequest('DELETE', key.id); renderKeys(); }
-          catch (error) { showToast(error.message, true); }
-        } }, 'Revoke'))));
-    }
-    wrap.appendChild(list);
-    if (!keysLoaded) keyRequest().then(renderKeys).catch(error => {
-      list.replaceChildren(h('p', {}, error.message), h('button', { className: 'ed-btn', onClick: () => renderEditor() }, 'Retry'));
-    });
-    else renderKeys();
-    const name = h('input', { className: 'ed-input', placeholder: 'Key name', 'aria-label': 'API key name', maxlength: '100' });
-    const secret = h('div', { role: 'status' });
-    const create = h('button', { className: 'ed-btn', onClick: async () => {
+  function renderApiKeys() {
+    const wrap = h('div', { className: 'ed-settings-page' });
+    wrap.appendChild(h('header', { className: 'ed-page-heading' }, h('h1', {}, 'API Keys'),
+      h('p', {}, 'Connect your AI tools to your CV and resume. Each key can read and edit all content.')));
+    const createPanel = h('section', { className: 'ed-panel' }, h('h2', {}, 'Create a key'),
+      h('p', { className: 'ed-help' }, 'Give each connection its own name so you can revoke it later.'));
+    const name = h('input', { id: 'ed-key-name', className: 'ed-input', placeholder: 'e.g. Web terminal', maxlength: '100', required: '' });
+    const form = h('form', { className: 'ed-key-form' });
+    const secret = h('div', { className: 'ed-key-secret', role: 'status' });
+    secret.hidden = true;
+    const create = h('button', { className: 'ed-btn ed-btn--save', type: 'submit' }, 'Create key');
+    form.append(h('label', { htmlFor: 'ed-key-name', className: 'ed-field-label' }, 'Key name'), h('div', { className: 'ed-key-form-row' }, name, create));
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      if (!name.value.trim()) { name.focus(); return; }
       create.disabled = true;
+      create.textContent = 'Creating…';
       try {
-        const result = await keyRequest('POST', '', name.value);
+        const result = await keyRequest('POST', '', name.value.trim());
         name.value = '';
-        const input = h('input', { className: 'ed-input', readonly: '', value: result.key, 'aria-label': 'New API key' });
-        input.addEventListener('click', () => input.select());
-        secret.replaceChildren(h('p', {}, 'Copy this key now. It will not be shown again.'), input);
+        secret.hidden = false;
+        secret.replaceChildren(h('h3', {}, 'Your key is ready'), h('p', { className: 'ed-help' }, 'Copy it now. You will not be able to view it again.'), copyField('New API key', result.key));
         renderKeys();
       } catch (error) { showToast(error.message, true); }
-      finally { create.disabled = false; }
-    } }, 'Create API key');
-    wrap.append(name, create, secret);
+      finally { create.disabled = false; create.textContent = 'Create key'; }
+    });
+    createPanel.append(form, secret);
+    wrap.appendChild(createPanel);
+    const count = h('span', { className: 'ed-visibility-badge' });
+    const list = h('div', { className: 'ed-key-list', 'aria-live': 'polite' }, h('p', { className: 'ed-help' }, 'Loading keys…'));
+    const keysPanel = h('section', { className: 'ed-panel' }, h('div', { className: 'ed-panel-heading' }, h('h2', {}, 'Active keys'), count), list);
+    function renderKeys() {
+      count.textContent = String(keys.length);
+      list.replaceChildren();
+      if (!keys.length) list.appendChild(h('p', { className: 'ed-help' }, 'No API keys yet. Create one to connect your first tool.'));
+      keys.forEach(key => {
+        const revoke = h('button', { className: 'ed-btn ed-btn--danger', onClick: async () => {
+          if (!await confirmDialog(`Revoke “${key.name}”? Its connection will stop working immediately.`, 'Revoke key')) return;
+          revoke.disabled = true;
+          try { await keyRequest('DELETE', key.id); renderKeys(); }
+          catch (error) { showToast(error.message, true); revoke.disabled = false; }
+        } }, 'Revoke');
+        list.appendChild(h('div', { className: 'ed-key-row' }, h('div', { className: 'ed-key-info' }, h('strong', {}, key.name),
+          h('span', { className: 'ed-help' }, 'Created ' + new Date(key.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }))), revoke));
+      });
+    }
+    if (!keysLoaded) keyRequest().then(renderKeys).catch(error => {
+      list.replaceChildren(h('p', { role: 'alert' }, error.message), h('button', { className: 'ed-btn', onClick: () => renderEditor() }, 'Retry'));
+    });
+    else renderKeys();
+    wrap.appendChild(keysPanel);
+    wrap.appendChild(h('section', { className: 'ed-panel' }, h('h2', {}, 'Connect an MCP client'),
+      h('p', { className: 'ed-help' }, 'Choose Streamable HTTP in your client and use the endpoint below.'),
+      copyField('Server URL', String(buildApiUrl('/api/mcp'))),
+      h('p', { className: 'ed-help' }, 'Authorization header'), h('code', { className: 'ed-code' }, 'Bearer YOUR_API_KEY')));
     return wrap;
+  }
+
+  function copyField(label, value) {
+    const input = h('input', { className: 'ed-input ed-code', readonly: '', value, 'aria-label': label });
+    input.addEventListener('click', () => input.select());
+    const copy = h('button', { className: 'ed-btn', type: 'button', 'aria-label': `Copy ${label}`, onClick: async () => {
+      try { await navigator.clipboard.writeText(value); showToast(`${label} copied`); }
+      catch { input.select(); showToast('Select and copy the highlighted text.', true); }
+    } }, 'Copy');
+    return h('div', { className: 'ed-copy-field' }, input, copy);
   }
 
   function renderEditor() {
@@ -600,8 +659,8 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     // Top bar
     const topbar = h('div', { className: 'ed-topbar' });
     const left = h('div', { className: 'ed-topbar-left' });
-    ['content', 'passcodes', 'settings'].forEach(d => {
-      const label = { content: 'Content', passcodes: 'Passcodes', settings: 'Settings' }[d];
+    ['content', 'passcodes', 'api-keys'].forEach(d => {
+      const label = { content: 'Content', passcodes: 'Passcodes', 'api-keys': 'API Keys' }[d];
       const tab = h('button', { className: 'ed-tab' + (d === activeDoc ? ' active' : ''), onClick: () => switchDoc(d) }, label);
       left.appendChild(tab);
     });
@@ -636,9 +695,9 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     const layout = h('div', { className: 'ed-layout' + (mobileShowDetail ? ' show-detail' : '') });
 
     // Passcodes mode: no sidebar, just main content
-    if (activeDoc === 'passcodes' || activeDoc === 'settings') {
+    if (activeDoc === 'passcodes' || activeDoc === 'api-keys') {
       const main = h('div', { className: 'ed-main', style: 'transform:none;position:relative;' });
-      main.appendChild(activeDoc === 'settings' ? renderSettings() : renderPasscodesEditor());
+      main.appendChild(activeDoc === 'api-keys' ? renderApiKeys() : renderPasscodesEditor());
       layout.appendChild(main);
       overlay.appendChild(layout);
       container.appendChild(overlay);
@@ -651,7 +710,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     sideHeader.appendChild(h('span', { className: 'ed-sidebar-title' }, 'Sections'));
 
     const addWrap = h('div', { style: 'display:flex; align-items:center; gap: 4px;' });
-    const typeSel = h('select', { className: 'ed-select-add' });
+    const typeSel = h('select', { className: 'ed-select-add', 'aria-label': 'New section type' });
     typeSel.appendChild(h('option', { value: 'entries' }, 'Entries'));
     typeSel.appendChild(h('option', { value: 'info' }, 'Info'));
     typeSel.appendChild(h('option', { value: 'pub' }, 'Pub'));
@@ -672,28 +731,32 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     }, '+'));
     sideHeader.appendChild(addWrap);
     sidebar.appendChild(sideHeader);
-    sidebar.appendChild(h('p', { style: 'padding:0 16px;font-size:0.8rem' }, 'A hidden parent hides all its children.'));
+    sidebar.appendChild(h('p', { className: 'ed-sidebar-help' }, 'One list for your CV and resume.'));
 
     const sideList = h('div', { className: 'ed-sidebar-list' });
     sections().forEach((sec, i) => {
-      const item = h('div', { className: 'ed-sec-item' + (i === selectedIdx ? ' active' : ''), onClick: () => { selectedIdx = i; mobileShowDetail = true; renderEditor(); } });
+      const item = h('div', { className: 'ed-sec-item' + (i === selectedIdx ? ' active' : '') });
 
       const arrows = h('div', { className: 'ed-sec-arrows' });
-      const upBtn = h('button', { className: 'ed-arrow-btn', onClick: e => { e.stopPropagation(); if (i > 0) { sections().splice(i - 1, 0, sections().splice(i, 1)[0]); selectedIdx = i - 1; markDirty(); renderEditor(); } } }, ARROW_UP);
-      const dnBtn = h('button', { className: 'ed-arrow-btn', onClick: e => { e.stopPropagation(); if (i < sections().length - 1) { sections().splice(i + 1, 0, sections().splice(i, 1)[0]); selectedIdx = i + 1; markDirty(); renderEditor(); } } }, ARROW_DN);
+      const upBtn = h('button', { className: 'ed-arrow-btn', 'aria-label': 'Move section up', onClick: e => { e.stopPropagation(); if (i > 0) { sections().splice(i - 1, 0, sections().splice(i, 1)[0]); selectedIdx = i - 1; markDirty(); renderEditor(); } } }, ARROW_UP);
+      const dnBtn = h('button', { className: 'ed-arrow-btn', 'aria-label': 'Move section down', onClick: e => { e.stopPropagation(); if (i < sections().length - 1) { sections().splice(i + 1, 0, sections().splice(i, 1)[0]); selectedIdx = i + 1; markDirty(); renderEditor(); } } }, ARROW_DN);
       if (i === 0) upBtn.disabled = true;
       if (i === sections().length - 1) dnBtn.disabled = true;
       arrows.append(upBtn, dnBtn);
       item.appendChild(arrows);
-      item.appendChild(h('span', { className: 'ed-sec-item-label' }, loc(sec.title, 'en') || sec.id));
-      item.appendChild(h('span', { className: 'ed-sec-item-type' }, sec.type));
+      const select = h('button', { className: 'ed-section-select', 'aria-current': i === selectedIdx ? 'true' : 'false', onClick: () => { selectedIdx = i; mobileShowDetail = true; renderEditor(); } },
+        h('span', { className: 'ed-sec-item-label' }, loc(sec.title, 'en') || sec.id),
+        h('span', { className: 'ed-section-caption' }, sectionCaption(sec)));
+      item.appendChild(select);
       sideList.appendChild(item);
     });
     sidebar.appendChild(sideList);
     layout.appendChild(sidebar);
 
     // Main
-    const main = h('div', { className: 'ed-main' });
+    const scrollArea = h('div', { className: 'ed-main' });
+    const main = h('div', { className: 'ed-content-page' });
+    scrollArea.appendChild(main);
 
     if (sections().length === 0 || selectedIdx >= sections().length) {
       main.appendChild(h('div', { className: 'ed-empty' }, 'Select or add a section'));
@@ -710,14 +773,19 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       const headerTop = h('div', { className: 'ed-section-header-top' });
       const meta = h('div', { className: 'ed-section-meta' });
 
+      const sectionTitle = h('h1', {}, loc(sec.title, 'en') || 'Untitled section');
+      secHeader.appendChild(sectionTitle);
+      secHeader.appendChild(h('p', { className: 'ed-help' }, 'Choose where this section appears. Its visibility also applies to every item inside.'));
+
       // ID field
       const idWrap = h('div', { style: 'display:flex;align-items:center;gap:6px;' });
       idWrap.appendChild(h('span', { className: 'ed-field-col-label', style: 'margin-bottom:0' }, 'ID'));
       const idInp = h('input', { className: 'ed-input', type: 'text', value: sec.id, style: 'width:120px;font-size:0.7rem;padding:6px 10px;' });
       idInp.addEventListener('input', () => { sec.id = idInp.value; markDirty(); });
       idWrap.appendChild(idInp);
-      meta.appendChild(idWrap);
-      meta.appendChild(visibilityControl(sec, markDirty));
+      const advanced = h('details', { className: 'ed-section-advanced' }, h('summary', {}, 'Section identifier'), idWrap);
+      secHeader.appendChild(advanced);
+      meta.appendChild(visibilityControl(sec, () => { markDirty(); renderEditor(); }));
 
       // Open default toggle
       const openCb = h('input', { type: 'checkbox' });
@@ -741,12 +809,15 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       secHeader.appendChild(headerTop);
 
       // Section title
-      secHeader.appendChild(contentField('Section Title', sec, 'title', v => { markDirty(); sideList.children[selectedIdx]?.querySelector('.ed-sec-item-label')?.replaceWith(h('span', { className: 'ed-sec-item-label' }, loc(v, 'en'))); }));
+      secHeader.appendChild(contentField('Section Title', sec, 'title', v => { markDirty(); sectionTitle.textContent = loc(v, 'en') || 'Untitled section'; sideList.children[selectedIdx]?.querySelector('.ed-sec-item-label')?.replaceWith(h('span', { className: 'ed-sec-item-label' }, loc(v, 'en'))); }));
 
       main.appendChild(secHeader);
 
       // Type-specific editor
-      const onDataChange = () => markDirty();
+      const onDataChange = () => {
+        markDirty();
+        sideList.children[selectedIdx].querySelector('.ed-section-caption').textContent = sectionCaption(sec);
+      };
 
       if (sec.type === 'info') {
         main.appendChild(renderInfoEditor(sec, onDataChange));
@@ -757,7 +828,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       }
     }
 
-    layout.appendChild(main);
+    layout.appendChild(scrollArea);
     overlay.appendChild(layout);
     container.appendChild(overlay);
   }

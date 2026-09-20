@@ -102,6 +102,7 @@
   border: none;
   border-radius: var(--ed-radius);
   color: var(--t1);
+  text-decoration: none;
   font-family: inherit;
   font-size: 0.65rem;
   font-weight: 700;

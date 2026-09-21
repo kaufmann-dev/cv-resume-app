@@ -1,3 +1,4 @@
+import { database } from './helpers/database.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -42,24 +43,25 @@ test('parent, field, author, tag and bullet visibility are applied before delive
   publications.sections[0].items[0].authors[0].visibility = 'resume';
   assert.deepEqual(projectDocument(publications, 'cv').sections[0].items[0].authors, []);
 });
-test('migration is one-time, retains originals, and rejects stale or invalid writes', t => {
+test('migration is one-time, retains originals, and rejects stale or invalid writes', async t => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'document-test-'));
   t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
   const original = JSON.stringify(section([{ heading: 'Job' }]));
   fs.writeFileSync(path.join(directory, 'cv.json'), original);
-  const store = createDocumentStore(directory);
-  const before = store.read();
+  const { pool } = await database(t, directory);
+  const store = createDocumentStore(pool);
+  const before = await store.read();
   assert.equal(fs.readFileSync(path.join(directory, 'cv.json'), 'utf8'), original);
-  store.write({ sections: [] }, before.revision);
-  assert.throws(() => store.write(before.data, before.revision), /Reload/);
-  assert.throws(() => store.write({ sections: [{ visibility: 'invalid' }] }, store.read().revision));
-  assert.deepEqual(createDocumentStore(directory).read().data, { sections: [] });
+  await store.write({ sections: [] }, before.revision);
+  await assert.rejects(() => store.write(before.data, before.revision), /Reload/);
+  await assert.rejects(() => store.write({ sections: [{ visibility: 'invalid' }] }, before.revision));
+  assert.deepEqual((await createDocumentStore(pool).read()).data, { sections: [] });
 });
-test('malformed legacy input cannot create a partial document', t => {
+test('malformed legacy input cannot create a partial document', async t => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'document-test-'));
   t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
   fs.writeFileSync(path.join(directory, 'cv.json'), '{broken');
-  assert.throws(() => createDocumentStore(directory));
+  await assert.rejects(() => database(t, directory));
   assert.equal(fs.existsSync(path.join(directory, 'document.json')), false);
 });
 

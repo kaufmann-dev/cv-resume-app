@@ -3,64 +3,89 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import { initializeStorage } from '../storage.js';
+import { promisify } from 'node:util';
+import { initializeStorage, createPool, PostgresSessionStore } from '../storage.js';
+import { createDocumentStore } from '../document-store.js';
+import { database } from './helpers/database.js';
 
-function fixture(t) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'cv-storage-'));
-  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
-  const baseDirectory = path.join(root, 'app');
-  const directory = path.join(root, 'data');
-  fs.mkdirSync(baseDirectory);
-  return { baseDirectory, directory, environment: {} };
+async function fixture(t) {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'cv-storage-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  return { directory, ...await database(t, directory, { initialize: false }) };
 }
-const write = (dir, file, value) => fs.writeFileSync(path.join(dir, file), JSON.stringify(value));
+const write = (directory, file, value) => fs.writeFileSync(path.join(directory, file), JSON.stringify(value));
+const key = { id: 'existing', name: 'Existing', createdAt: '2026-01-01', hash: 'a'.repeat(64) };
 
-test('migration copies content, keys, passcodes, PDF and sessions while retaining mount sources', t => {
-  const options = fixture(t);
-  write(options.baseDirectory, 'document.json', { sections: [] });
-  write(options.baseDirectory, 'api-keys.json', [{ id: 'existing', hash: 'existing-hash' }]);
-  write(options.baseDirectory, 'passcodes.json', [{ code: 'existing-code' }]);
-  fs.writeFileSync(path.join(options.baseDirectory, 'resume.pdf'), 'pdf');
-  fs.mkdirSync(path.join(options.baseDirectory, '.sessions'));
-  fs.writeFileSync(path.join(options.baseDirectory, '.sessions/session.json'), 'encrypted-session-bytes');
-  initializeStorage(options);
-  for (const file of ['document.json', 'api-keys.json', 'passcodes.json', 'resume.pdf']) {
-    assert.deepEqual(fs.readFileSync(path.join(options.directory, file)), fs.readFileSync(path.join(options.baseDirectory, file)));
-  }
-  assert.equal(fs.readFileSync(path.join(options.directory, 'sessions/session.json'), 'utf8'), 'encrypted-session-bytes');
-  write(options.directory, 'api-keys.json', []);
-  fs.unlinkSync(path.join(options.directory, 'sessions/session.json'));
-  initializeStorage(options);
-  assert.equal(fs.readFileSync(path.join(options.directory, 'api-keys.json'), 'utf8'), '[]');
-  assert.equal(fs.existsSync(path.join(options.directory, 'sessions/session.json')), false);
+test('migration imports content, keys, passcodes and exact PDF bytes once, leaving originals intact', async t => {
+  const { directory, options, pool } = await fixture(t);
+  write(directory, 'document.json', { sections: [] });
+  write(directory, 'api-keys.json', [key]);
+  write(directory, 'passcodes.json', [{ code: 'existing-code', expires: '2099-01-01' }]);
+  const pdf = Buffer.from([37, 80, 68, 70, 45, 0, 255]);
+  fs.writeFileSync(path.join(directory, 'resume.pdf'), pdf);
+  const storage = await initializeStorage(options);
+  assert.deepEqual(await storage.readCollection('keys'), [key]);
+  assert.equal((await storage.readCollection('passcodes'))[0].code, 'existing-code');
+  assert.deepEqual((await storage.readPdf('resume.pdf')).bytes, pdf);
+  await storage.mutateCollection('keys', keys => { keys.length = 0; });
+  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(directory, 'api-keys.json'))), [key]);
+  fs.writeFileSync(path.join(directory, 'document.json'), 'broken');
+  await initializeStorage(options);
+  assert.deepEqual(await storage.readCollection('keys'), []);
+  assert.equal((await pool.query('SELECT * FROM app_migrations')).rowCount, 1);
 });
 
-test('previous environment paths migrate once and existing volume files take precedence', t => {
-  const options = fixture(t);
-  const previous = path.join(options.baseDirectory, 'previous');
+test('volume data takes precedence over old paths, including empty key lists', async t => {
+  const { directory, options } = await fixture(t);
+  const previous = path.join(directory, 'previous');
   fs.mkdirSync(previous);
-  fs.mkdirSync(options.directory);
   write(previous, 'document.json', { sections: [] });
-  write(previous, 'api-keys.json', [{ id: 'old' }]);
-  write(options.directory, 'api-keys.json', [{ id: 'current' }]);
-  const oldSessions = path.join(previous, 'old-sessions');
-  fs.mkdirSync(oldSessions);
-  write(oldSessions, 'saved.json', { value: 1 });
-  options.environment = { DATA_DIRECTORY: previous, SESSION_STORE_PATH: oldSessions };
-  initializeStorage(options);
-  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(options.directory, 'api-keys.json'))), [{ id: 'current' }]);
-  assert.ok(fs.existsSync(path.join(options.directory, 'sessions/saved.json')));
+  write(previous, 'api-keys.json', [key]);
+  write(directory, 'api-keys.json', []);
+  const storage = await initializeStorage({ ...options, environment: { DATA_DIRECTORY: previous } });
+  assert.deepEqual(await storage.readCollection('keys'), []);
 });
 
-test('legacy documents merge inside the volume and malformed input leaves migration incomplete', t => {
-  const options = fixture(t);
-  write(options.baseDirectory, 'cv.json', { sections: [{ id: 'education', title: 'Education', type: 'entries', items: [] }] });
-  fs.writeFileSync(path.join(options.baseDirectory, 'passcodes.json'), 'broken');
-  assert.throws(() => initializeStorage(options));
-  assert.equal(fs.existsSync(path.join(options.directory, '.storage-migrated')), false);
-  write(options.baseDirectory, 'passcodes.json', []);
-  initializeStorage(options);
-  const document = JSON.parse(fs.readFileSync(path.join(options.directory, 'document.json')));
-  assert.equal(document.sections[0].visibility, 'cv');
-  assert.ok(fs.existsSync(path.join(options.directory, '.storage-migrated')));
+test('malformed import rolls back the entire migration and retries successfully', async t => {
+  const { directory, options, pool } = await fixture(t);
+  write(directory, 'cv.json', { sections: [{ id: 'education', title: 'Education', type: 'entries', items: [] }] });
+  fs.writeFileSync(path.join(directory, 'passcodes.json'), 'broken');
+  await assert.rejects(() => initializeStorage(options));
+  assert.equal((await pool.query("SELECT to_regclass('app_document') AS table_name")).rows[0].table_name, null);
+  write(directory, 'passcodes.json', []);
+  await initializeStorage(options);
+  assert.equal((await createDocumentStore(pool).read()).data.sections[0].visibility, 'cv');
+});
+
+test('concurrent initialization and writes preserve one migration and reject stale saves', async t => {
+  const { options, pool } = await fixture(t);
+  const [storage] = await Promise.all([initializeStorage(options), initializeStorage(options)]);
+  const store = createDocumentStore(pool);
+  const { revision } = await store.read();
+  const results = await Promise.allSettled([store.write({ sections: [] }, revision), store.write({ sections: [] }, revision)]);
+  assert.equal(results.filter(result => result.status === 'fulfilled').length, 1);
+  assert.equal(results.find(result => result.status === 'rejected').reason.status, 409);
+  await Promise.all(Array.from({ length: 10 }, (_, index) => storage.mutateCollection('keys', keys => { keys.push({ ...key, id: String(index) }); })));
+  assert.equal((await storage.readCollection('keys')).length, 10);
+});
+
+test('PostgreSQL sessions survive store recreation, expire, and are destroyed without touch renewal', async t => {
+  const { options, pool } = await fixture(t);
+  await initializeStorage(options);
+  const first = new PostgresSessionStore(pool);
+  const second = new PostgresSessionStore(pool);
+  t.after(() => { first.close(); second.close(); });
+  const data = { cookie: { expires: new Date(Date.now() + 60000).toISOString() }, auth: { kind: 'admin' } };
+  await promisify(first.set.bind(first))('saved', data);
+  assert.deepEqual(await promisify(second.get.bind(second))('saved'), data);
+  await promisify(second.touch.bind(second))('saved', { cookie: { expires: new Date(Date.now() + 120000) } });
+  assert.deepEqual(await promisify(first.get.bind(first))('saved'), data);
+  await promisify(first.set.bind(first))('expired', { cookie: { expires: new Date(0) } });
+  assert.equal(await promisify(second.get.bind(second))('expired'), null);
+  await promisify(second.destroy.bind(second))('saved');
+  assert.equal(await promisify(first.get.bind(first))('saved'), null);
+});
+
+test('DATABASE_URL is required', () => {
+  assert.throws(() => createPool({}), /DATABASE_URL/);
 });

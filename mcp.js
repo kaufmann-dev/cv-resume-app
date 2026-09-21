@@ -1,39 +1,38 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import { asyncHandler } from './async-handler.js';
 import { randomBytes, randomUUID, createHash, timingSafeEqual } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { z } from 'zod';
-import { atomicWrite, documentSchema, sectionSchema, itemSchema, rowSchema, entrySchema, pubSchema } from './document-store.js';
+import { documentSchema, sectionSchema, itemSchema, rowSchema, entrySchema, pubSchema } from './document-store.js';
 import { projectDocument } from './document-model.js';
 import { applyJsonPatch, patchOperationSchema } from './document-patch.js';
 
 const hash = key => createHash('sha256').update(key).digest();
-export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
-  const file = path.join(dataDirectory, 'api-keys.json');
-  const read = () => fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
-  const list = () => read().map(({ hash: secret, ...metadata }) => metadata);
-  app.get('/api/keys', (req, res) => {
-    if (requireAdmin(req, res)) res.json({ keys: list() });
-  });
-  app.post('/api/keys', (req, res) => {
+export function mountMcp(app, { storage, store, requireAdmin }) {
+  const read = () => storage.readCollection('keys');
+  const list = async () => (await read()).map(({ hash: secret, ...metadata }) => metadata);
+  app.get('/api/keys', asyncHandler(async (req, res) => {
+    if (requireAdmin(req, res)) res.json({ keys: await list() });
+  }));
+  app.post('/api/keys', asyncHandler(async (req, res) => {
     if (!requireAdmin(req, res)) return;
     const name = req.body?.name;
     if (typeof name !== 'string' || !name.trim() || name.length > 100) return res.status(400).json({ error: 'Provide a key name (1–100 characters)' });
     const key = `cv_${randomBytes(32).toString('base64url')}`;
-    const keys = read();
-    keys.push({ id: randomUUID(), name: name.trim(), createdAt: new Date().toISOString(), hash: hash(key).toString('hex') });
-    atomicWrite(file, keys);
-    res.status(201).json({ key, keys: list() });
-  });
-  app.delete('/api/keys/:id', (req, res) => {
+    await storage.mutateCollection('keys', keys => { keys.push({ id: randomUUID(), name: name.trim(), createdAt: new Date().toISOString(), hash: hash(key).toString('hex') }); });
+    res.status(201).json({ key, keys: await list() });
+  }));
+  app.delete('/api/keys/:id', asyncHandler(async (req, res) => {
     if (!requireAdmin(req, res)) return;
-    atomicWrite(file, read().filter(key => key.id !== req.params.id));
-    res.json({ keys: list() });
-  });
-  app.all('/api/mcp', async (req, res, next) => {
+    await storage.mutateCollection('keys', keys => {
+      const index = keys.findIndex(key => key.id === req.params.id);
+      if (index >= 0) keys.splice(index, 1);
+    });
+    res.json({ keys: await list() });
+  }));
+  app.all('/api/mcp', asyncHandler(async (req, res, next) => {
     const token = /^Bearer (\S+)$/i.exec(req.headers.authorization || '')?.[1];
-    if (!token || !read().some(key => timingSafeEqual(Buffer.from(key.hash, 'hex'), hash(token)))) {
+    if (!token || !(await read()).some(key => timingSafeEqual(Buffer.from(key.hash, 'hex'), hash(token)))) {
       return res.status(401).set('WWW-Authenticate', 'Bearer').json({ error: 'Valid API key required' });
     }
     if (req.method !== 'POST') return res.status(405).set('Allow', 'POST').end();
@@ -45,17 +44,17 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       const issues = error.issues.map(issue => ({ path: formatPath(issue.path), message: issue.message, code: issue.code }));
       return { message: `Validation failed: ${issues.map(i => i.path ? `${i.path}: ${i.message}` : i.message).join('; ')}`, issues };
     };
-    const failWrite = error => {
+    const failWrite = async error => {
       if (error?.code === 'STALE_REVISION') return failure(error.message, { currentRevision: error.currentRevision });
       if (error?.name === 'ZodError') {
         const { message, issues } = formatZod(error);
         return failure(message, { issues });
       }
-      if (error?.status === 409) return failure(error.message, { currentRevision: store.read().revision });
+      if (error?.status === 409) return failure(error.message, { currentRevision: (await store.read()).revision });
       return failure(error.message);
     };
-    const snapshot = revision => {
-      const current = store.read();
+    const snapshot = async revision => {
+      const current = await store.read();
       if (revision !== current.revision) {
         const error = new Error('Document changed. Re-read and retry with the current revision.');
         error.code = 'STALE_REVISION';
@@ -67,16 +66,16 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
     server.registerTool('get_document', {
       description: 'Read all shared CV/resume data and its revision. Visibility on parents bounds descendants. For cheaper reads use list_sections or get_section; for edits prefer the put/delete tools or patch_document.',
       inputSchema: {}
-    }, async () => result(store.read()));
+    }, async () => result(await store.read()));
     server.registerTool('preview_document', {
       description: 'Read the visible content for one document variant.',
       inputSchema: { variant: z.enum(['cv', 'resume']) }
-    }, async ({ variant }) => result(projectDocument(store.read().data, variant)));
+    }, async ({ variant }) => result(projectDocument((await store.read()).data, variant)));
     server.registerTool('list_sections', {
       description: 'List section summaries (id, type, title, visibility, entry/row count) with the current revision. Start here instead of get_document when you only need an overview or a revision.',
       inputSchema: {}
     }, async () => {
-      const { data, revision } = store.read();
+      const { data, revision } = await store.read();
       return result({ revision, sections: data.sections.map(section => ({
         id: section.id, type: section.type, title: section.title, visibility: section.visibility, count: (section.items || section.rows || []).length
       })) });
@@ -85,7 +84,7 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       description: 'Read one section by id with the current revision. Pass variant to read it as filtered for CV or resume.',
       inputSchema: { sectionId: z.string().min(1), variant: z.enum(['cv', 'resume']).optional() }
     }, async ({ sectionId, variant }) => {
-      const { data, revision } = store.read();
+      const { data, revision } = await store.read();
       const section = data.sections.find(candidate => candidate.id === sectionId);
       if (!section) return failure(`Section "${sectionId}" not found. Available: ${data.sections.map(s => s.id).join(', ') || '(none)'}`);
       if (!variant) return result({ revision, section });
@@ -97,7 +96,7 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       description: 'Save the entire shared document, including additions, edits, deletions, order and visibility. Requires the revision from any read; stale revisions are rejected with the current revision. Omitted visibility defaults to both. Prefer put_section, put_item or patch_document for small changes.',
       inputSchema: { data: documentSchema, revision: z.string() }
     }, async ({ data, revision }) => {
-      try { return result(store.write(data, revision)); }
+      try { return result(await store.write(data, revision)); }
       catch (error) { return failWrite(error); }
     });
     server.registerTool('put_section', {
@@ -105,7 +104,7 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       inputSchema: { revision: z.string(), section: sectionSchema, position: z.union([z.number().int().min(0), z.enum(['start', 'end'])]).optional() }
     }, async ({ revision, section, position }) => {
       try {
-        const { data } = snapshot(revision);
+        const { data } = await snapshot(revision);
         const parsed = sectionSchema.parse(section);
         const sections = structuredClone(data.sections);
         const existing = sections.findIndex(candidate => candidate.id === parsed.id);
@@ -115,7 +114,7 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
           const index = position === 'start' ? 0 : position === 'end' || position === undefined ? sections.length : Math.min(position, sections.length);
           sections.splice(index, 0, parsed);
         }
-        const written = store.write({ sections }, revision);
+        const written = await store.write({ sections }, revision);
         const index = written.data.sections.findIndex(candidate => candidate.id === parsed.id);
         return result({ revision: written.revision, index, section: written.data.sections[index] });
       } catch (error) { return failWrite(error); }
@@ -125,12 +124,12 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       inputSchema: { revision: z.string(), sectionId: z.string().min(1) }
     }, async ({ revision, sectionId }) => {
       try {
-        const { data } = snapshot(revision);
+        const { data } = await snapshot(revision);
         const index = data.sections.findIndex(candidate => candidate.id === sectionId);
         if (index < 0) return failure(`Section "${sectionId}" not found. Available: ${data.sections.map(s => s.id).join(', ') || '(none)'}`);
         const sections = structuredClone(data.sections);
         const [deleted] = sections.splice(index, 1);
-        const written = store.write({ sections }, revision);
+        const written = await store.write({ sections }, revision);
         return result({ revision: written.revision, deleted });
       } catch (error) { return failWrite(error); }
     });
@@ -141,7 +140,7 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       inputSchema: { revision: z.string(), sectionId: z.string().min(1), item: itemSchema, index: z.number().int().min(0).optional() }
     }, async ({ revision, sectionId, item, index }) => {
       try {
-        const { data } = snapshot(revision);
+        const { data } = await snapshot(revision);
         const found = data.sections.find(candidate => candidate.id === sectionId);
         if (!found) return failure(`Section "${sectionId}" not found. Available: ${data.sections.map(s => s.id).join(', ') || '(none)'}`);
         const parsed = itemSchemaFor(found).parse(item);
@@ -152,7 +151,7 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
         if (target > children.length) return failure(`Index ${target} is out of bounds for section "${sectionId}" (${children.length} ${childKeyFor(section)})`);
         if (target === children.length) children.push(parsed);
         else children[target] = parsed;
-        const written = store.write({ sections }, revision);
+        const written = await store.write({ sections }, revision);
         const stored = written.data.sections.find(candidate => candidate.id === sectionId)[childKeyFor(section)][target];
         return result({ revision: written.revision, sectionId, index: target, item: stored });
       } catch (error) { return failWrite(error); }
@@ -162,14 +161,14 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       inputSchema: { revision: z.string(), sectionId: z.string().min(1), index: z.number().int().min(0) }
     }, async ({ revision, sectionId, index }) => {
       try {
-        const { data } = snapshot(revision);
+        const { data } = await snapshot(revision);
         const found = data.sections.find(candidate => candidate.id === sectionId);
         if (!found) return failure(`Section "${sectionId}" not found. Available: ${data.sections.map(s => s.id).join(', ') || '(none)'}`);
         const children = found[childKeyFor(found)];
         if (index >= children.length) return failure(`Index ${index} is out of bounds for section "${sectionId}" (${children.length} ${childKeyFor(found)})`);
         const sections = structuredClone(data.sections);
         const [deleted] = sections.find(candidate => candidate.id === sectionId)[childKeyFor(found)].splice(index, 1);
-        const written = store.write({ sections }, revision);
+        const written = await store.write({ sections }, revision);
         return result({ revision: written.revision, sectionId, index, deleted });
       } catch (error) { return failWrite(error); }
     });
@@ -178,11 +177,11 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       inputSchema: { revision: z.string(), operations: z.array(patchOperationSchema).min(1).max(100), dryRun: z.boolean().optional() }
     }, async ({ revision, operations, dryRun }) => {
       try {
-        const { data } = snapshot(revision);
+        const { data } = await snapshot(revision);
         const { patched, changes } = applyJsonPatch(data, operations);
         const parsed = documentSchema.parse(patched);
         if (dryRun) return result({ dryRun: true, revision, changes });
-        const written = store.write(parsed, revision);
+        const written = await store.write(parsed, revision);
         return result({ revision: written.revision, changes });
       } catch (error) { return failWrite(error); }
     });
@@ -192,5 +191,5 @@ export function mountMcp(app, { dataDirectory, store, requireAdmin }) {
       await server.connect(transport);
       await transport.handleRequest(req, res, req.body);
     } catch (error) { next(error); }
-  });
+  }));
 }

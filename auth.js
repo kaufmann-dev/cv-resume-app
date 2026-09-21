@@ -1,14 +1,11 @@
 import net from 'node:net';
-import path from 'node:path';
 import session from 'express-session';
-import sessionFileStore from 'session-file-store';
 import * as oidc from 'openid-client';
 
 export const IDLE_SESSION_MS = 24 * 60 * 60 * 1000;
 export const ABSOLUTE_SESSION_MS = 7 * 24 * 60 * 60 * 1000;
 export const OIDC_TRANSACTION_MS = 10 * 60 * 1000;
 
-const FileStore = sessionFileStore(session);
 
 function requireEnvironmentValue(environment, name) {
   const value = environment[name]?.trim();
@@ -130,8 +127,7 @@ export function loadAuthConfig(environment = process.env) {
     callbackUrl,
     postLogoutUrl,
     sessionSecret,
-    cookieDomain,
-    sessionStorePath: 'sessions'
+    cookieDomain
   };
 }
 
@@ -205,26 +201,6 @@ export async function createOidcService(config, oidcClient = oidc) {
       });
     }
   };
-}
-
-export function createFileSessionStore(config, baseDirectory) {
-  const store = new FileStore({
-    path: path.resolve(baseDirectory, config.sessionStorePath),
-    ttl: Math.ceil(ABSOLUTE_SESSION_MS / 1000),
-    reapInterval: 60 * 60,
-    secret: config.sessionSecret,
-    logFn(message) {
-      if (!String(message).includes('ENOENT')) {
-        console.error(message);
-      }
-    }
-  });
-
-  // express-session touches an unchanged session automatically. Idle renewal is
-  // instead performed explicitly only by authenticated user-driven routes.
-  store.touch = (_sessionId, _storedSession, callback) => callback?.();
-
-  return store;
 }
 
 export function createSessionMiddleware(config, store) {

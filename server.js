@@ -1,18 +1,17 @@
-import { DATA_DIRECTORY, initializeStorage } from './storage.js';
+import { createPool, initializeStorage, PostgresSessionStore } from './storage.js';
+import { asyncHandler } from './async-handler.js';
 import { createDocumentStore } from './document-store.js';
 import { projectDocument } from './document-model.js';
 import { mountMcp } from './mcp.js';
 import express from 'express';
 import cors from 'cors';
 import { rateLimit } from 'express-rate-limit';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import {
   ABSOLUTE_SESSION_MS,
   IDLE_SESSION_MS,
   OIDC_TRANSACTION_MS,
-  createFileSessionStore,
   createOidcService,
   createSessionMiddleware,
   destroySession,
@@ -57,37 +56,7 @@ function isAllowedBrowserOrigin(origin) {
   }
 }
 
-function readJsonFile(dataDirectory, fileName) {
-  const filePath = path.join(dataDirectory, fileName);
-
-  if (!fs.existsSync(filePath)) {
-    console.warn(`Warning: File ${fileName} not found. Returning empty default.`);
-    return fileName.includes('passcodes') ? [] : { sections: [] };
-  }
-
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-  } catch (error) {
-    console.error(`Error parsing ${fileName}:`, error);
-    return fileName.includes('passcodes') ? [] : { sections: [] };
-  }
-}
-
-function writeJsonFile(dataDirectory, fileName, data) {
-  fs.writeFileSync(
-    path.join(dataDirectory, fileName),
-    JSON.stringify(data, null, 2),
-    'utf-8'
-  );
-}
-
 const PDF_LIMIT_BYTES = 10 * 1024 * 1024;
-
-function atomicWriteBinary(filePath, buffer) {
-  const temporary = `${filePath}.tmp`;
-  fs.writeFileSync(temporary, buffer, { mode: 0o600 });
-  fs.renameSync(temporary, filePath);
-}
 
 function validateViewerPasscode(passcodes, passcode, now) {
   if (!passcode) {
@@ -191,22 +160,21 @@ export function createApp({
   authConfig,
   oidcService,
   sessionStore,
-  dataDirectory = DATA_DIRECTORY,
+  storage,
   staticDirectory = path.join(__dirname, 'dist'),
   now = () => Date.now()
 }) {
   const app = express();
-  const getPasscodes = () => readJsonFile(dataDirectory, 'passcodes.json');
-  const store = createDocumentStore(dataDirectory);
-  const getDocumentData = variantId => projectDocument(store.read().data, variantId);
-  const getViewerPasscodeAttempt = (request) => {
+  const getPasscodes = () => storage.readCollection('passcodes');
+  const store = createDocumentStore(storage.pool);
+  const getViewerPasscodeAttempt = async (request) => {
     const passcode = typeof request.body?.passcode === 'string'
       ? request.body.passcode.trim()
       : '';
 
     return {
       passcode,
-      validation: validateViewerPasscode(getPasscodes(), passcode, now())
+      validation: validateViewerPasscode(await getPasscodes(), passcode, now())
     };
   };
 
@@ -238,13 +206,13 @@ export function createApp({
     message: { error: 'Too many failed passcode attempts. Try again later.' },
     // Successful codes bypass the limiter, so shared-IP viewers retain access.
     // Failed attempts use the proxy-aware request.ip default key generator.
-    skip(request) {
-      request.viewerPasscodeAttempt = getViewerPasscodeAttempt(request);
+    async skip(request) {
+      request.viewerPasscodeAttempt = await getViewerPasscodeAttempt(request);
       return request.viewerPasscodeAttempt.validation.ok;
     }
   });
 
-  app.use(async (request, response, next) => {
+  app.use(asyncHandler(async (request, response, next) => {
     const auth = request.session.auth;
 
     if (!auth) {
@@ -257,7 +225,7 @@ export function createApp({
     let validation = { ok: true };
 
     if (auth.kind === 'viewer') {
-      validation = validateViewerPasscode(getPasscodes(), auth.passcode, currentTime);
+      validation = validateViewerPasscode(await getPasscodes(), auth.passcode, currentTime);
     } else if (auth.kind !== 'admin' || typeof auth.id_token_hint !== 'string') {
       validation = { ok: false, status: 401, error: 'Not authenticated' };
     }
@@ -278,7 +246,7 @@ export function createApp({
 
     request.authContext = auth;
     return next();
-  });
+  }));
 
   function authenticationFailure(request, response) {
     const failure = request.authFailure ?? { status: 401, error: 'Not authenticated' };
@@ -311,26 +279,27 @@ export function createApp({
     return true;
   }
 
-  function buildSessionResponse(request) {
+  async function buildSessionResponse(request) {
     const variantId = resolveVariantIdFromRequest(request);
+    const document = await store.read();
     const response = {
       success: true,
       variant: variantId,
-      data: getDocumentData(variantId),
+      data: projectDocument(document.data, variantId),
       isAdmin: request.authContext.kind === 'admin'
     };
 
     if (response.isAdmin) {
-      response.document = store.read();
-      response.passcodesData = getPasscodes();
+      response.document = document;
+      response.passcodesData = await getPasscodes();
     }
 
     return response;
   }
 
-  app.post('/api/auth/passcode', passcodeRateLimiter, async (request, response, next) => {
+  app.post('/api/auth/passcode', passcodeRateLimiter, asyncHandler(async (request, response, next) => {
     const { passcode, validation } = request.viewerPasscodeAttempt
-      ?? getViewerPasscodeAttempt(request);
+      ?? await getViewerPasscodeAttempt(request);
 
     if (!validation.ok) {
       return response.status(validation.status).json({ error: validation.error });
@@ -341,21 +310,21 @@ export function createApp({
       setAuthenticatedSession(request, { kind: 'viewer', passcode }, now());
       await saveSession(request);
       request.authContext = request.session.auth;
-      return response.json(buildSessionResponse(request));
+      return response.json(await buildSessionResponse(request));
     } catch (error) {
       return next(error);
     }
-  });
+  }));
 
-  app.get('/api/session', (request, response) => {
+  app.get('/api/session', asyncHandler(async (request, response) => {
     if (!requireAuthenticated(request, response, { userDriven: false })) {
       return;
     }
 
-    response.json(buildSessionResponse(request));
-  });
+    response.json(await buildSessionResponse(request));
+  }));
 
-  app.get('/auth/login', async (request, response, next) => {
+  app.get('/auth/login', asyncHandler(async (request, response, next) => {
     try {
       const authorization = await oidcService.createAuthorizationRequest();
       const returnTo = getSafeReturnUrl(request, authConfig);
@@ -374,9 +343,9 @@ export function createApp({
     } catch (error) {
       return next(error);
     }
-  });
+  }));
 
-  app.get('/auth/callback', async (request, response, next) => {
+  app.get('/auth/callback', asyncHandler(async (request, response, next) => {
     const transaction = request.session.oidcTransaction;
 
     if (!transaction || now() - transaction.createdAt >= OIDC_TRANSACTION_MS) {
@@ -408,9 +377,9 @@ export function createApp({
       console.error('OIDC callback failed:', error.message);
       return response.status(400).send('OIDC authentication failed');
     }
-  });
+  }));
 
-  app.post('/auth/logout', async (request, response, next) => {
+  app.post('/auth/logout', asyncHandler(async (request, response, next) => {
     const auth = request.authContext;
     const localReturnUrl = getSafeReturnUrl(request, authConfig);
     const idTokenHint = auth?.kind === 'admin' ? auth.id_token_hint : undefined;
@@ -430,9 +399,9 @@ export function createApp({
     } catch (error) {
       return next(error);
     }
-  });
+  }));
 
-  app.get('/api/download', (request, response) => {
+  app.get('/api/download', asyncHandler(async (request, response) => {
     if (!requireAuthenticated(request, response)) {
       return;
     }
@@ -443,9 +412,9 @@ export function createApp({
       return response.status(404).send('PDF not configured');
     }
 
-    const pdfPath = path.join(dataDirectory, variant.pdfFile);
+    const pdf = await storage.readPdf(variant.pdfFile);
 
-    if (!fs.existsSync(pdfPath)) {
+    if (!pdf) {
       return response.status(404).send('PDF not found');
     }
 
@@ -456,32 +425,21 @@ export function createApp({
       'X-Content-Type-Options': 'nosniff'
     });
 
-    return response.download(pdfPath, variant.pdfDownloadName, {
-      acceptRanges: true,
-      cacheControl: false,
-      lastModified: true
-    }, (error) => {
-      if (!error || response.headersSent || error.code === 'ECONNABORTED') {
-        return;
-      }
+    return response.attachment(variant.pdfDownloadName).type('application/pdf').send(pdf.bytes);
+  }));
 
-      response.status(error.statusCode || 500).send('Failed to send PDF');
-    });
-  });
-
-  app.get('/api/pdf', (request, response) => {
+  app.get('/api/pdf', asyncHandler(async (request, response) => {
     if (!requireAdmin(request, response)) return;
     const variant = getVariantConfigById(resolveVariantIdFromRequest(request));
-    const pdfPath = path.join(dataDirectory, variant.pdfFile);
-    if (!fs.existsSync(pdfPath)) return response.json({ file: variant.pdfFile, exists: false });
-    const stat = fs.statSync(pdfPath);
-    return response.json({ file: variant.pdfFile, exists: true, size: stat.size, updatedAt: stat.mtime.toISOString() });
-  });
+    const pdf = await storage.readPdf(variant.pdfFile);
+    if (!pdf) return response.json({ file: variant.pdfFile, exists: false });
+    return response.json({ file: variant.pdfFile, exists: true, size: pdf.bytes.length, updatedAt: pdf.updatedAt.toISOString() });
+  }));
 
   app.post('/api/pdf',
     (request, response, next) => { if (requireAdmin(request, response)) next(); },
     express.raw({ type: 'application/pdf', limit: PDF_LIMIT_BYTES }),
-    (request, response) => {
+    asyncHandler(async (request, response) => {
       if (!Buffer.isBuffer(request.body) || !request.body.length) {
         return response.status(400).json({ error: 'Upload a PDF file with Content-Type: application/pdf' });
       }
@@ -489,37 +447,31 @@ export function createApp({
         return response.status(400).json({ error: 'Uploaded file is not a valid PDF' });
       }
       const variant = getVariantConfigById(resolveVariantIdFromRequest(request));
-      const pdfPath = path.join(dataDirectory, variant.pdfFile);
-      try {
-        atomicWriteBinary(pdfPath, request.body);
-      } catch {
-        return response.status(500).json({ error: 'Failed to store PDF' });
-      }
-      const stat = fs.statSync(pdfPath);
-      return response.json({ success: true, file: variant.pdfFile, size: stat.size, updatedAt: stat.mtime.toISOString() });
-    });
+      const metadata = await storage.writePdf(variant.pdfFile, request.body);
+      return response.json({ success: true, file: variant.pdfFile, ...metadata });
+    }));
 
-  app.get('/api/data', (request, response) => {
-    if (requireAdmin(request, response)) response.json(store.read());
-  });
+  app.get('/api/data', asyncHandler(async (request, response) => {
+    if (requireAdmin(request, response)) response.json(await store.read());
+  }));
 
-  app.post('/api/save', (request, response) => {
+  app.post('/api/save', asyncHandler(async (request, response) => {
     if (!requireAdmin(request, response)) return;
     try {
-      response.json({ success: true, ...store.write(request.body.data, request.body.revision) });
+      response.json({ success: true, ...await store.write(request.body.data, request.body.revision) });
     } catch (error) {
       response.status(error.status || (error.name === 'ZodError' ? 400 : 500)).json({ error: error.message });
     }
-  });
+  }));
 
-  mountMcp(app, { dataDirectory, store, requireAdmin });
+  mountMcp(app, { storage, store, requireAdmin });
 
-  app.get('/api/passcodes', (request, response) => {
+  app.get('/api/passcodes', asyncHandler(async (request, response) => {
     if (!requireAdmin(request, response)) return;
-    return response.json({ passcodes: getPasscodes() });
-  });
+    return response.json({ passcodes: await getPasscodes() });
+  }));
 
-  app.post('/api/passcodes', (request, response) => {
+  app.post('/api/passcodes', asyncHandler(async (request, response) => {
     if (!requireAdmin(request, response)) return;
 
     const { code, expires } = request.body;
@@ -528,51 +480,38 @@ export function createApp({
       return response.status(400).json({ error: 'Missing code or expires' });
     }
 
-    const passcodes = getPasscodes();
-    passcodes.push({ code, expires });
-    writeJsonFile(dataDirectory, 'passcodes.json', passcodes);
+    const passcodes = await storage.mutateCollection('passcodes', entries => { entries.push({ code, expires }); });
     return response.json({ success: true, passcodes });
-  });
+  }));
 
-  app.put('/api/passcodes/:index', (request, response) => {
-    if (!requireAdmin(request, response)) return;
-
-    const index = Number.parseInt(request.params.index, 10);
-    const passcodes = getPasscodes();
-
-    if (Number.isNaN(index) || index < 0 || index >= passcodes.length) {
-      return response.status(400).json({ error: 'Invalid index' });
-    }
-
-    const { code, expires } = request.body;
-
-    if (!code || !expires) {
-      return response.status(400).json({ error: 'Missing code or expires' });
-    }
-
-    passcodes[index] = { code, expires };
-    writeJsonFile(dataDirectory, 'passcodes.json', passcodes);
-    return response.json({ success: true, passcodes });
-  });
-
-  app.delete('/api/passcodes/:index', (request, response) => {
-    if (!requireAdmin(request, response)) return;
-
-    const index = Number.parseInt(request.params.index, 10);
-    const passcodes = getPasscodes();
-
-    if (Number.isNaN(index) || index < 0 || index >= passcodes.length) {
-      return response.status(400).json({ error: 'Invalid index' });
-    }
-
-    passcodes.splice(index, 1);
-    writeJsonFile(dataDirectory, 'passcodes.json', passcodes);
-    return response.json({ success: true, passcodes });
-  });
+  for (const method of ['put', 'delete']) {
+    app[method]('/api/passcodes/:index', asyncHandler(async (request, response) => {
+      if (!requireAdmin(request, response)) return;
+      const index = Number(request.params.index);
+      const { code, expires } = request.body ?? {};
+      if (method === 'put' && (!code || !expires)) return response.status(400).json({ error: 'Missing code or expires' });
+      const passcodes = await storage.mutateCollection('passcodes', entries => {
+        if (!Number.isInteger(index) || index < 0 || index >= entries.length) {
+          const error = new Error('Invalid index');
+          error.status = 400;
+          throw error;
+        }
+        if (method === 'put') entries[index] = { code, expires };
+        else entries.splice(index, 1);
+      });
+      response.json({ success: true, passcodes });
+    }));
+  }
 
   app.use((error, request, response, next) => {
     if (error?.type === 'entity.too.large') return response.status(413).json({ error: 'PDF exceeds the 10 MB limit' });
     return next(error);
+  });
+
+  app.use((error, request, response, next) => {
+    if (response.headersSent) return next(error);
+    console.error('Request failed:', error.message);
+    response.status(error.status || 500).json({ error: error.status ? error.message : 'Request failed' });
   });
 
   app.use(express.static(staticDirectory));
@@ -585,15 +524,27 @@ export function createApp({
 
 export async function startServer() {
   const authConfig = loadAuthConfig();
-  const dataDirectory = initializeStorage({ baseDirectory: __dirname });
-  const oidcService = await createOidcService(authConfig);
-  const sessionStore = createFileSessionStore(authConfig, dataDirectory);
-  const app = createApp({ authConfig, oidcService, sessionStore, dataDirectory });
-  const port = Number(process.env.PORT) || 3001;
-
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
+  const pool = createPool();
+  let sessionStore;
+  try {
+    const storage = await initializeStorage({ pool, baseDirectory: __dirname });
+    const oidcService = await createOidcService(authConfig);
+    sessionStore = new PostgresSessionStore(pool);
+    const app = createApp({ authConfig, oidcService, sessionStore, storage });
+    const port = Number(process.env.PORT) || 3001;
+    const server = app.listen(port, () => console.log(`Server running on port ${port}`));
+    const shutdown = () => {
+      sessionStore.close();
+      server.close(() => { void pool.end(); });
+    };
+    process.once('SIGTERM', shutdown);
+    process.once('SIGINT', shutdown);
+    return server;
+  } catch (error) {
+    sessionStore?.close();
+    await pool.end();
+    throw error;
+  }
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === __filename) {

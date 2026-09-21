@@ -794,7 +794,6 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     }, '+'));
     sideHeader.appendChild(addWrap);
     sidebar.appendChild(sideHeader);
-    sidebar.appendChild(h('p', { className: 'ed-sidebar-help' }, 'One list for your CV and resume.'));
 
     const sideList = h('div', { className: 'ed-sidebar-list' });
     sections().forEach((sec, i) => {

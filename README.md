@@ -19,8 +19,8 @@ A small personal CV/resume app built with Vite on the frontend and Express on th
 
 - Frontend: Vite, plain HTML/CSS/JavaScript
 - Backend: Express
-- Runtime dependencies: `express`, `express-session`, `session-file-store`, `openid-client`, `cors`, `@modelcontextprotocol/sdk`, `zod`
-- No database and no SQLite dependency
+- Runtime dependencies: `express`, `express-session`, `pg`, `openid-client`, `cors`, `@modelcontextprotocol/sdk`, `zod`
+- PostgreSQL stores all persistent application state
 
 ## Project Structure
 
@@ -33,16 +33,14 @@ resume-app-new/
 |-- main.js             # Frontend logic
 |-- editor.js           # Visual editor logic
 |-- style.css           # Styling
-|-- document.json       # Shared document (ignored by git)
-|-- document-store.js   # Validation, migration, persistence
+|-- storage.js          # PostgreSQL storage, sessions, one-time file import
+|-- document-store.js   # Validation and revision-checked persistence
 |-- document-model.js   # Visibility projection
 |-- document-patch.js   # RFC 6902 patch and diff for granular edits
 |-- mcp.js              # MCP tools and key management
-|-- api-keys.json       # API-key hashes (ignored by git)
-|-- passcodes.json      # Local/private passcodes file (ignored by git)
 |-- document.json.example # Template for shared content
 |-- passcodes.json.example # Template for passcodes
-|-- resume.pdf          # Current PDF download file
+|-- resume.pdf          # Initial PDF seed; uploads live in PostgreSQL
 |-- deploy.sh           # Deployment helper for VPS
 |-- package.json
 |-- package-lock.json
@@ -50,41 +48,33 @@ resume-app-new/
 
 ## Variant Routing
 
-- `resume.kaufmann.dev` shows resume-visible content from `document.json`
-- `cv.kaufmann.dev` shows CV-visible content from `document.json`
+- `resume.kaufmann.dev` shows resume-visible content from the shared PostgreSQL document
+- `cv.kaufmann.dev` shows CV-visible content from the shared PostgreSQL document
 - Unknown or local hostnames fall back to the resume variant
 
 That mapping lives in `variant-config.js`.
 
-## Passcodes & Data Persistence
+## PostgreSQL Persistence
 
-All persistent state lives in `/data`. Mount one persistent volume at that path:
+Set the required backend environment variable:
 
-- `passcodes.json`: Authentication codes and their expiry dates.
-- `document.json`: Shared content with visibility settings.
-- `api-keys.json`: API-key hashes and metadata, created when a key is issued.
-- `resume.pdf`: The authenticated PDF download.
-- `sessions/`: Encrypted server-side login sessions.
-- `.storage-migrated`: Records completion of the one-time storage migration.
-
-**IMPORTANT**: These files are excluded from Git (`.gitignore`) to prevent local development data from overwriting production data.
-
-### Initializing Data
-When deploying for the first time, you should copy the provided example files to create your initial dataset:
-```bash
-mkdir -p /data
-cp passcodes.json.example /data/passcodes.json
-cp document.json.example /data/document.json
-cp resume.pdf /data/resume.pdf
+```text
+DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/DATABASE
 ```
 
-### Migration and shared content
+Use a dedicated database reachable from the app container. URL-encode special characters in credentials. Use your provider's connection string and TLS parameters when applicable. The database role needs permission to create tables and indexes in its default schema and to read/write those tables: startup creates them automatically. Keep the existing OIDC and session environment variables.
 
-Startup first migrates existing storage into `/data`. Before the migration marker exists, missing destination files are copied from the old `DATA_DIRECTORY` (if set), then the project’s `data/` directory, then its root. Existing destination files always win. Sessions are copied from the old `SESSION_STORE_PATH` (if set), then `.sessions/` or `sessions/` under those source directories. Source files remain untouched so existing file mounts can stay attached during migration. The app then reads and writes only `/data`, with sessions in `/data/sessions`; the old environment variables are migration inputs only. Missing source files cannot be recovered by migration.
+PostgreSQL is the only runtime store. Content and visibility settings use JSONB with an atomic revision check; passcodes and API-key hashes use JSONB collections with transactional row locks; the PDF uses `bytea`; browser sessions use expiring database rows. All app processes read the database directly. Expired sessions are rejected immediately and cleaned up hourly. Database failures stop startup or fail the request; there is no file fallback.
 
-When `/data/document.json` is absent, startup merges the migrated `cv.json` and `resume.json` there. Do not copy the example document when migrating existing content. Back up both sources before deployment. Matching parent fields are merged recursively with their child lists; identical content becomes visible in both variants. Differing fields remain separate entries with their original visibility. Matching is exact, including translations. CV order is retained, with resume-only content appended. Conflicting section IDs receive numeric suffixes.
+### Initial import and shared content
 
-Both source files are parsed and the result is validated before writing. Malformed data stops startup. Original files remain untouched for recovery and are never read again once `document.json` exists. With neither source present, startup creates an empty document. The migration marker is written only after copying and document validation succeed; a failed migration is retried on restart. After completion, removed keys and sessions are never re-imported from old storage. Run only one server process per data directory.
+On the first startup against a new database, the app imports `document.json`, `passcodes.json`, `api-keys.json`, and `resume.pdf`. For each file, the first existing source wins: `/data`, the old `DATA_DIRECTORY` if set, the project's `data/` directory, then its root. Empty lists are respected. Without a shared document, the importer merges `cv.json` and `resume.json`, retaining variant visibility and order. Matching content becomes visible in both variants; differing content stays separate.
+
+Import validation, schema creation, and the migration record commit together in one transaction. Malformed input stops startup and rolls back; fix the source and redeploy to retry. A database lock serializes simultaneous startup. Originals remain untouched. Once migration version 1 exists in `app_migrations`, files are never imported again, so revoked keys and deleted content cannot return on restart. Do not delete that record.
+
+**Existing file-based browser sessions are not imported. Everyone must log in again after this deployment.** API keys and viewer passcodes remain valid after import, subject to their existing expiry rules.
+
+For a fresh installation without content files, the app creates an empty document and empty passcode/key lists and imports the repository PDF if available. Log in through OIDC to populate the app. To seed from examples, copy `document.json.example` and `passcodes.json.example` into `/data` as `document.json` and `passcodes.json` **before the first startup**. Never copy examples over existing production files.
 
 The admin **Content** tab edits one shared list. The sidebar shows visibility and item counts; entry headings expand using the keyboard or pointer. Field visibility sits beside each field label, and bullets use multiline inputs. Choose CV, Resume, or Both for sections, items, rows, authors, bullets, tags, and individual content fields. New content defaults to Both. Hiding a parent hides its descendants, regardless of their visibility. Language selection remains independent of visibility.
 
@@ -111,7 +101,7 @@ Every write tool needs the revision from any read; stale revisions are rejected 
 
 Every section, entry, row, author, bullet, and tag has `visibility: "cv" | "resume" | "both"`, defaulting to `"both"` when omitted. Bullets and tags use `{ "text": "Content", "visibility": "both" }`; text may also be localized as `{ "en": "…", "de": "…" }`. Optional `fieldVisibility` controls individual fields, e.g. `{ "info": "cv" }`; unspecified fields are visible in Both. The MCP tool schema describes the full document structure.
 
-### Example `passcodes.json`
+### Example passcode import file (`passcodes.json`)
 ```json
 [
   { "code": "your-code", "expires": "2026-12-31" }
@@ -120,13 +110,13 @@ Every section, entry, row, author, bullet, and tag has `visibility: "cv" | "resu
 
 Notes:
 
-- **Viewer passcodes**: Passcodes in `passcodes.json` must have an `expires` date. The file is checked on every authenticated request, so expiry, edits, and deletion take effect immediately. Failed login attempts are limited to five per 15 minutes for each proxy-derived client IP; valid passcodes bypass the limiter.
+- **Viewer passcodes**: New viewer passcodes require an `expires` date. PostgreSQL is checked on every authenticated request, so expiry, edits, and deletion take effect immediately. Failed login attempts are limited to five per 15 minutes for each proxy-derived client IP; valid passcodes bypass the limiter.
 - **Admin access**: The OIDC provider's access policy is the only admin admission control. OIDC admins can manage viewer passcodes in the editor.
 - **Cookies**: Authentication uses an opaque `HttpOnly` server-side session cookie. Theme and language preferences remain separate and are also shared across subdomains.
 
 ## Authentication Setup
 
-Viewer login uses app-owned passcodes from `passcodes.json`; admin login uses confidential OIDC Authorization Code with PKCE S256, state, and nonce, and user-initiated admin logout uses provider logout redirection.
+Viewer login uses app-owned passcodes from PostgreSQL; admin login uses confidential OIDC Authorization Code with PKCE S256, state, and nonce, and user-initiated admin logout uses provider logout redirection.
 
 **Public Client: Off** (confidential client credentials are required)
 
@@ -138,12 +128,13 @@ Token exchange uses `client_secret_post` for token endpoint authentication (`cli
 
 | Environment variable    |            Required            | Purpose                                                                |
 | ----------------------- | :----------------------------: | ---------------------------------------------------------------------- |
+| `DATABASE_URL`          |              Yes               | PostgreSQL connection string for all persistent state.                 |
 | `OIDC_ISSUER_URL`       |              Yes               | Provider issuer URL used for discovery.                                |
 | `OIDC_CLIENT_ID`        |              Yes               | Confidential client identifier.                                        |
 | `OIDC_CLIENT_SECRET`    |              Yes               | Confidential client secret used at token exchange.                     |
 | `OIDC_CALLBACK_URL`     |              Yes               | Exact callback URL; must end in `/auth/callback`.                      |
 | `OIDC_POST_LOGOUT_URL`  |              Yes               | Post-logout redirect URL; must be an origin.                           |
-| `SESSION_SECRET`        |              Yes               | Session signing/encryption secret (at least 32 characters).            |
+| `SESSION_SECRET`        |              Yes               | Session cookie signing secret (at least 32 characters).                |
 | `SESSION_COOKIE_DOMAIN` | Production only (optional dev) | Production required value `.kaufmann.dev`; omit for local development. |
 
 ## Local Development
@@ -152,6 +143,7 @@ Token exchange uses `client_secret_post` for token endpoint authentication (`cli
 
 - Node.js 22.12 or newer
 - npm
+- A reachable PostgreSQL database and `DATABASE_URL`
 
 ### Install
 ```bash
@@ -162,7 +154,7 @@ npm install
 ```bash
 npm run server
 ```
-The backend runs at `http://localhost:3001`. Provision `/data` with write access for your local user before starting; local development uses the same storage layout.
+The backend runs at `http://localhost:3001`. Set `DATABASE_URL` and the Authentication Setup variables before starting. No writable `/data` directory is required; it is only an optional source for the first import.
 
 ### Run the frontend
 ```bash
@@ -182,19 +174,20 @@ In local development:
 
 - **Build Pack:** Nixpacks; `nixpacks.toml` starts `node server.js`.
 - **Base Directory:** `/`. This is a server application, not a static site.
-- **Persistent Storage:** one writable volume with destination `/data`. No individual persistent file mounts or separate session volume are needed after migration.
-- **Required environment:** all production authentication variables in Authentication Setup (`OIDC_ISSUER_URL`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_CALLBACK_URL`, `OIDC_POST_LOGOUT_URL`, `SESSION_SECRET`, `SESSION_COOKIE_DOMAIN`), plus `NODE_ENV=production`.
+- **Persistent Storage:** PostgreSQL owns persistent state. Keep `/data` attached for the first import, then remove the app volume after verification. The PostgreSQL service needs its own persistent storage and backups.
+- **Required environment:** all production authentication variables in Authentication Setup (`OIDC_ISSUER_URL`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_CALLBACK_URL`, `OIDC_POST_LOGOUT_URL`, `SESSION_SECRET`, `SESSION_COOKIE_DOMAIN`), plus `DATABASE_URL` and `NODE_ENV=production`.
 - **Optional environment:** `PORT` defaults to `3001`.
 - **Domains:** `https://resume.kaufmann.dev, https://cv.kaufmann.dev`.
 
 ### Migrating the existing deployment
 
-1. Keep the existing file/session mounts attached and add the volume at `/data`. Keep any old `DATA_DIRECTORY` and `SESSION_STORE_PATH` values for this first deployment; they identify migration sources. Ensure the latest `document.json` and `api-keys.json` are available in those sources before replacing an old container: unmounted files in a discarded container cannot be recovered.
-2. Deploy this release. Startup copies available content, passcodes, API keys, PDF, and sessions into `/data` without overwriting files already there. It leaves originals intact. No pre/post deployment command is required.
-3. Check the logs for `Storage migration complete. All persistent data is now in /data`, then verify your content and API keys in the admin UI. Keep `SESSION_SECRET` unchanged to preserve existing sessions.
-4. Remove the old individual file mounts and separate session mount. Remove `DATA_DIRECTORY` and `SESSION_STORE_PATH`; `/data` is now the fixed storage location. Redeploy with only the `/data` volume.
+1. Back up the existing `/data` volume. Confirm it contains the latest document, passcodes, API keys, and uploaded PDF. Keep it mounted at `/data` for the first deployment of this commit; a read-only mount is sufficient. For older deployments with individual mounts or `DATA_DIRECTORY`, keep those sources attached for import.
+2. Provision a dedicated PostgreSQL database and add **`DATABASE_URL`** to the app's runtime environment. Keep the authentication variables. Pause edits and stop the old app before starting the new version so it cannot write to files after the import snapshot.
+3. Redeploy this commit. Startup creates the schema and imports automatically; no pre/post-deployment command is needed. A failed import leaves no partial database state. Check the logs for `PostgreSQL storage ready; initial data import complete`.
+4. Log in again and verify both CV and resume content, passcodes, existing MCP API keys, and the PDF. Confirm an edit survives a restart.
+5. Remove the app's `/data` mount and any old file/session mounts, `DATA_DIRECTORY`, and `SESSION_STORE_PATH`, then redeploy. Keep the source backup until satisfied with the migration. The app now needs only the database connection for persistence.
 
-Back up the entire `/data` volume. Do not remove `.storage-migrated` during normal operation: it prevents old revoked keys and deleted sessions from being imported again. A key already lost before migration must be recreated in **API Keys**.
+Back up PostgreSQL after migration, including every `app_*` table. The old files are a pre-migration snapshot and will not reflect subsequent edits. To roll back to the old application, stop the new app and restore the pre-migration file backup; changes made in PostgreSQL must be exported separately or they will be absent from that rollback. Only share a database between deployments that should share content and credentials.
 
 ## Production Deployment (Standard VPS)
 
@@ -216,7 +209,7 @@ This repo already includes a reusable service file:
 
 - `cv-resume-app.service`
 
-Create `/etc/cv-resume-app.env` with the production Authentication Setup variables, keep it root-owned with mode `600`, then install the service:
+Create `/etc/cv-resume-app.env` with `DATABASE_URL` and the production Authentication Setup variables, keep it root-owned with mode `600`, then install the service:
 
 ```bash
 sudo cp ./cv-resume-app.service /etc/systemd/system/cv-resume-app.service
@@ -241,7 +234,7 @@ Notes:
 - `www-data` is safer than running the app as `root`
 - If `npm` is installed somewhere else, check it with `which npm` and adjust `ExecStart`
 - If you deploy to another path, update `WorkingDirectory` in `cv-resume-app.service`
-- Provision `/data` as a writable directory for `www-data`; sessions are stored in `/data/sessions`
+- Ensure PostgreSQL is reachable by the service; `/data` only needs to be readable during the initial import
 
 ### Ownership
 
@@ -258,12 +251,9 @@ sudo chown -R root:root /var/www/cv-resume-app
 sudo find /var/www/cv-resume-app -type d -exec chmod 755 {} \;
 sudo find /var/www/cv-resume-app -type f -exec chmod 644 {} \;
 sudo chmod 755 /var/www/cv-resume-app/deploy.sh
-sudo mkdir -p /data
-sudo chown www-data:www-data /data
-sudo chmod 700 /data
 ```
 
-The service reads and writes `/data`. For the first migration, retain any old `DATA_DIRECTORY` or `SESSION_STORE_PATH` values in the environment so startup can copy that data, then remove them after migration completes. The directory must be writable for atomic content/key replacement.
+The service reads and writes PostgreSQL. During the first migration, ensure `www-data` can read existing import files; the importer never changes them. Remove legacy mounts and path variables after verification.
 
 If you already changed ownership to `www-data` and Git now refuses to run, reset it back to your deploy user or `root` and the warning should go away.
 
@@ -325,14 +315,14 @@ server {
 
 ## PDF Download and Upload
 
-The PDF download is served by the backend, not directly by nginx static hosting. Admins replace it from the editor **PDF** tab, which shows the current file size and date. It uploads with `POST /api/pdf` (`Content-Type: application/pdf`, up to 10 MB); the file is validated as a PDF and swapped atomically. `GET /api/pdf` reports the current file metadata. Both endpoints require admin access.
+The PDF download is served by the backend, not directly by nginx static hosting. Admins replace it from the editor **PDF** tab, which shows the current file size and date. It uploads with `POST /api/pdf` (`Content-Type: application/pdf`, up to 10 MB); the upload is validated as a PDF and replaced atomically in PostgreSQL. `GET /api/pdf` reports the current file metadata. Both endpoints require admin access.
 
 The current implementation:
 
 - validates the current admin or viewer session before download
 - re-checks viewer passcode revocation and expiry
 - reuses the shared session cookie when available
-- serves the file through the Express download endpoint
+- serves PDF bytes from PostgreSQL through the Express download endpoint
 - triggers the browser download from the frontend with a normal navigation to `/api/download`
 
 ## Shared sessions across subdomains
@@ -359,6 +349,6 @@ Without those forwarded headers, hostname-based variant selection and secure coo
 
 - `npm run dev` starts the Vite dev server
 - `npm run build` creates the production frontend build
-- `npm test` runs authentication, migration, visibility, persistence, MCP, and PDF upload tests
+- `TEST_DATABASE_URL=postgresql://USER:PASSWORD@HOST:5432/TEST_DATABASE npm test` runs authentication, migration, visibility, persistence, MCP, and PDF upload tests against PostgreSQL. Use a disposable test database whose role can create schemas; each fixture creates and removes its own schema. Tests never use `DATABASE_URL`.
 - `npm run preview` previews the Vite build locally
 - `npm run server` starts the Express backend

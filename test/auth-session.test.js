@@ -1,9 +1,10 @@
+import { database } from './helpers/database.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import session from 'express-session';
+import { PostgresSessionStore } from '../storage.js';
 import request from 'supertest';
 import {
   ABSOLUTE_SESSION_MS,
@@ -22,7 +23,7 @@ function writeJson(directory, fileName, value) {
   fs.writeFileSync(path.join(directory, fileName), JSON.stringify(value), 'utf8');
 }
 
-function createFixture(authConfigOverrides = {}) {
+async function createFixture(t, authConfigOverrides = {}) {
   const dataDirectory = fs.mkdtempSync(path.join(os.tmpdir(), 'cv-resume-auth-'));
   writeJson(dataDirectory, 'passcodes.json', [
     { code: 'viewer-code', expires: '2099-12-31T23:59:59.999Z' },
@@ -65,17 +66,21 @@ function createFixture(authConfigOverrides = {}) {
     cookieDomain: undefined,
     ...authConfigOverrides
   };
+  const { storage } = await database(t, dataDirectory);
+  const sessionStore = new PostgresSessionStore(storage.pool);
+  t.after(() => sessionStore.close());
   const app = createApp({
     authConfig,
     oidcService,
-    sessionStore: new session.MemoryStore(),
-    dataDirectory,
+    sessionStore,
+    storage,
     staticDirectory: dataDirectory,
     now: () => currentTime
   });
 
   return {
     app,
+    storage,
     dataDirectory,
     oidcCalls,
     get now() {
@@ -121,7 +126,7 @@ function createOidcClientStub() {
 }
 
 test('viewer sessions use opaque cookies and enforce expiry and immediate revocation', async (t) => {
-  const fixture = createFixture();
+  const fixture = await createFixture(t);
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
   const viewer = request.agent(fixture.app);
 
@@ -147,14 +152,14 @@ test('viewer sessions use opaque cookies and enforce expiry and immediate revoca
   assert.equal(restored.body.variant, 'resume');
   assert.equal(sessionCookie(restored), undefined);
 
-  writeJson(fixture.dataDirectory, 'passcodes.json', []);
+  await fixture.storage.mutateCollection('passcodes', entries => { entries.length = 0; });
   const revoked = await viewer.get('/api/session?variant=resume');
   assert.equal(revoked.status, 401);
   assert.equal(revoked.body.error, 'Invalid passcode');
 });
 
 test('failed passcode attempts are proxy-safe rate limited without blocking valid codes', async (t) => {
-  const fixture = createFixture();
+  const fixture = await createFixture(t);
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
   const clientAddress = '198.51.100.20';
 
@@ -189,7 +194,7 @@ test('failed passcode attempts are proxy-safe rate limited without blocking vali
 });
 
 test('OIDC callback regenerates an admin session and RP logout destroys it', async (t) => {
-  const fixture = createFixture();
+  const fixture = await createFixture(t);
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
   const admin = request.agent(fixture.app);
 
@@ -257,7 +262,7 @@ test('OIDC callback regenerates an admin session and RP logout destroys it', asy
 });
 
 test('passive restore does not extend idle time, while user actions do', async (t) => {
-  const fixture = createFixture();
+  const fixture = await createFixture(t);
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
   const viewer = request.agent(fixture.app);
   const createdAt = fixture.now;
@@ -279,7 +284,7 @@ test('passive restore does not extend idle time, while user actions do', async (
 });
 
 test('absolute lifetime ends active sessions at seven days', async (t) => {
-  const fixture = createFixture();
+  const fixture = await createFixture(t);
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
   const viewer = request.agent(fixture.app);
   const createdAt = fixture.now;
@@ -296,7 +301,7 @@ test('absolute lifetime ends active sessions at seven days', async (t) => {
 });
 
 test('viewer logout is local and does not call the provider', async (t) => {
-  const fixture = createFixture();
+  const fixture = await createFixture(t);
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
   const viewer = request.agent(fixture.app);
 
@@ -312,7 +317,7 @@ test('viewer logout is local and does not call the provider', async (t) => {
 });
 
 test('HTTPS production requests set a secure shared-subdomain cookie', async (t) => {
-  const fixture = createFixture({ cookieDomain: '.kaufmann.dev' });
+  const fixture = await createFixture(t, { cookieDomain: '.kaufmann.dev' });
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
 
   const login = await request(fixture.app)
@@ -453,7 +458,7 @@ test('OIDC discovery permits insecure requests only for validated loopback issue
 });
 
 test('browser requests are limited to the two production sites and local development', async (t) => {
-  const fixture = createFixture();
+  const fixture = await createFixture(t);
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
 
   await request(fixture.app)
@@ -478,7 +483,7 @@ test('browser requests are limited to the two production sites and local develop
 });
 
 test('shared editor data and MCP writes require the correct credentials and revision', async t => {
-  const fixture = createFixture();
+  const fixture = await createFixture(t);
   t.after(() => fs.rmSync(fixture.dataDirectory, { recursive: true, force: true }));
   const admin = request.agent(fixture.app);
   const viewer = request.agent(fixture.app);
@@ -493,7 +498,7 @@ test('shared editor data and MCP writes require the correct credentials and revi
   const created = await admin.post('/api/keys').send({ name: 'Test MCP' }).expect(201);
   const { key, keys } = created.body;
   assert.equal(keys[0].hash, undefined);
-  assert.ok(!fs.readFileSync(path.join(fixture.dataDirectory, 'api-keys.json'), 'utf8').includes(key));
+  assert.ok(!JSON.stringify(await fixture.storage.readCollection('keys')).includes(key));
   const listed = await admin.get('/api/keys').expect(200);
   assert.equal(listed.body.key, undefined);
   const rpc = (method, params = {}) => request(fixture.app).post('/api/mcp')

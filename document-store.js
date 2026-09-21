@@ -1,6 +1,4 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { createHash } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 
 export const visibilitySchema = z.enum(['cv', 'resume', 'both']);
@@ -22,11 +20,6 @@ export const pubSectionSchema = z.object({ ...base, type: z.literal('pub'), item
 export const sectionSchema = z.discriminatedUnion('type', [infoSectionSchema, entriesSectionSchema, pubSectionSchema]);
 export const documentSchema = z.object({ sections: z.array(sectionSchema) }).strict().refine(d => new Set(d.sections.map(s => s.id)).size === d.sections.length, 'Section IDs must be unique');
 
-export function atomicWrite(file, data) {
-  const temporary = `${file}.tmp`;
-  fs.writeFileSync(temporary, JSON.stringify(data, null, 2) + '\n', { mode: 0o600 });
-  fs.renameSync(temporary, file);
-}
 const canonical = value => JSON.stringify(value, function (key, item) {
   return item && typeof item === 'object' && !Array.isArray(item)
     ? Object.fromEntries(Object.entries(item).sort(([a], [b]) => a.localeCompare(b))) : item;
@@ -67,27 +60,23 @@ export function mergeDocuments(cv, resume) {
   }
   return documentSchema.parse({ sections });
 }
-export function createDocumentStore(directory) {
-  const file = path.join(directory, 'document.json');
-  if (!fs.existsSync(file)) {
-    const readLegacy = name => fs.existsSync(path.join(directory, name))
-      ? JSON.parse(fs.readFileSync(path.join(directory, name), 'utf8')) : { sections: [] };
-    // Parse both sources before writing anything. Originals remain available for recovery.
-    atomicWrite(file, mergeDocuments(readLegacy('cv.json'), readLegacy('resume.json')));
-  }
-  const read = () => {
-    const data = documentSchema.parse(JSON.parse(fs.readFileSync(file, 'utf8')));
-    return { data, revision: createHash('sha256').update(JSON.stringify(data)).digest('hex') };
+export function createDocumentStore(pool) {
+  const read = async () => {
+    const { rows } = await pool.query('SELECT data, revision FROM app_document WHERE id = 1');
+    return { data: documentSchema.parse(rows[0].data), revision: rows[0].revision };
   };
-  read();
-  return { read, write(data, revision) {
+  return { read, async write(data, revision) {
     const parsed = documentSchema.parse(data);
-    if (revision !== read().revision) {
+    const nextRevision = randomUUID();
+    const result = await pool.query(
+      'UPDATE app_document SET data = $1, revision = $2 WHERE id = 1 AND revision = $3 RETURNING revision',
+      [JSON.stringify(parsed), nextRevision, revision]
+    );
+    if (!result.rowCount) {
       const error = new Error('Document changed. Reload before saving.');
       error.status = 409;
       throw error;
     }
-    atomicWrite(file, parsed);
-    return read();
+    return { data: parsed, revision: nextRevision };
   } };
 }

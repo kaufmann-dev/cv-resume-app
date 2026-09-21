@@ -1,9 +1,10 @@
+import { database } from './helpers/database.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import session from 'express-session';
+import { PostgresSessionStore } from '../storage.js';
 import request from 'supertest';
 import { createApp } from '../server.js';
 import { applyJsonPatch } from '../document-patch.js';
@@ -24,6 +25,9 @@ async function createMcpFixture(t) {
     { id: 'personal', title: 'Personal', type: 'info', rows: [{ label: 'Location', value: 'Berlin' }] },
     { id: 'pubs', title: 'Publications', type: 'pub', items: [{ title: 'Paper', year: 2026, authors: [{ name: 'A. Uthor' }] }] }
   ] });
+  const { storage } = await database(t, dataDirectory);
+  const sessionStore = new PostgresSessionStore(storage.pool);
+  t.after(() => sessionStore.close());
   const app = createApp({
     authConfig: { callbackUrl: 'https://resume.kaufmann.dev/auth/callback', postLogoutUrl: 'https://resume.kaufmann.dev/', sessionSecret: TEST_SESSION_SECRET, cookieDomain: undefined },
     oidcService: {
@@ -33,8 +37,8 @@ async function createMcpFixture(t) {
       async exchangeCallback() { return { idTokenHint: 'hint' }; },
       createLogoutUrl() { return new URL('https://identity.example/end-session'); }
     },
-    sessionStore: new session.MemoryStore(),
-    dataDirectory,
+    sessionStore,
+    storage,
     staticDirectory: dataDirectory,
     now: () => Date.now()
   });
@@ -51,7 +55,7 @@ async function createMcpFixture(t) {
     if (response.body.error) return { protocolError: response.body.error.message };
     return { isError: !!response.body.result.isError, body: JSON.parse(response.body.result.content[0].text) };
   };
-  return { app, dataDirectory, rpc, call };
+  return { app, storage, dataDirectory, rpc, call };
 }
 
 test('tools/list exposes the granular editing tools', async t => {

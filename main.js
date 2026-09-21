@@ -28,6 +28,8 @@ const contentContainer = document.getElementById('cv-container');
 const authError = document.getElementById('auth-error');
 const passcodeInput = document.getElementById('passcode-input');
 const adminLoginButton = document.getElementById('admin-login-btn');
+const authTitle = document.getElementById('auth-title');
+const authDividerLabel = document.getElementById('auth-divider-label');
 const downloadButton = document.getElementById('btn-dl');
 const logoutButton = document.getElementById('btn-logout');
 const editButton = document.getElementById('btn-edit');
@@ -150,8 +152,13 @@ function applyLegalFooter() {
 }
 
 function applyVariantChrome() {
+  document.documentElement.lang = lang;
   document.title = localize(activeVariant.pageTitle);
   document.getElementById('login-btn').textContent = localize(activeVariant.authButtonLabel);
+  authTitle.textContent = localize({ en: 'Private Access', de: 'Privater Zugang' });
+  passcodeInput.placeholder = localize({ en: 'Enter Passcode...', de: 'Passcode eingeben...' });
+  authDividerLabel.textContent = localize({ en: 'or', de: 'oder' });
+  adminLoginButton.textContent = localize({ en: 'Admin sign in', de: 'Admin anmelden' });
   applyLegalFooter();
 }
 

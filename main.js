@@ -158,7 +158,7 @@ function applyVariantChrome() {
   authTitle.textContent = localize({ en: 'Private Access', de: 'Privater Zugang' });
   passcodeInput.placeholder = localize({ en: 'Enter Passcode...', de: 'Passcode eingeben...' });
   authDividerLabel.textContent = localize({ en: 'or', de: 'oder' });
-  adminLoginButton.textContent = localize({ en: 'Admin sign in', de: 'Admin anmelden' });
+  adminLoginButton.textContent = localize({ en: 'Admin sign in', de: 'Admin-Zugang' });
   applyLegalFooter();
 }
 

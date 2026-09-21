@@ -141,6 +141,12 @@ body {
   box-shadow: none;
 }
 
+.auth-card .auth-admin-button:hover {
+  background: var(--tb-bg);
+  color: var(--t1);
+  border-color: var(--t1);
+}
+
 
 #auth-error {
   color: #ff4d4d;

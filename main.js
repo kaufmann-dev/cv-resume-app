@@ -157,8 +157,20 @@ function applyVariantChrome() {
   document.getElementById('login-btn').textContent = localize(activeVariant.authButtonLabel);
   authTitle.textContent = localize({ en: 'Private Access', de: 'Privater Zugang' });
   passcodeInput.placeholder = localize({ en: 'Enter Passcode...', de: 'Passcode eingeben...' });
+  passcodeInput.setAttribute('aria-label', localize({ en: 'Passcode', de: 'Passcode' }));
   authDividerLabel.textContent = localize({ en: 'or', de: 'oder' });
   adminLoginButton.textContent = localize({ en: 'Admin sign in', de: 'Admin-Zugang' });
+  for (const [id, label] of Object.entries({
+    'btn-edit': { en: 'Edit content', de: 'Inhalt bearbeiten' },
+    'btn-dl': { en: 'Download PDF', de: 'PDF herunterladen' },
+    'btn-lang': { en: 'Switch to German', de: 'Zu Englisch wechseln' },
+    'btn-logout': { en: 'Sign out', de: 'Abmelden' },
+  })) {
+    const button = document.getElementById(id);
+    button.setAttribute('aria-label', localize(label));
+    button.title = localize(label);
+  }
+  applyThemeIcons();
   applyLegalFooter();
 }
 
@@ -252,6 +264,12 @@ function mkSection(section) {
 
 function applyThemeIcons() {
   const darkMode = theme === 'dark';
+  const button = document.getElementById('btn-theme');
+  const label = localize(darkMode
+    ? { en: 'Use light theme', de: 'Helles Design verwenden' }
+    : { en: 'Use dark theme', de: 'Dunkles Design verwenden' });
+  button.setAttribute('aria-label', label);
+  button.title = label;
   const sun = document.getElementById('ico-sun');
   const moon = document.getElementById('ico-moon');
 
@@ -424,7 +442,7 @@ document.getElementById('btn-theme').addEventListener('click', () => {
   theme = theme === 'light' ? 'dark' : 'light';
   persistTheme();
   document.documentElement.setAttribute('data-theme', theme);
-  if (documentData) applyThemeIcons();
+  applyThemeIcons();
 });
 
 downloadButton.addEventListener('click', handleDownload);

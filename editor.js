@@ -23,7 +23,7 @@ function getDe(val) { return isLocalized(val) ? (val.de || '') : (typeof val ===
 
 function showToast(msg, isError) {
   let t = document.querySelector('.ed-toast');
-  if (!t) { t = document.createElement('div'); t.className = 'ed-toast'; document.body.appendChild(t); }
+  if (!t) { t = document.createElement('div'); t.className = 'ed-toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
   t.textContent = msg;
   t.classList.toggle('error', !!isError);
   requestAnimationFrame(() => { t.classList.add('visible'); });
@@ -319,7 +319,7 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
     authList.innerHTML = '';
     pub.authors.forEach((a, ai) => {
       const row = h('div', { className: 'ed-pub-author-row' });
-      const nameInp = h('input', { className: 'ed-input', type: 'text', value: a.name || '', placeholder: 'Author name...' });
+      const nameInp = h('input', { className: 'ed-input', type: 'text', 'aria-label': 'Author name', value: a.name || '', placeholder: 'Author name...' });
       nameInp.addEventListener('input', () => { a.name = nameInp.value; onDataChange(); });
       row.appendChild(nameInp);
       row.appendChild(visibilityControl(a, onDataChange));
@@ -327,7 +327,7 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
       boldCb.checked = !!a.bold;
       boldCb.addEventListener('change', () => { a.bold = boldCb.checked; onDataChange(); });
       row.appendChild(h('label', { className: 'ed-pub-bold-toggle' }, boldCb, 'Bold'));
-      row.appendChild(h('button', { className: 'ed-item-action-btn ed-item-action-btn--danger', onClick: () => { pub.authors.splice(ai, 1); onDataChange(); rebuildAuthors(); } }, '✕'));
+      row.appendChild(h('button', { className: 'ed-item-action-btn ed-item-action-btn--danger', 'aria-label': 'Remove author', onClick: () => { pub.authors.splice(ai, 1); onDataChange(); rebuildAuthors(); } }, '✕'));
       authList.appendChild(row);
     });
     authList.appendChild(h('button', { className: 'ed-btn', onClick: () => { pub.authors.push({ name: '', bold: false, visibility: 'both' }); onDataChange(); rebuildAuthors(); } }, '+ Author'));
@@ -339,7 +339,7 @@ function renderPubCard(pub, index, items, onDataChange, rebuildList) {
   // Year
   const yearGroup = h('div', { className: 'ed-field-group' });
   yearGroup.appendChild(h('span', { className: 'ed-field-label' }, 'Year'));
-  const yearInp = h('input', { className: 'ed-input', type: 'text', value: pub.year || '' });
+  const yearInp = h('input', { className: 'ed-input', type: 'text', 'aria-label': 'Year', value: pub.year || '' });
   yearInp.addEventListener('input', () => { pub.year = yearInp.value; onDataChange(); });
   yearGroup.appendChild(yearInp);
   yearGroup.appendChild(visibilityControl(pub, onDataChange, 'year'));
@@ -523,7 +523,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     // Code field
     const codeGroup = h('div', { className: 'ed-field-group' });
     codeGroup.appendChild(h('span', { className: 'ed-field-label' }, 'Passcode'));
-    const codeInp = h('input', { className: 'ed-input', type: 'text', value: entry.code || '' });
+    const codeInp = h('input', { className: 'ed-input', type: 'text', 'aria-label': 'Passcode', value: entry.code || '' });
     let codeDebounce = null;
     codeInp.addEventListener('input', () => {
       entry.code = codeInp.value;
@@ -539,7 +539,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     // Expires field
     const expGroup = h('div', { className: 'ed-field-group' });
     expGroup.appendChild(h('span', { className: 'ed-field-label' }, 'Expires'));
-    const expInp = h('input', { className: 'ed-input', type: 'date', value: (entry.expires || '').slice(0, 10) });
+    const expInp = h('input', { className: 'ed-input', type: 'date', 'aria-label': 'Expires', value: (entry.expires || '').slice(0, 10) });
     expInp.addEventListener('change', () => {
       entry.expires = expInp.value;
       const nowExpired = new Date() > new Date(entry.expires);
@@ -724,7 +724,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
     const left = h('div', { className: 'ed-topbar-left' });
     ['content', 'passcodes', 'api-keys', 'pdf'].forEach(d => {
       const label = { content: 'Content', passcodes: 'Passcodes', 'api-keys': 'API Keys', pdf: 'PDF' }[d];
-      const tab = h('button', { className: 'ed-tab' + (d === activeDoc ? ' active' : ''), onClick: () => switchDoc(d) }, label);
+      const tab = h('button', { className: 'ed-tab' + (d === activeDoc ? ' active' : ''), 'aria-pressed': String(d === activeDoc), onClick: () => switchDoc(d) }, label);
       left.appendChild(tab);
     });
     topbar.appendChild(left);
@@ -780,7 +780,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
 
     addWrap.appendChild(typeSel);
     addWrap.appendChild(h('button', {
-      className: 'ed-btn', onClick: () => {
+      className: 'ed-btn', 'aria-label': 'Add section', onClick: () => {
         const type = typeSel.value;
         const newSec = { visibility: 'both', id: 'new_' + Date.now(), title: { en: 'New Section', de: 'Neuer Abschnitt' }, open: false, type };
         if (type === 'info') newSec.rows = [];
@@ -843,7 +843,7 @@ export function initEditor({ document: initialDocument, passcodesData, apiBaseUr
       // ID field
       const idWrap = h('div', { style: 'display:flex;align-items:center;gap:6px;' });
       idWrap.appendChild(h('span', { className: 'ed-field-col-label', style: 'margin-bottom:0' }, 'ID'));
-      const idInp = h('input', { className: 'ed-input', type: 'text', value: sec.id, style: 'width:120px;font-size:0.7rem;padding:6px 10px;' });
+      const idInp = h('input', { className: 'ed-input', type: 'text', 'aria-label': 'Section identifier', value: sec.id, style: 'width:120px;font-size:0.7rem;padding:6px 10px;' });
       idInp.addEventListener('input', () => { sec.id = idInp.value; markDirty(); });
       idWrap.appendChild(idInp);
       const advanced = h('details', { className: 'ed-section-advanced' }, h('summary', {}, 'Section identifier'), idWrap);

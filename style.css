@@ -1,8 +1,8 @@
 /* ── RESET & BASE ── */
-@import "@fontsource/google-sans-flex/400.css";
-@import "@fontsource/google-sans-flex/500.css";
-@import "@fontsource/google-sans-flex/600.css";
-@import "@fontsource/google-sans-flex/700.css";
+@import "@fontsource/public-sans/400.css";
+@import "@fontsource/public-sans/500.css";
+@import "@fontsource/public-sans/600.css";
+@import "@fontsource/public-sans/700.css";
 
 *,
 *::before,
@@ -13,58 +13,39 @@
 }
 
 [data-theme="light"] {
-  --bg: #f6f6f6;
-  --t1: #0b0b0b;
-  --t2: #4f4f4f;
-  --t3: #7d7d7d;
-  --border: #dddddd;
-  --border2: #bdbdbd;
-  --dot: #bdbdbd;
-  --tb-bg: rgba(0, 0, 0, .05);
-  --tb-hbg: rgba(0, 0, 0, .09);
-  --glass-bg: rgba(255, 255, 255, 0.7);
+  --bg: #ffffff;
+  --t1: #111111;
+  --t2: #454545;
+  --t3: #6c6c6c;
+  --border: #d0d0d0;
+  --border2: #9d9d9d;
+  --dot: #696969;
+  --tb-bg: #f0f0f0;
+  --tb-hbg: #e2e2e2;
+  --glass-bg: #ffffff;
 }
 
 [data-theme="dark"] {
-  --bg: #101010;
-  --t1: #f0f0f0;
-  --t2: #bebebe;
-  --t3: #8e8e8e;
-  --border: #292929;
-  --border2: #3e3e3e;
-  --dot: #4a4a4a;
-  --tb-bg: rgba(255, 255, 255, .07);
-  --tb-hbg: rgba(255, 255, 255, .14);
-  --glass-bg: rgba(24, 24, 24, 0.78);
+  --bg: #000000;
+  --t1: #ffffff;
+  --t2: #d0d0d0;
+  --t3: #9f9f9f;
+  --border: #444444;
+  --border2: #777777;
+  --dot: #aaaaaa;
+  --tb-bg: #181818;
+  --tb-hbg: #292929;
+  --glass-bg: #000000;
 }
 
 body {
-  font-family: 'Google Sans Flex', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--t1);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  transition: background 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   min-height: 100vh;
 }
-
-/* ── ANIMATIONS ── */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-up {
-  animation: fadeUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) both;
-}
-
 
 /* ── LOGIN UI ── */
 #auth-container {
@@ -81,8 +62,6 @@ body {
   width: 100%;
   text-align: center;
   background: var(--bg);
-  border-radius: 12px;
-  animation: fadeUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 
@@ -122,7 +101,6 @@ body {
   padding: 12px 28px;
   background: var(--t1);
   border: none;
-  border-radius: 8px;
   color: var(--bg);
   font-family: inherit;
   font-size: 0.7rem;
@@ -130,19 +108,11 @@ body {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 
 .auth-card button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  opacity: 0.9;
-}
-
-.auth-card button:active {
-  transform: translateY(0);
+  background: var(--t1);
 }
 
 .auth-divider {
@@ -191,7 +161,6 @@ body {
   max-width: 800px;
   margin: 0 auto;
   padding: 0 20px;
-  animation: fadeUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) both;
 }
 
 
@@ -714,4 +683,52 @@ body.is-auth-view #legal-footer {
     align-items: flex-start;
     gap: 1px;
   }
+}
+
+/* ── Flat, square interface ── */
+html {
+  background: var(--bg);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--t1);
+  outline-offset: 3px;
+}
+
+.auth-card input,
+.auth-card button {
+  min-height: 44px;
+}
+
+.auth-card button {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tbtn {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.name {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

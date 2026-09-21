@@ -1,18 +1,18 @@
 /* ── VISUAL EDITOR (PREMIUM) ── */
 
 .editor-overlay {
-  --ed-radius: 8px;
-  --ed-card-radius: 12px;
-  --ed-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  --ed-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --ed-focus-ring: 0 0 0 3px rgba(128, 128, 128, 0.2);
-  --ed-transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --ed-radius: 0;
+  --ed-card-radius: 0;
+  --ed-shadow: none;
+  --ed-hover-shadow: none;
+  --ed-focus-ring: none;
+  --ed-transition: none;
 }
 
 [data-theme="dark"] .editor-overlay {
-  --ed-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --ed-hover-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --ed-focus-ring: 0 0 0 3px rgba(255, 255, 255, 0.15);
+  --ed-shadow: none;
+  --ed-hover-shadow: none;
+  --ed-focus-ring: none;
 }
 
 /* Overlay */
@@ -23,7 +23,7 @@
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  font-family: 'Google Sans Flex', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   color: var(--t1);
   overflow: hidden;
   animation: edFadeIn 0.3s ease-out;
@@ -1064,3 +1064,29 @@ dialog.ed-confirm-overlay { width: 100%; height: 100%; max-width: none; max-heig
 .ed-confirm-box { animation: none; }
 .ed-confirm-overlay .ed-btn { min-height: 36px; font-size: 0.8rem; letter-spacing: 0; text-transform: none; }
 .ed-confirm-overlay .ed-btn:focus-visible { outline: 2px solid var(--t1); outline-offset: 3px; }
+
+/* ── Flat, square editor interface ── */
+.editor-overlay,
+.editor-overlay *,
+.editor-overlay *::before,
+.editor-overlay *::after {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+.editor-overlay .ed-topbar,
+.editor-overlay .ed-confirm-overlay {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.editor-overlay .ed-main {
+  scroll-behavior: auto;
+}
+
+.editor-overlay :where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--t1);
+  outline-offset: 3px;
+}

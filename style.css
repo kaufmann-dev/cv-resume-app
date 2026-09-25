@@ -494,12 +494,16 @@ ul li::before {
 .pub {
   font-size: 0.88rem;
   line-height: 1.75;
-  color: var(--t1);
+  color: var(--t2);
   border-left: 1.5px solid var(--border);
   position: relative;
   padding: 8px 0 18px 22px;
   margin-bottom: 2px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.pub em {
+  color: var(--t1);
 }
 
 .pub::before {

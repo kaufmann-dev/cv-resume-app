@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
 import { mergeDocuments, createDocumentStore } from '../document-store.js';
-import { projectDocument } from '../document-model.js';
+import { projectDocument, renderMarkdown } from '../document-model.js';
 
 const section = items => ({ sections: [{ id: 'work', title: 'Work', type: 'entries', items }] });
 test('migration merges matching parents and bullets without losing variant-specific content', () => {
@@ -69,4 +69,41 @@ test('legacy publication prose becomes editable shared publication content', () 
   const merged = mergeDocuments({ sections: [{ id: 'pub', title: 'Publications', type: 'pub', content: { en: 'Paper', de: 'Publikation' } }] }, { sections: [] });
   assert.deepEqual(projectDocument(merged, 'cv').sections[0].items[0].title, { en: 'Paper', de: 'Publikation' });
   assert.equal(merged.sections[0].items[0].visibility, 'cv');
+});
+test('renderMarkdown formats info, entries and publication sections', () => {
+  const markdown = renderMarkdown({ sections: [
+    { id: 'personal', title: 'Personal', type: 'info', rows: [{ label: 'Location', value: 'Berlin' }] },
+    { id: 'work', title: 'Work', type: 'entries', items: [{ heading: 'Job', subheading: 'Role', info: 'Berlin', subinfo: '2020-2024', highlights: ['Did things'], tags: ['JS', 'Node'] }] },
+    { id: 'pubs', title: 'Pubs', type: 'pub', items: [{ authors: [{ name: 'A. Uthor' }, { name: 'B. Bold', bold: true }], year: 2026, title: 'Paper', institution: 'Conf' }] }
+  ] });
+  assert.equal(markdown, [
+    '## Personal',
+    '',
+    '- **Location:** Berlin',
+    '',
+    '## Work',
+    '',
+    '### Job',
+    '*Role*',
+    'Berlin',
+    '2020-2024',
+    '- Did things',
+    'Tags: JS, Node',
+    '',
+    '## Pubs',
+    '',
+    '- A. Uthor, **B. Bold** (2026). *Paper*. Conf.',
+    ''
+  ].join('\n'));
+});
+test('renderMarkdown localizes text, falls back and unwraps raw bullets', () => {
+  const document = { sections: [{ id: 'work', title: { en: 'Work', de: 'Arbeit' }, type: 'entries', items: [{
+    heading: { en: 'Job', de: 'Stelle' },
+    highlights: [{ text: { en: 'Shipped', de: 'Geliefert' }, visibility: 'both' }, 'Plain'],
+    tags: [{ text: 'JS', visibility: 'cv' }]
+  }] }] };
+  assert.equal(renderMarkdown(document, 'de'), '## Arbeit\n\n### Stelle\n- Geliefert\n- Plain\nTags: JS\n');
+  assert.equal(renderMarkdown(document), '## Work\n\n### Job\n- Shipped\n- Plain\nTags: JS\n');
+  assert.equal(renderMarkdown({ sections: [{ id: 'a', title: { en: 'Only EN' }, type: 'entries', items: [] }] }, 'de'), '## Only EN\n');
+  assert.equal(renderMarkdown({ sections: [] }), '');
 });

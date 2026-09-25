@@ -53,7 +53,10 @@ async function createMcpFixture(t) {
   const call = async (name, args) => {
     const response = await rpc('tools/call', { name, arguments: args }).expect(200);
     if (response.body.error) return { protocolError: response.body.error.message };
-    return { isError: !!response.body.result.isError, body: JSON.parse(response.body.result.content[0].text) };
+    const text = response.body.result.content[0].text;
+    let body;
+    try { body = JSON.parse(text); } catch { body = undefined; }
+    return { isError: !!response.body.result.isError, body, text, structuredContent: response.body.result.structuredContent };
   };
   return { app, storage, dataDirectory, rpc, call };
 }
@@ -65,6 +68,62 @@ test('tools/list exposes the granular editing tools', async t => {
     'delete_item', 'delete_section', 'get_document', 'get_section', 'list_sections',
     'patch_document', 'preview_document', 'put_item', 'put_section', 'replace_document'
   ]);
+});
+
+test('tools/list advertises output schemas and read-only hints', async t => {
+  const { rpc } = await createMcpFixture(t);
+  const tools = await rpc('tools/list').expect(200);
+  const byName = Object.fromEntries(tools.body.result.tools.map(tool => [tool.name, tool]));
+  for (const name of ['delete_item', 'delete_section', 'get_document', 'get_section', 'list_sections', 'patch_document', 'preview_document', 'put_item', 'put_section', 'replace_document']) {
+    assert.ok(byName[name].outputSchema, `${name} advertises an output schema`);
+  }
+  assert.equal(byName.get_document.annotations.readOnlyHint, true);
+  assert.equal(byName.preview_document.annotations.readOnlyHint, true);
+  assert.equal(byName.delete_section.annotations.destructiveHint, true);
+  assert.equal(byName.put_section.annotations?.readOnlyHint ?? false, false);
+});
+
+test('JSON results also carry the same typed structured content', async t => {
+  const { call } = await createMcpFixture(t);
+  const listed = await call('list_sections', {});
+  assert.equal(listed.isError, false);
+  assert.deepEqual(listed.structuredContent, listed.body);
+  const preview = await call('preview_document', { variant: 'cv' });
+  assert.equal(preview.isError, false);
+  assert.deepEqual(preview.structuredContent, preview.body);
+});
+
+test('preview_document renders markdown without losing structured data', async t => {
+  const { call } = await createMcpFixture(t);
+  const preview = await call('preview_document', { variant: 'cv', format: 'markdown' });
+  assert.equal(preview.isError, false);
+  assert.equal(preview.body, undefined);
+  assert.ok(preview.text.includes('## Experience'));
+  assert.ok(preview.text.includes('### Job A'));
+  assert.ok(preview.text.includes('- Did things'));
+  assert.ok(preview.text.includes('Tags: JS'));
+  assert.ok(preview.text.includes('- **Location:** Berlin'));
+  assert.ok(preview.text.includes('- A. Uthor (2026). *Paper*.'));
+  assert.deepEqual(preview.structuredContent.sections.map(s => s.id), ['experience', 'personal', 'pubs']);
+  const invalid = await call('preview_document', { variant: 'cv', format: 'yaml' });
+  assert.equal(invalid.isError, true);
+  assert.match(invalid.text, /'json' \| 'markdown'/);
+});
+
+test('get_section renders one section as markdown with locale', async t => {
+  const { call } = await createMcpFixture(t);
+  const { body: { revision } } = await call('list_sections', {});
+  const localized = await call('put_section', { revision, section: { id: 'about', title: { en: 'About', de: 'Über' }, type: 'info', rows: [{ label: { en: 'City', de: 'Stadt' }, value: 'Berlin' }] } });
+  assert.equal(localized.isError, false);
+  const german = await call('get_section', { sectionId: 'about', format: 'markdown', locale: 'de' });
+  assert.equal(german.isError, false);
+  assert.equal(german.text, '## Über\n\n- **Stadt:** Berlin\n');
+  assert.equal(german.structuredContent.revision, localized.body.revision);
+  const english = await call('get_section', { sectionId: 'about', format: 'markdown' });
+  assert.equal(english.text, '## About\n\n- **City:** Berlin\n');
+  const hidden = await call('get_section', { sectionId: 'experience', variant: 'resume', format: 'markdown' });
+  assert.equal(hidden.isError, true);
+  assert.match(hidden.body.error, /not visible in the "resume" variant/);
 });
 
 test('list_sections and get_section read without the full document', async t => {

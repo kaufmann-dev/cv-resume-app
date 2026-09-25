@@ -87,9 +87,9 @@ Create a named key in admin **API Keys** and copy it when displayed; only its ha
 Connect with Streamable HTTP at `https://resume.kaufmann.dev/api/mcp` (or the CV hostname) and the header `Authorization: Bearer YOUR_API_KEY`. Requests are stateless POSTs; GET and DELETE return 405. Available tools:
 
 - `list_sections`: read section summaries (id, type, title, visibility, count) and the revision.
-- `get_section`: read one section by id, optionally filtered for a variant.
+- `get_section`: read one section by id, optionally filtered for a variant or rendered as Markdown (`format: "markdown"`, `locale: "en" | "de"`).
 - `get_document`: read all shared data and its revision.
-- `preview_document`: read the filtered CV or resume.
+- `preview_document`: read the filtered CV or resume, as JSON or Markdown (`format`, `locale`).
 - `put_section`: create or replace one whole section, with optional positioning.
 - `delete_section`: delete one section by id.
 - `put_item`: append or replace one row/item inside a section.
@@ -97,7 +97,7 @@ Connect with Streamable HTTP at `https://resume.kaufmann.dev/api/mcp` (or the CV
 - `patch_document`: apply granular RFC 6902 edits with a per-operation diff; `dryRun` previews without saving.
 - `replace_document`: save the full document (bulk edits and migration only).
 
-Every write tool needs the revision from any read; stale revisions are rejected with the current revision. Patch paths are JSON Pointers below the document root, e.g. `/sections/0/title/en` or `/sections/1/items/0/highlights/-` to append a bullet. Use `test` operations or `dryRun` to verify before committing.
+Every tool returns typed `structuredContent` alongside its human-readable text; Markdown reads keep the same structured JSON so a follow-up edit needs no second read. Every write tool needs the revision from any read; stale revisions are rejected with the current revision. Patch paths are JSON Pointers below the document root, e.g. `/sections/0/title/en` or `/sections/1/items/0/highlights/-` to append a bullet. Use `test` operations or `dryRun` to verify before committing.
 
 Every section, entry, row, author, bullet, and tag has `visibility: "cv" | "resume" | "both"`, defaulting to `"both"` when omitted. Bullets and tags use `{ "text": "Content", "visibility": "both" }`; text may also be localized as `{ "en": "…", "de": "…" }`. Optional `fieldVisibility` controls individual fields, e.g. `{ "info": "cv" }`; unspecified fields are visible in Both. The MCP tool schema describes the full document structure.
 

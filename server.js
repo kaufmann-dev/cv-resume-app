@@ -3,6 +3,7 @@ import { asyncHandler } from './async-handler.js';
 import { createDocumentStore } from './document-store.js';
 import { projectDocument } from './document-model.js';
 import { mountMcp } from './mcp.js';
+import { renderErrorPage } from './error-page.js';
 import express from 'express';
 import cors from 'cors';
 import { rateLimit } from 'express-rate-limit';
@@ -503,6 +504,19 @@ export function createApp({
     }));
   }
 
+  app.use(express.static(staticDirectory));
+
+  // Browser navigations get an HTML error page; API and MCP clients keep JSON errors.
+  function sendError(request, response, status, error) {
+    if (request.accepts(['json', 'html']) === 'html') {
+      const language = request.acceptsLanguages('en', 'de') || 'en';
+      return response.status(status).type('html').send(renderErrorPage(status, language));
+    }
+    return response.status(status).json({ error });
+  }
+
+  app.use((request, response) => sendError(request, response, 404, 'Not found'));
+
   app.use((error, request, response, next) => {
     if (error?.type === 'entity.too.large') return response.status(413).json({ error: 'PDF exceeds the 10 MB limit' });
     return next(error);
@@ -511,12 +525,8 @@ export function createApp({
   app.use((error, request, response, next) => {
     if (response.headersSent) return next(error);
     console.error('Request failed:', error.message);
-    response.status(error.status || 500).json({ error: error.status ? error.message : 'Request failed' });
-  });
-
-  app.use(express.static(staticDirectory));
-  app.get('*', (request, response) => {
-    response.sendFile(path.join(staticDirectory, 'index.html'));
+    const status = error.status || 500;
+    return sendError(request, response, status, error.status ? error.message : 'Request failed');
   });
 
   return app;

@@ -27,6 +27,7 @@ A small personal CV/resume app built with Vite on the frontend and Express on th
 ```text
 resume-app-new/
 |-- server.js           # Express backend server
+|-- error-page.js       # HTML error pages for browser requests
 |-- auth.js             # OIDC and server-side session configuration
 |-- variant-config.js   # Hostname -> variant mapping
 |-- index.html          # Frontend entry point
@@ -287,7 +288,7 @@ SERVICE_NAME=your-service-name ./deploy.sh
 Nginx should:
 
 - serve the static files from `dist/`
-- proxy `/api/` and `/auth/` requests to the Node server
+- proxy `/api/` and `/auth/` requests, and paths without a static file, to the Node server so unknown paths get its 404 page
 
 Example shape:
 
@@ -299,10 +300,19 @@ server {
     index index.html;
 
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ @app;
     }
 
     location ~ ^/(api|auth)/ {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+
+    location @app {
         proxy_pass http://127.0.0.1:3001;
         proxy_http_version 1.1;
         proxy_set_header Host $host;

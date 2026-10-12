@@ -1019,7 +1019,7 @@ select.ed-input {
 .ed-key-info .ed-help { margin: 0; font-size: 0.8rem; }
 .ed-key-secret { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
 .ed-copy-field { margin-top: 14px; }
-.ed-code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.8rem; overflow-wrap: anywhere; }
+.ed-code { font-family: 'JetBrains Mono Variable', ui-monospace, monospace; font-size: 0.8rem; overflow-wrap: anywhere; }
 .ed-panel > .ed-code { display: block; margin-top: 6px; }
 .ed-sidebar { width: 280px; }
 .ed-sidebar-help { font-size: 0.8rem; color: var(--t2); padding: 0 20px 16px; line-height: 1.5; }

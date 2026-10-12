@@ -32,7 +32,7 @@ export function renderErrorPage(status, language = 'en') {
     :root { color-scheme: light dark; --bg: #ffffff; --t1: #111111; --t3: #6c6c6c; }
     @media (prefers-color-scheme: dark) { :root { --bg: #000000; --t1: #ffffff; --t3: #9f9f9f; } }
     * { box-sizing: border-box; margin: 0; }
-    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: var(--bg); color: var(--t1); font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; text-align: center; }
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; background: var(--bg); color: var(--t1); font-family: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.6; text-align: center; }
     main { max-width: 400px; }
     .status { margin-bottom: 16px; color: var(--t3); font-size: 0.66rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
     h1 { font-size: 1.4rem; font-weight: 600; }
